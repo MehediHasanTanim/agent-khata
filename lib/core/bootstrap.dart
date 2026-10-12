@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app.dart';
-import 'db/app_database.dart';
 import 'db/database_key_store.dart';
+import 'db/database_opener.dart';
 import 'providers.dart';
 import 'security/key_value_store.dart';
 
@@ -35,6 +35,7 @@ Future<void> bootstrap(Flavor flavor) async {
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
         databaseProvider.overrideWithValue(db),
+        flavorProvider.overrideWithValue(flavor),
       ],
       child: KhataApp(flavor: flavor),
     ),

@@ -7,7 +7,8 @@ Specs live in [`docs/`](docs): feature spec, technical design, sprint plan.
 
 ## Status
 
-Sprint 0 (foundations) — see `docs/plan/agent-cashbook-sprint-plan.md`.
+Sprint 0 (foundations) and Sprint 1 (ledger core) — see
+`docs/plan/agent-cashbook-sprint-plan.md`.
 
 | Task | State |
 |---|---|
@@ -19,6 +20,28 @@ Sprint 0 (foundations) — see `docs/plan/agent-cashbook-sprint-plan.md`.
 | S0-06 i18n (bn/en, digits, grouping) | done; Bangla font not bundled yet (see below) |
 | S0-07 theme + tokens | done |
 | S0-08 PIN lock | done |
+
+### Sprint 1 (ledger core)
+
+| Task | State |
+|---|---|
+| S1-01 schema (v2: all design tables + indexes) | done |
+| S1-02 integrity triggers (no delete, immutable columns, closed-day lock) | done |
+| S1-03 entities, UUIDv7, Dhaka business date with rollover hour | done |
+| S1-04 account repository, live/reactive balances, recompute check | done |
+| S1-05 posting framework + registry, atomic write | done |
+| S1-06/07 all 10 posting strategies | done |
+| S1-08 commission engine | done |
+| S1-09 audit logger | done |
+| S1-10 invariant + randomized tests | done |
+| S1-11 dev-only debug harness (Settings, dev flavor) | done |
+
+Posting model: every transaction posts entries that sum to zero across
+accounts including the hidden `external` account (customer fees, flexiload
+margin, adjustments) and expense-category accounts. Provider commission on
+cash-out/cash-in is recorded on the transaction but not posted (it is credited
+later; reconciled in Phase 2). Flexiload: `amount` is the price charged, the
+load balance falls by `amount - margin`.
 
 ## Develop
 
@@ -57,5 +80,7 @@ Decision: _pending device measurements_.
 - Bangla font: bundle Noto Sans Bengali (or Hind Siliguri) under
   `assets/fonts/` and declare it in `pubspec.yaml` (S0-06). The theme already
   lists both as fallbacks.
+- Domain/DB tests can run without Xcode in a plain Dart package using
+  `source: system` for sqlite3; CI runs the full `flutter test`.
 - Local `flutter test` on macOS needs the Xcode command line tools
   (`xcode-select --install`); some native-asset hooks call `xcrun`.

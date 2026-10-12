@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/bootstrap.dart';
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/settings/app_preferences.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../debug/ledger_debug_screen.dart';
 import '../diagnostics/diagnostics_screen.dart';
 import '../lock/lock_controller.dart';
 
@@ -117,6 +119,16 @@ class SettingsScreen extends ConsumerWidget {
               ref.read(lockControllerProvider.notifier).lock();
             },
           ),
+          if (ref.watch(flavorProvider) == Flavor.dev)
+            ListTile(
+              leading: const Icon(Icons.bug_report_outlined),
+              title: const Text('Ledger debug harness (dev only)'),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const LedgerDebugScreen(),
+                ),
+              ),
+            ),
           ListTile(
             leading: const Icon(Icons.speed_outlined),
             title: Text(l10n.diagnostics),
