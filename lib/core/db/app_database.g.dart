@@ -5508,6 +5508,400 @@ class SettingsCompanion extends UpdateCompanion<SettingRow> {
   }
 }
 
+class $BalanceSnapshotsTable extends BalanceSnapshots
+    with TableInfo<$BalanceSnapshotsTable, BalanceSnapshotRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BalanceSnapshotsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+    'account_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES account (id)',
+    ),
+  );
+  static const VerificationMeta _businessDateMeta = const VerificationMeta(
+    'businessDate',
+  );
+  @override
+  late final GeneratedColumn<String> businessDate = GeneratedColumn<String>(
+    'business_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _balancePaisaMeta = const VerificationMeta(
+    'balancePaisa',
+  );
+  @override
+  late final GeneratedColumn<int> balancePaisa = GeneratedColumn<int>(
+    'balance_paisa',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _maxTxnRowidMeta = const VerificationMeta(
+    'maxTxnRowid',
+  );
+  @override
+  late final GeneratedColumn<int> maxTxnRowid = GeneratedColumn<int>(
+    'max_txn_rowid',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    accountId,
+    businessDate,
+    balancePaisa,
+    maxTxnRowid,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'balance_snapshot';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BalanceSnapshotRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('business_date')) {
+      context.handle(
+        _businessDateMeta,
+        businessDate.isAcceptableOrUnknown(
+          data['business_date']!,
+          _businessDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_businessDateMeta);
+    }
+    if (data.containsKey('balance_paisa')) {
+      context.handle(
+        _balancePaisaMeta,
+        balancePaisa.isAcceptableOrUnknown(
+          data['balance_paisa']!,
+          _balancePaisaMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_balancePaisaMeta);
+    }
+    if (data.containsKey('max_txn_rowid')) {
+      context.handle(
+        _maxTxnRowidMeta,
+        maxTxnRowid.isAcceptableOrUnknown(
+          data['max_txn_rowid']!,
+          _maxTxnRowidMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_maxTxnRowidMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {accountId, businessDate};
+  @override
+  BalanceSnapshotRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BalanceSnapshotRow(
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}account_id'],
+      )!,
+      businessDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}business_date'],
+      )!,
+      balancePaisa: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}balance_paisa'],
+      )!,
+      maxTxnRowid: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_txn_rowid'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $BalanceSnapshotsTable createAlias(String alias) {
+    return $BalanceSnapshotsTable(attachedDatabase, alias);
+  }
+}
+
+class BalanceSnapshotRow extends DataClass
+    implements Insertable<BalanceSnapshotRow> {
+  final String accountId;
+  final String businessDate;
+  final int balancePaisa;
+
+  /// Highest `txn.rowid` that was included when the snapshot was taken.
+  final int maxTxnRowid;
+  final int createdAt;
+  const BalanceSnapshotRow({
+    required this.accountId,
+    required this.businessDate,
+    required this.balancePaisa,
+    required this.maxTxnRowid,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['account_id'] = Variable<String>(accountId);
+    map['business_date'] = Variable<String>(businessDate);
+    map['balance_paisa'] = Variable<int>(balancePaisa);
+    map['max_txn_rowid'] = Variable<int>(maxTxnRowid);
+    map['created_at'] = Variable<int>(createdAt);
+    return map;
+  }
+
+  BalanceSnapshotsCompanion toCompanion(bool nullToAbsent) {
+    return BalanceSnapshotsCompanion(
+      accountId: Value(accountId),
+      businessDate: Value(businessDate),
+      balancePaisa: Value(balancePaisa),
+      maxTxnRowid: Value(maxTxnRowid),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory BalanceSnapshotRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BalanceSnapshotRow(
+      accountId: serializer.fromJson<String>(json['accountId']),
+      businessDate: serializer.fromJson<String>(json['businessDate']),
+      balancePaisa: serializer.fromJson<int>(json['balancePaisa']),
+      maxTxnRowid: serializer.fromJson<int>(json['maxTxnRowid']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'accountId': serializer.toJson<String>(accountId),
+      'businessDate': serializer.toJson<String>(businessDate),
+      'balancePaisa': serializer.toJson<int>(balancePaisa),
+      'maxTxnRowid': serializer.toJson<int>(maxTxnRowid),
+      'createdAt': serializer.toJson<int>(createdAt),
+    };
+  }
+
+  BalanceSnapshotRow copyWith({
+    String? accountId,
+    String? businessDate,
+    int? balancePaisa,
+    int? maxTxnRowid,
+    int? createdAt,
+  }) => BalanceSnapshotRow(
+    accountId: accountId ?? this.accountId,
+    businessDate: businessDate ?? this.businessDate,
+    balancePaisa: balancePaisa ?? this.balancePaisa,
+    maxTxnRowid: maxTxnRowid ?? this.maxTxnRowid,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  BalanceSnapshotRow copyWithCompanion(BalanceSnapshotsCompanion data) {
+    return BalanceSnapshotRow(
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      businessDate: data.businessDate.present
+          ? data.businessDate.value
+          : this.businessDate,
+      balancePaisa: data.balancePaisa.present
+          ? data.balancePaisa.value
+          : this.balancePaisa,
+      maxTxnRowid: data.maxTxnRowid.present
+          ? data.maxTxnRowid.value
+          : this.maxTxnRowid,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BalanceSnapshotRow(')
+          ..write('accountId: $accountId, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('balancePaisa: $balancePaisa, ')
+          ..write('maxTxnRowid: $maxTxnRowid, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    accountId,
+    businessDate,
+    balancePaisa,
+    maxTxnRowid,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BalanceSnapshotRow &&
+          other.accountId == this.accountId &&
+          other.businessDate == this.businessDate &&
+          other.balancePaisa == this.balancePaisa &&
+          other.maxTxnRowid == this.maxTxnRowid &&
+          other.createdAt == this.createdAt);
+}
+
+class BalanceSnapshotsCompanion extends UpdateCompanion<BalanceSnapshotRow> {
+  final Value<String> accountId;
+  final Value<String> businessDate;
+  final Value<int> balancePaisa;
+  final Value<int> maxTxnRowid;
+  final Value<int> createdAt;
+  final Value<int> rowid;
+  const BalanceSnapshotsCompanion({
+    this.accountId = const Value.absent(),
+    this.businessDate = const Value.absent(),
+    this.balancePaisa = const Value.absent(),
+    this.maxTxnRowid = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BalanceSnapshotsCompanion.insert({
+    required String accountId,
+    required String businessDate,
+    required int balancePaisa,
+    required int maxTxnRowid,
+    required int createdAt,
+    this.rowid = const Value.absent(),
+  }) : accountId = Value(accountId),
+       businessDate = Value(businessDate),
+       balancePaisa = Value(balancePaisa),
+       maxTxnRowid = Value(maxTxnRowid),
+       createdAt = Value(createdAt);
+  static Insertable<BalanceSnapshotRow> custom({
+    Expression<String>? accountId,
+    Expression<String>? businessDate,
+    Expression<int>? balancePaisa,
+    Expression<int>? maxTxnRowid,
+    Expression<int>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (accountId != null) 'account_id': accountId,
+      if (businessDate != null) 'business_date': businessDate,
+      if (balancePaisa != null) 'balance_paisa': balancePaisa,
+      if (maxTxnRowid != null) 'max_txn_rowid': maxTxnRowid,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BalanceSnapshotsCompanion copyWith({
+    Value<String>? accountId,
+    Value<String>? businessDate,
+    Value<int>? balancePaisa,
+    Value<int>? maxTxnRowid,
+    Value<int>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return BalanceSnapshotsCompanion(
+      accountId: accountId ?? this.accountId,
+      businessDate: businessDate ?? this.businessDate,
+      balancePaisa: balancePaisa ?? this.balancePaisa,
+      maxTxnRowid: maxTxnRowid ?? this.maxTxnRowid,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (businessDate.present) {
+      map['business_date'] = Variable<String>(businessDate.value);
+    }
+    if (balancePaisa.present) {
+      map['balance_paisa'] = Variable<int>(balancePaisa.value);
+    }
+    if (maxTxnRowid.present) {
+      map['max_txn_rowid'] = Variable<int>(maxTxnRowid.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BalanceSnapshotsCompanion(')
+          ..write('accountId: $accountId, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('balancePaisa: $balancePaisa, ')
+          ..write('maxTxnRowid: $maxTxnRowid, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5525,6 +5919,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AppUsersTable appUsers = $AppUsersTable(this);
   late final $AuditLogsTable auditLogs = $AuditLogsTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
+  late final $BalanceSnapshotsTable balanceSnapshots = $BalanceSnapshotsTable(
+    this,
+  );
   late final Index idxTxnOccurred = Index(
     'idx_txn_occurred',
     'CREATE INDEX idx_txn_occurred ON txn (occurred_at)',
@@ -5573,6 +5970,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     appUsers,
     auditLogs,
     settings,
+    balanceSnapshots,
     idxTxnOccurred,
     idxTxnTypeDay,
     idxTxnStatus,
@@ -5646,6 +6044,26 @@ final class $$AccountsTableReferences
     ).filter((f) => f.accountId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_dayCloseLinesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$BalanceSnapshotsTable, List<BalanceSnapshotRow>>
+  _balanceSnapshotsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.balanceSnapshots,
+    aliasName: 'account__id__balance_snapshot__account_id',
+  );
+
+  $$BalanceSnapshotsTableProcessedTableManager get balanceSnapshotsRefs {
+    final manager = $$BalanceSnapshotsTableTableManager(
+      $_db,
+      $_db.balanceSnapshots,
+    ).filter((f) => f.accountId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _balanceSnapshotsRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -5752,6 +6170,31 @@ class $$AccountsTableFilterComposer
           }) => $$DayCloseLinesTableFilterComposer(
             $db: $db,
             $table: $db.dayCloseLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> balanceSnapshotsRefs(
+    Expression<bool> Function($$BalanceSnapshotsTableFilterComposer f) f,
+  ) {
+    final $$BalanceSnapshotsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.balanceSnapshots,
+      getReferencedColumn: (t) => t.accountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BalanceSnapshotsTableFilterComposer(
+            $db: $db,
+            $table: $db.balanceSnapshots,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -5914,6 +6357,31 @@ class $$AccountsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> balanceSnapshotsRefs<T extends Object>(
+    Expression<T> Function($$BalanceSnapshotsTableAnnotationComposer a) f,
+  ) {
+    final $$BalanceSnapshotsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.balanceSnapshots,
+      getReferencedColumn: (t) => t.accountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BalanceSnapshotsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.balanceSnapshots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$AccountsTableTableManager
@@ -5932,6 +6400,7 @@ class $$AccountsTableTableManager
           PrefetchHooks Function({
             bool ledgerEntriesRefs,
             bool dayCloseLinesRefs,
+            bool balanceSnapshotsRefs,
           })
         > {
   $$AccountsTableTableManager(_$AppDatabase db, $AccountsTable table)
@@ -6006,12 +6475,17 @@ class $$AccountsTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({ledgerEntriesRefs = false, dayCloseLinesRefs = false}) {
+              ({
+                ledgerEntriesRefs = false,
+                dayCloseLinesRefs = false,
+                balanceSnapshotsRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (ledgerEntriesRefs) db.ledgerEntries,
                     if (dayCloseLinesRefs) db.dayCloseLines,
+                    if (balanceSnapshotsRefs) db.balanceSnapshots,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -6058,6 +6532,27 @@ class $$AccountsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (balanceSnapshotsRefs)
+                        await $_getPrefetchedData<
+                          AccountRow,
+                          $AccountsTable,
+                          BalanceSnapshotRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AccountsTableReferences
+                              ._balanceSnapshotsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AccountsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).balanceSnapshotsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.accountId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -6078,7 +6573,11 @@ typedef $$AccountsTableProcessedTableManager =
       $$AccountsTableUpdateCompanionBuilder,
       (AccountRow, $$AccountsTableReferences),
       AccountRow,
-      PrefetchHooks Function({bool ledgerEntriesRefs, bool dayCloseLinesRefs})
+      PrefetchHooks Function({
+        bool ledgerEntriesRefs,
+        bool dayCloseLinesRefs,
+        bool balanceSnapshotsRefs,
+      })
     >;
 typedef $$TxnsTableCreateCompanionBuilder = TxnsCompanion Function({
   required String id,
@@ -9243,6 +9742,340 @@ typedef $$SettingsTableProcessedTableManager =
       SettingRow,
       PrefetchHooks Function()
     >;
+typedef $$BalanceSnapshotsTableCreateCompanionBuilder =
+    BalanceSnapshotsCompanion Function({
+      required String accountId,
+      required String businessDate,
+      required int balancePaisa,
+      required int maxTxnRowid,
+      required int createdAt,
+      Value<int> rowid,
+    });
+typedef $$BalanceSnapshotsTableUpdateCompanionBuilder =
+    BalanceSnapshotsCompanion Function({
+      Value<String> accountId,
+      Value<String> businessDate,
+      Value<int> balancePaisa,
+      Value<int> maxTxnRowid,
+      Value<int> createdAt,
+      Value<int> rowid,
+    });
+
+final class $$BalanceSnapshotsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $BalanceSnapshotsTable,
+          BalanceSnapshotRow
+        > {
+  $$BalanceSnapshotsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $AccountsTable _accountIdTable(_$AppDatabase db) =>
+      db.accounts.createAlias('balance_snapshot__account_id__account__id');
+
+  $$AccountsTableProcessedTableManager get accountId {
+    final $_column = $_itemColumn<String>('account_id')!;
+
+    final manager = $$AccountsTableTableManager(
+      $_db,
+      $_db.accounts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$BalanceSnapshotsTableFilterComposer
+    extends Composer<_$AppDatabase, $BalanceSnapshotsTable> {
+  $$BalanceSnapshotsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get balancePaisa => $composableBuilder(
+    column: $table.balancePaisa,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxTxnRowid => $composableBuilder(
+    column: $table.maxTxnRowid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$AccountsTableFilterComposer get accountId {
+    final $$AccountsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AccountsTableFilterComposer(
+            $db: $db,
+            $table: $db.accounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BalanceSnapshotsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BalanceSnapshotsTable> {
+  $$BalanceSnapshotsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get balancePaisa => $composableBuilder(
+    column: $table.balancePaisa,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxTxnRowid => $composableBuilder(
+    column: $table.maxTxnRowid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AccountsTableOrderingComposer get accountId {
+    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AccountsTableOrderingComposer(
+            $db: $db,
+            $table: $db.accounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BalanceSnapshotsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BalanceSnapshotsTable> {
+  $$BalanceSnapshotsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get balancePaisa => $composableBuilder(
+    column: $table.balancePaisa,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxTxnRowid => $composableBuilder(
+    column: $table.maxTxnRowid,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$AccountsTableAnnotationComposer get accountId {
+    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AccountsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.accounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BalanceSnapshotsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BalanceSnapshotsTable,
+          BalanceSnapshotRow,
+          $$BalanceSnapshotsTableFilterComposer,
+          $$BalanceSnapshotsTableOrderingComposer,
+          $$BalanceSnapshotsTableAnnotationComposer,
+          $$BalanceSnapshotsTableCreateCompanionBuilder,
+          $$BalanceSnapshotsTableUpdateCompanionBuilder,
+          (BalanceSnapshotRow, $$BalanceSnapshotsTableReferences),
+          BalanceSnapshotRow,
+          PrefetchHooks Function({bool accountId})
+        > {
+  $$BalanceSnapshotsTableTableManager(
+    _$AppDatabase db,
+    $BalanceSnapshotsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BalanceSnapshotsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BalanceSnapshotsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BalanceSnapshotsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> accountId = const Value.absent(),
+                Value<String> businessDate = const Value.absent(),
+                Value<int> balancePaisa = const Value.absent(),
+                Value<int> maxTxnRowid = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BalanceSnapshotsCompanion(
+                accountId: accountId,
+                businessDate: businessDate,
+                balancePaisa: balancePaisa,
+                maxTxnRowid: maxTxnRowid,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String accountId,
+                required String businessDate,
+                required int balancePaisa,
+                required int maxTxnRowid,
+                required int createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => BalanceSnapshotsCompanion.insert(
+                accountId: accountId,
+                businessDate: businessDate,
+                balancePaisa: balancePaisa,
+                maxTxnRowid: maxTxnRowid,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BalanceSnapshotsTable, BalanceSnapshotRow>(
+                    table,
+                  ),
+                  $$BalanceSnapshotsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({accountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (accountId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.accountId,
+                        referencedTable: $$BalanceSnapshotsTableReferences
+                            ._accountIdTable(db),
+                        referencedColumn: $$BalanceSnapshotsTableReferences
+                            ._accountIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$BalanceSnapshotsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BalanceSnapshotsTable,
+      BalanceSnapshotRow,
+      $$BalanceSnapshotsTableFilterComposer,
+      $$BalanceSnapshotsTableOrderingComposer,
+      $$BalanceSnapshotsTableAnnotationComposer,
+      $$BalanceSnapshotsTableCreateCompanionBuilder,
+      $$BalanceSnapshotsTableUpdateCompanionBuilder,
+      (BalanceSnapshotRow, $$BalanceSnapshotsTableReferences),
+      BalanceSnapshotRow,
+      PrefetchHooks Function({bool accountId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9268,4 +10101,6 @@ class $AppDatabaseManager {
       $$AuditLogsTableTableManager(_db, _db.auditLogs);
   $$SettingsTableTableManager get settings =>
       $$SettingsTableTableManager(_db, _db.settings);
+  $$BalanceSnapshotsTableTableManager get balanceSnapshots =>
+      $$BalanceSnapshotsTableTableManager(_db, _db.balanceSnapshots);
 }

@@ -316,5 +316,174 @@
   },
   "entryPaidAmount": "Amount paid (if different)",
   "entryEditTitle": "Edit entry",
-  "entryNoOperator": "Add a flexiload operator first"
+  "entryNoOperator": "Add a flexiload operator first",
+  "cdTitle": "Close the day",
+  "cdIntro": "Count your cash and wallet balances. We will show where any gap may be.",
+  "cdExpected": "Expected",
+  "cdActual": "Actual",
+  "cdBlankHint": "Leave empty if it matches",
+  "cdCashCounter": "Count notes",
+  "cdCashCounterTitle": "Cash counter",
+  "cdCounterTotal": "Total",
+  "cdCounterUse": "Use this total",
+  "cdCoins": "Coins",
+  "cdReview": "Review",
+  "cdMatches": "Matches",
+  "cdShort": "Short by {amount}",
+  "@cdShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cdExcess": "Excess of {amount}",
+  "@cdExcess": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cdReason": "Reason",
+  "cdReasonNote": "Note (optional)",
+  "cdReasonShortage": "Shortage",
+  "cdReasonExcess": "Excess",
+  "cdReasonProvider": "Provider charge",
+  "cdReasonCounting": "Counting error",
+  "cdReasonTolerance": "Small difference",
+  "cdReasonOther": "Other",
+  "cdFindGap": "Where could it be?",
+  "cdAddMissing": "Add a missing entry",
+  "cdClose": "Close the day",
+  "cdClosedOk": "Day closed",
+  "cdTolerance": "Differences up to {amount} are written off automatically",
+  "@cdTolerance": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cdMissingReason": "Choose a reason for each difference",
+  "cdAlreadyClosed": "This day is already closed",
+  "cdFailed": "Could not close the day. Please try again.",
+  "cdReopen": "Reopen",
+  "cdReopenTitle": "Reopen this day?",
+  "cdReopenBody": "Adjustments from the close will be cancelled. Give a reason.",
+  "cdReopened": "Day reopened",
+  "cdLaterClosed": "Only the most recent closed day can be reopened",
+  "cdRecentDays": "Recent days",
+  "cdNoDays": "No days closed yet",
+  "cdStatusClosed": "Closed",
+  "cdStatusReopened": "Reopened",
+  "cdStatusOpen": "Open",
+  "cdPickDay": "Which day?",
+  "cdYesterdayOpen": "Yesterday's accounts are not closed",
+  "cdDifference": "Difference {amount}",
+  "@cdDifference": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "sugSameSame": "An entry of {amount} is the same size as the gap. A similar entry may be missing.",
+  "@sugSameSame": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "sugSameOpposite": "An entry of {amount} equals the gap. It may be recorded twice or may not have happened.",
+  "@sugSameOpposite": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "sugFlipped": "The {amount} entry may be recorded in the wrong direction (in vs out).",
+  "@sugFlipped": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "sugEntryDouble": "An entry of {amount} is double the gap. The amount may be typed wrong.",
+  "@sugEntryDouble": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "sugGapDouble": "The gap is double the entry of {amount}. It may have been counted twice.",
+  "@sugGapDouble": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "sugDuplicate": "Two entries of {amount} were saved within minutes. One may be a duplicate.",
+  "@sugDuplicate": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "sugTranspose": "{amount} may have been typed instead of {alt} (digits swapped).",
+  "@sugTranspose": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "alt": {
+        "type": "String"
+      }
+    }
+  },
+  "sugCross": "{other} is off by the opposite amount. The entry may be on the wrong wallet.",
+  "@sugCross": {
+    "placeholders": {
+      "other": {
+        "type": "String"
+      }
+    }
+  },
+  "sumTitle": "Daily summary",
+  "sumEntries": "Entries",
+  "sumCashInVolume": "Cash in total",
+  "sumCashOutVolume": "Cash out total",
+  "sumCommission": "Commission",
+  "sumMargin": "Flexiload margin",
+  "sumExpenses": "Expenses",
+  "sumNet": "Net profit",
+  "sumVariance": "Difference",
+  "sumNotClosed": "Not closed yet",
+  "sumOpening": "Opening",
+  "sumIn": "In",
+  "sumOut": "Out",
+  "sumShareImage": "Share image",
+  "sumSharePdf": "Share PDF",
+  "sumShareFailed": "Could not share the summary",
+  "notifCloseTitle": "Time to close the day",
+  "notifCloseBody": "Count your cash and wallets to close today's accounts.",
+  "notifLowTitle": "Low balance",
+  "notifLowBody": "{account} is running low.",
+  "@notifLowBody": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsReminder": "Day-close reminder",
+  "settingsReminderTime": "Reminder time",
+  "settingsTolerance": "Ignore differences up to",
+  "entryDayClosed": "This day is closed. Reopen it from Close day to add entries."
 }

@@ -17,6 +17,9 @@ class AppPreferences {
     this.maskBalances = false,
     this.largeAmountTaka = 50000,
     this.rememberCustomers = false,
+    this.closeReminderEnabled = true,
+    this.closeReminderHour = 21,
+    this.varianceToleranceTaka = 0,
   });
 
   final String languageCode;
@@ -36,6 +39,15 @@ class AppPreferences {
   /// Opt-in: remember customer numbers/names and suggest them.
   final bool rememberCustomers;
 
+  /// Daily local notification asking to close the day.
+  final bool closeReminderEnabled;
+
+  /// Hour (Dhaka, 0-23) of the reminder.
+  final int closeReminderHour;
+
+  /// Day-close differences up to this many taka are written off silently.
+  final int varianceToleranceTaka;
+
   Locale get locale => Locale(languageCode);
 
   DigitFormatter get digits => DigitFormatter(
@@ -52,6 +64,9 @@ class AppPreferences {
     bool? maskBalances,
     int? largeAmountTaka,
     bool? rememberCustomers,
+    bool? closeReminderEnabled,
+    int? closeReminderHour,
+    int? varianceToleranceTaka,
   }) => AppPreferences(
     languageCode: languageCode ?? this.languageCode,
     digitStyle: digitStyle ?? this.digitStyle,
@@ -68,6 +83,9 @@ class AppPreferences {
   static const _kMask = 'pref_mask_balances';
   static const _kLarge = 'pref_large_amount';
   static const _kRemember = 'pref_remember_customers';
+  static const _kReminder = 'pref_close_reminder';
+  static const _kReminderHour = 'pref_close_reminder_hour';
+  static const _kTolerance = 'pref_variance_tolerance';
 
   factory AppPreferences.load(SharedPreferences prefs) {
     const d = AppPreferences();
@@ -83,6 +101,10 @@ class AppPreferences {
       maskBalances: prefs.getBool(_kMask) ?? d.maskBalances,
       largeAmountTaka: prefs.getInt(_kLarge) ?? d.largeAmountTaka,
       rememberCustomers: prefs.getBool(_kRemember) ?? d.rememberCustomers,
+      closeReminderEnabled: prefs.getBool(_kReminder) ?? d.closeReminderEnabled,
+      closeReminderHour: prefs.getInt(_kReminderHour) ?? d.closeReminderHour,
+      varianceToleranceTaka:
+          prefs.getInt(_kTolerance) ?? d.varianceToleranceTaka,
     );
   }
 
@@ -95,6 +117,9 @@ class AppPreferences {
     await prefs.setBool(_kMask, maskBalances);
     await prefs.setInt(_kLarge, largeAmountTaka);
     await prefs.setBool(_kRemember, rememberCustomers);
+    await prefs.setBool(_kReminder, closeReminderEnabled);
+    await prefs.setInt(_kReminderHour, closeReminderHour);
+    await prefs.setInt(_kTolerance, varianceToleranceTaka);
   }
 
   static T? _byName<T extends Enum>(List<T> values, String? name) {

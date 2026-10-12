@@ -51,4 +51,22 @@ class BusinessCalendar {
         : boundary(shifted.year, shifted.month + 1);
     return (start: start, end: end);
   }
+
+  /// UTC `[start, end)` of the business day named `YYYY-MM-DD`.
+  ({DateTime start, DateTime end}) rangeOfDate(String businessDate) {
+    final parts = businessDate.split('-').map(int.parse).toList();
+    final start = DateTime.utc(
+      parts[0],
+      parts[1],
+      parts[2],
+      rolloverHour,
+    ).subtract(dhakaOffset);
+    return (start: start, end: start.add(const Duration(days: 1)));
+  }
+
+  /// The business date before [businessDate].
+  String previousDate(String businessDate) {
+    final r = rangeOfDate(businessDate);
+    return businessDateOf(r.start.subtract(const Duration(hours: 12)));
+  }
 }

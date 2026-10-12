@@ -9,7 +9,7 @@ void main() {
     final db = AppDatabase.memory();
     addTearDown(db.close);
     final info = await db.info();
-    expect(info.userVersion, 2);
+    expect(info.userVersion, 3);
   });
 
   test('database key is 256-bit hex and stable across calls', () async {

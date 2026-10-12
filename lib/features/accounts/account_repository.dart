@@ -135,21 +135,47 @@ class AccountRepository {
     return query.watch().map((rows) => rows.map(fromRow).toList());
   }
 
+  /// Balance = latest still-valid snapshot (written at day close) plus the
+  /// entries of transactions inserted after it. A snapshot is ignored when
+  /// any transaction older than it was voided since, so the result always
+  /// equals a from-scratch recompute (which the integrity checker verifies).
   static const _balanceSql = '''
+WITH ranked AS (
+  SELECT s.*, ROW_NUMBER() OVER (
+           PARTITION BY s.account_id
+           ORDER BY s.created_at DESC, s.max_txn_rowid DESC,
+                    s.business_date DESC) AS rn
+  FROM balance_snapshot s
+),
+snap AS (
+  SELECT r.account_id, r.balance_paisa, r.max_txn_rowid, r.created_at
+  FROM ranked r
+  WHERE r.rn = 1
+    AND NOT EXISTS (
+      SELECT 1 FROM txn t
+      WHERE t.voided_at >= r.created_at AND t.rowid <= r.max_txn_rowid)
+)
 SELECT a.id AS account_id,
-       a.opening_paisa + COALESCE((
+       COALESCE(snap.balance_paisa, a.opening_paisa) + COALESCE((
          SELECT SUM(le.delta_paisa)
          FROM ledger_entry le
          JOIN txn t ON t.id = le.txn_id
          WHERE le.account_id = a.id AND t.status = 'active'
+           AND (snap.account_id IS NULL OR t.rowid > snap.max_txn_rowid)
        ), 0) AS balance
-FROM account a''';
+FROM account a
+LEFT JOIN snap ON snap.account_id = a.id''';
 
   /// Live balances of every account, re-emitted on any ledger change.
   Stream<Map<String, Money>> watchBalances() => _db
       .customSelect(
         _balanceSql,
-        readsFrom: {_db.accounts, _db.ledgerEntries, _db.txns},
+        readsFrom: {
+          _db.accounts,
+          _db.ledgerEntries,
+          _db.txns,
+          _db.balanceSnapshots,
+        },
       )
       .watch()
       .map(_toMap);
@@ -158,7 +184,12 @@ FROM account a''';
     await _db
         .customSelect(
           _balanceSql,
-          readsFrom: {_db.accounts, _db.ledgerEntries, _db.txns},
+          readsFrom: {
+            _db.accounts,
+            _db.ledgerEntries,
+            _db.txns,
+            _db.balanceSnapshots,
+          },
         )
         .get(),
   );

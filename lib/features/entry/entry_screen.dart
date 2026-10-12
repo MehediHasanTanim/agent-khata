@@ -289,19 +289,35 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
             .setString(_lastWalletKey, wallet.id);
       }
       await HapticFeedback.mediumImpact();
+
+      // Warn (once) when this entry takes the source below its threshold.
+      final threshold = from.lowAlert;
+      final before = balances[from.id];
+      if (threshold != null && before != null) {
+        final after = before - sourceOutflow;
+        if (before > threshold && after <= threshold) {
+          await ref
+              .read(notificationServiceProvider)
+              .showLowBalance(
+                id: from.id.hashCode & 0xffff,
+                title: l10n.notifLowTitle,
+                body: l10n.notifLowBody(from.label),
+              );
+        }
+      }
       if (mounted) Navigator.of(context).pop(id);
     } on PostingException {
-      _failed(l10n);
+      _failed(l10n.entrySaveFailed);
     } on DayLockedException {
-      _failed(l10n);
+      _failed(l10n.entryDayClosed);
     }
   }
 
-  void _failed(AppLocalizations l10n) {
+  void _failed(String message) {
     if (!mounted) return;
     setState(() => _saving = false);
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(l10n.entrySaveFailed)));
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _addCategory() async {

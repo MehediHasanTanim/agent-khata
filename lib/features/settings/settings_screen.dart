@@ -143,6 +143,46 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (v) =>
                 controller.update((p) => p.copyWith(rememberCustomers: v)),
           ),
+          _Header(l10n.settingsTolerance),
+          RadioGroup<int>(
+            groupValue: prefs.varianceToleranceTaka,
+            onChanged: (v) => controller.update(
+              (p) => p.copyWith(varianceToleranceTaka: v ?? 0),
+            ),
+            child: Column(
+              children: [
+                for (final t in const [0, 5, 10, 20])
+                  RadioListTile<int>(
+                    value: t,
+                    title: Text('৳ ${digits.localize('$t')}'),
+                  ),
+              ],
+            ),
+          ),
+          SwitchListTile(
+            value: prefs.closeReminderEnabled,
+            title: Text(l10n.settingsReminder),
+            onChanged: (v) =>
+                controller.update((p) => p.copyWith(closeReminderEnabled: v)),
+          ),
+          if (prefs.closeReminderEnabled)
+            RadioGroup<int>(
+              groupValue: prefs.closeReminderHour,
+              onChanged: (v) => controller.update(
+                (p) => p.copyWith(closeReminderHour: v ?? 21),
+              ),
+              child: Column(
+                children: [
+                  for (final h in const [20, 21, 22, 23])
+                    RadioListTile<int>(
+                      value: h,
+                      title: Text(
+                        '${digits.localize('$h')}:${digits.localize('00')}',
+                      ),
+                    ),
+                ],
+              ),
+            ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.notifications_active_outlined),

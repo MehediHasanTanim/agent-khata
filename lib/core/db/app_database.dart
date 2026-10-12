@@ -9,6 +9,7 @@ part 'app_database.g.dart';
 /// Schema history:
 /// - v1: empty skeleton (Sprint 0).
 /// - v2: ledger schema and integrity triggers (Sprint 1).
+/// - v3: balance snapshots written at day close (Sprint 4).
 @DriftDatabase(
   tables: [
     Accounts,
@@ -22,6 +23,7 @@ part 'app_database.g.dart';
     AppUsers,
     AuditLogs,
     Settings,
+    BalanceSnapshots,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -31,7 +33,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -43,6 +45,8 @@ class AppDatabase extends _$AppDatabase {
       if (from < 2) {
         await m.createAll();
         await _createIntegrityTriggers();
+      } else if (from < 3) {
+        await m.createTable(balanceSnapshots);
       }
     },
     beforeOpen: (details) async {

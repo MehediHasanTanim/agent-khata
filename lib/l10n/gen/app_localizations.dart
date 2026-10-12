@@ -1201,6 +1201,456 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add a flexiload operator first'**
   String get entryNoOperator;
+
+  /// No description provided for @cdTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the day'**
+  String get cdTitle;
+
+  /// No description provided for @cdIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Count your cash and wallet balances. We will show where any gap may be.'**
+  String get cdIntro;
+
+  /// No description provided for @cdExpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected'**
+  String get cdExpected;
+
+  /// No description provided for @cdActual.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual'**
+  String get cdActual;
+
+  /// No description provided for @cdBlankHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty if it matches'**
+  String get cdBlankHint;
+
+  /// No description provided for @cdCashCounter.
+  ///
+  /// In en, this message translates to:
+  /// **'Count notes'**
+  String get cdCashCounter;
+
+  /// No description provided for @cdCashCounterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash counter'**
+  String get cdCashCounterTitle;
+
+  /// No description provided for @cdCounterTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get cdCounterTotal;
+
+  /// No description provided for @cdCounterUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this total'**
+  String get cdCounterUse;
+
+  /// No description provided for @cdCoins.
+  ///
+  /// In en, this message translates to:
+  /// **'Coins'**
+  String get cdCoins;
+
+  /// No description provided for @cdReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get cdReview;
+
+  /// No description provided for @cdMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Matches'**
+  String get cdMatches;
+
+  /// No description provided for @cdShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Short by {amount}'**
+  String cdShort(String amount);
+
+  /// No description provided for @cdExcess.
+  ///
+  /// In en, this message translates to:
+  /// **'Excess of {amount}'**
+  String cdExcess(String amount);
+
+  /// No description provided for @cdReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get cdReason;
+
+  /// No description provided for @cdReasonNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get cdReasonNote;
+
+  /// No description provided for @cdReasonShortage.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortage'**
+  String get cdReasonShortage;
+
+  /// No description provided for @cdReasonExcess.
+  ///
+  /// In en, this message translates to:
+  /// **'Excess'**
+  String get cdReasonExcess;
+
+  /// No description provided for @cdReasonProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider charge'**
+  String get cdReasonProvider;
+
+  /// No description provided for @cdReasonCounting.
+  ///
+  /// In en, this message translates to:
+  /// **'Counting error'**
+  String get cdReasonCounting;
+
+  /// No description provided for @cdReasonTolerance.
+  ///
+  /// In en, this message translates to:
+  /// **'Small difference'**
+  String get cdReasonTolerance;
+
+  /// No description provided for @cdReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get cdReasonOther;
+
+  /// No description provided for @cdFindGap.
+  ///
+  /// In en, this message translates to:
+  /// **'Where could it be?'**
+  String get cdFindGap;
+
+  /// No description provided for @cdAddMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a missing entry'**
+  String get cdAddMissing;
+
+  /// No description provided for @cdClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the day'**
+  String get cdClose;
+
+  /// No description provided for @cdClosedOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Day closed'**
+  String get cdClosedOk;
+
+  /// No description provided for @cdTolerance.
+  ///
+  /// In en, this message translates to:
+  /// **'Differences up to {amount} are written off automatically'**
+  String cdTolerance(String amount);
+
+  /// No description provided for @cdMissingReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a reason for each difference'**
+  String get cdMissingReason;
+
+  /// No description provided for @cdAlreadyClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'This day is already closed'**
+  String get cdAlreadyClosed;
+
+  /// No description provided for @cdFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not close the day. Please try again.'**
+  String get cdFailed;
+
+  /// No description provided for @cdReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get cdReopen;
+
+  /// No description provided for @cdReopenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen this day?'**
+  String get cdReopenTitle;
+
+  /// No description provided for @cdReopenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjustments from the close will be cancelled. Give a reason.'**
+  String get cdReopenBody;
+
+  /// No description provided for @cdReopened.
+  ///
+  /// In en, this message translates to:
+  /// **'Day reopened'**
+  String get cdReopened;
+
+  /// No description provided for @cdLaterClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the most recent closed day can be reopened'**
+  String get cdLaterClosed;
+
+  /// No description provided for @cdRecentDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent days'**
+  String get cdRecentDays;
+
+  /// No description provided for @cdNoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'No days closed yet'**
+  String get cdNoDays;
+
+  /// No description provided for @cdStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get cdStatusClosed;
+
+  /// No description provided for @cdStatusReopened.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopened'**
+  String get cdStatusReopened;
+
+  /// No description provided for @cdStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get cdStatusOpen;
+
+  /// No description provided for @cdPickDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Which day?'**
+  String get cdPickDay;
+
+  /// No description provided for @cdYesterdayOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday\'s accounts are not closed'**
+  String get cdYesterdayOpen;
+
+  /// No description provided for @cdDifference.
+  ///
+  /// In en, this message translates to:
+  /// **'Difference {amount}'**
+  String cdDifference(String amount);
+
+  /// No description provided for @sugSameSame.
+  ///
+  /// In en, this message translates to:
+  /// **'An entry of {amount} is the same size as the gap. A similar entry may be missing.'**
+  String sugSameSame(String amount);
+
+  /// No description provided for @sugSameOpposite.
+  ///
+  /// In en, this message translates to:
+  /// **'An entry of {amount} equals the gap. It may be recorded twice or may not have happened.'**
+  String sugSameOpposite(String amount);
+
+  /// No description provided for @sugFlipped.
+  ///
+  /// In en, this message translates to:
+  /// **'The {amount} entry may be recorded in the wrong direction (in vs out).'**
+  String sugFlipped(String amount);
+
+  /// No description provided for @sugEntryDouble.
+  ///
+  /// In en, this message translates to:
+  /// **'An entry of {amount} is double the gap. The amount may be typed wrong.'**
+  String sugEntryDouble(String amount);
+
+  /// No description provided for @sugGapDouble.
+  ///
+  /// In en, this message translates to:
+  /// **'The gap is double the entry of {amount}. It may have been counted twice.'**
+  String sugGapDouble(String amount);
+
+  /// No description provided for @sugDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Two entries of {amount} were saved within minutes. One may be a duplicate.'**
+  String sugDuplicate(String amount);
+
+  /// No description provided for @sugTranspose.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} may have been typed instead of {alt} (digits swapped).'**
+  String sugTranspose(String amount, String alt);
+
+  /// No description provided for @sugCross.
+  ///
+  /// In en, this message translates to:
+  /// **'{other} is off by the opposite amount. The entry may be on the wrong wallet.'**
+  String sugCross(String other);
+
+  /// No description provided for @sumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily summary'**
+  String get sumTitle;
+
+  /// No description provided for @sumEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get sumEntries;
+
+  /// No description provided for @sumCashInVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in total'**
+  String get sumCashInVolume;
+
+  /// No description provided for @sumCashOutVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash out total'**
+  String get sumCashOutVolume;
+
+  /// No description provided for @sumCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission'**
+  String get sumCommission;
+
+  /// No description provided for @sumMargin.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexiload margin'**
+  String get sumMargin;
+
+  /// No description provided for @sumExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get sumExpenses;
+
+  /// No description provided for @sumNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Net profit'**
+  String get sumNet;
+
+  /// No description provided for @sumVariance.
+  ///
+  /// In en, this message translates to:
+  /// **'Difference'**
+  String get sumVariance;
+
+  /// No description provided for @sumNotClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not closed yet'**
+  String get sumNotClosed;
+
+  /// No description provided for @sumOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening'**
+  String get sumOpening;
+
+  /// No description provided for @sumIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In'**
+  String get sumIn;
+
+  /// No description provided for @sumOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Out'**
+  String get sumOut;
+
+  /// No description provided for @sumShareImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Share image'**
+  String get sumShareImage;
+
+  /// No description provided for @sumSharePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Share PDF'**
+  String get sumSharePdf;
+
+  /// No description provided for @sumShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not share the summary'**
+  String get sumShareFailed;
+
+  /// No description provided for @notifCloseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to close the day'**
+  String get notifCloseTitle;
+
+  /// No description provided for @notifCloseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Count your cash and wallets to close today\'s accounts.'**
+  String get notifCloseBody;
+
+  /// No description provided for @notifLowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Low balance'**
+  String get notifLowTitle;
+
+  /// No description provided for @notifLowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{account} is running low.'**
+  String notifLowBody(String account);
+
+  /// No description provided for @settingsReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Day-close reminder'**
+  String get settingsReminder;
+
+  /// No description provided for @settingsReminderTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder time'**
+  String get settingsReminderTime;
+
+  /// No description provided for @settingsTolerance.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore differences up to'**
+  String get settingsTolerance;
+
+  /// No description provided for @entryDayClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'This day is closed. Reopen it from Close day to add entries.'**
+  String get entryDayClosed;
 }
 
 class _AppLocalizationsDelegate

@@ -605,4 +605,259 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get entryNoOperator => 'Add a flexiload operator first';
+
+  @override
+  String get cdTitle => 'Close the day';
+
+  @override
+  String get cdIntro =>
+      'Count your cash and wallet balances. We will show where any gap may be.';
+
+  @override
+  String get cdExpected => 'Expected';
+
+  @override
+  String get cdActual => 'Actual';
+
+  @override
+  String get cdBlankHint => 'Leave empty if it matches';
+
+  @override
+  String get cdCashCounter => 'Count notes';
+
+  @override
+  String get cdCashCounterTitle => 'Cash counter';
+
+  @override
+  String get cdCounterTotal => 'Total';
+
+  @override
+  String get cdCounterUse => 'Use this total';
+
+  @override
+  String get cdCoins => 'Coins';
+
+  @override
+  String get cdReview => 'Review';
+
+  @override
+  String get cdMatches => 'Matches';
+
+  @override
+  String cdShort(String amount) {
+    return 'Short by $amount';
+  }
+
+  @override
+  String cdExcess(String amount) {
+    return 'Excess of $amount';
+  }
+
+  @override
+  String get cdReason => 'Reason';
+
+  @override
+  String get cdReasonNote => 'Note (optional)';
+
+  @override
+  String get cdReasonShortage => 'Shortage';
+
+  @override
+  String get cdReasonExcess => 'Excess';
+
+  @override
+  String get cdReasonProvider => 'Provider charge';
+
+  @override
+  String get cdReasonCounting => 'Counting error';
+
+  @override
+  String get cdReasonTolerance => 'Small difference';
+
+  @override
+  String get cdReasonOther => 'Other';
+
+  @override
+  String get cdFindGap => 'Where could it be?';
+
+  @override
+  String get cdAddMissing => 'Add a missing entry';
+
+  @override
+  String get cdClose => 'Close the day';
+
+  @override
+  String get cdClosedOk => 'Day closed';
+
+  @override
+  String cdTolerance(String amount) {
+    return 'Differences up to $amount are written off automatically';
+  }
+
+  @override
+  String get cdMissingReason => 'Choose a reason for each difference';
+
+  @override
+  String get cdAlreadyClosed => 'This day is already closed';
+
+  @override
+  String get cdFailed => 'Could not close the day. Please try again.';
+
+  @override
+  String get cdReopen => 'Reopen';
+
+  @override
+  String get cdReopenTitle => 'Reopen this day?';
+
+  @override
+  String get cdReopenBody =>
+      'Adjustments from the close will be cancelled. Give a reason.';
+
+  @override
+  String get cdReopened => 'Day reopened';
+
+  @override
+  String get cdLaterClosed => 'Only the most recent closed day can be reopened';
+
+  @override
+  String get cdRecentDays => 'Recent days';
+
+  @override
+  String get cdNoDays => 'No days closed yet';
+
+  @override
+  String get cdStatusClosed => 'Closed';
+
+  @override
+  String get cdStatusReopened => 'Reopened';
+
+  @override
+  String get cdStatusOpen => 'Open';
+
+  @override
+  String get cdPickDay => 'Which day?';
+
+  @override
+  String get cdYesterdayOpen => 'Yesterday\'s accounts are not closed';
+
+  @override
+  String cdDifference(String amount) {
+    return 'Difference $amount';
+  }
+
+  @override
+  String sugSameSame(String amount) {
+    return 'An entry of $amount is the same size as the gap. A similar entry may be missing.';
+  }
+
+  @override
+  String sugSameOpposite(String amount) {
+    return 'An entry of $amount equals the gap. It may be recorded twice or may not have happened.';
+  }
+
+  @override
+  String sugFlipped(String amount) {
+    return 'The $amount entry may be recorded in the wrong direction (in vs out).';
+  }
+
+  @override
+  String sugEntryDouble(String amount) {
+    return 'An entry of $amount is double the gap. The amount may be typed wrong.';
+  }
+
+  @override
+  String sugGapDouble(String amount) {
+    return 'The gap is double the entry of $amount. It may have been counted twice.';
+  }
+
+  @override
+  String sugDuplicate(String amount) {
+    return 'Two entries of $amount were saved within minutes. One may be a duplicate.';
+  }
+
+  @override
+  String sugTranspose(String amount, String alt) {
+    return '$amount may have been typed instead of $alt (digits swapped).';
+  }
+
+  @override
+  String sugCross(String other) {
+    return '$other is off by the opposite amount. The entry may be on the wrong wallet.';
+  }
+
+  @override
+  String get sumTitle => 'Daily summary';
+
+  @override
+  String get sumEntries => 'Entries';
+
+  @override
+  String get sumCashInVolume => 'Cash in total';
+
+  @override
+  String get sumCashOutVolume => 'Cash out total';
+
+  @override
+  String get sumCommission => 'Commission';
+
+  @override
+  String get sumMargin => 'Flexiload margin';
+
+  @override
+  String get sumExpenses => 'Expenses';
+
+  @override
+  String get sumNet => 'Net profit';
+
+  @override
+  String get sumVariance => 'Difference';
+
+  @override
+  String get sumNotClosed => 'Not closed yet';
+
+  @override
+  String get sumOpening => 'Opening';
+
+  @override
+  String get sumIn => 'In';
+
+  @override
+  String get sumOut => 'Out';
+
+  @override
+  String get sumShareImage => 'Share image';
+
+  @override
+  String get sumSharePdf => 'Share PDF';
+
+  @override
+  String get sumShareFailed => 'Could not share the summary';
+
+  @override
+  String get notifCloseTitle => 'Time to close the day';
+
+  @override
+  String get notifCloseBody =>
+      'Count your cash and wallets to close today\'s accounts.';
+
+  @override
+  String get notifLowTitle => 'Low balance';
+
+  @override
+  String notifLowBody(String account) {
+    return '$account is running low.';
+  }
+
+  @override
+  String get settingsReminder => 'Day-close reminder';
+
+  @override
+  String get settingsReminderTime => 'Reminder time';
+
+  @override
+  String get settingsTolerance => 'Ignore differences up to';
+
+  @override
+  String get entryDayClosed =>
+      'This day is closed. Reopen it from Close day to add entries.';
 }

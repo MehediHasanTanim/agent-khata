@@ -215,3 +215,22 @@ class Settings extends Table {
   @override
   Set<Column> get primaryKey => {key};
 }
+
+/// Balance of an account as of a day close (S4-09). Live balance =
+/// the latest valid snapshot plus entries of transactions inserted after it.
+@DataClassName('BalanceSnapshotRow')
+class BalanceSnapshots extends Table {
+  @override
+  String get tableName => 'balance_snapshot';
+
+  TextColumn get accountId => text().references(Accounts, #id)();
+  TextColumn get businessDate => text()();
+  IntColumn get balancePaisa => integer()();
+
+  /// Highest `txn.rowid` that was included when the snapshot was taken.
+  IntColumn get maxTxnRowid => integer()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {accountId, businessDate};
+}

@@ -7,7 +7,7 @@ Specs live in [`docs/`](docs): feature spec, technical design, sprint plan.
 
 ## Status
 
-Sprints 0 (foundations), 1 (ledger core), 2 (onboarding, home, fast entry) and 3 (history, edit/void, flexiload, ledgers) — see
+Sprints 0-4 (foundations, ledger core, onboarding/home/entry, history/edit/flexiload/ledgers, day close) — see
 `docs/plan/agent-cashbook-sprint-plan.md`.
 
 | Task | State |
@@ -79,6 +79,27 @@ rollover hour (default 4) and are computed when the home screen builds.
 | S3-10 low-balance thresholds + home banner | done (local notification deferred to S4-10 with reminders) |
 | S3-11 customer quick-fill (opt-in, stored only on device) | done |
 | S3-12 expense list = History filtered to Expense, with totals | done |
+
+### Sprint 4 (day close and reconciliation)
+
+| Task | State |
+|---|---|
+| S4-01 expected balances per account for a business date | done |
+| S4-02 gap heuristics (same amount, flipped, double/half, duplicates, digit swap, cross-account) | done; "unrecorded known items" deferred |
+| S4-03 counting step + cash denomination counter | done |
+| S4-04 variance, ranked top-3 hints, add-missing-entry, tolerance | done |
+| S4-05 adjustment on close with reason code | done |
+| S4-06 atomic, idempotent close; locks the day; writes snapshots | done |
+| S4-07 lock enforcement + owner reopen (latest closed day only, reason, audit) | done |
+| S4-08 daily summary + share as image / PDF | done |
+| S4-09 balance snapshots (live balance = snapshot + later entries, verified by integrity check) | done |
+| S4-10 close-day reminder (local notification) + "yesterday not closed" banner; low-balance notification | done |
+
+Close and reopen: a reopen voids the close adjustments; closing again
+recomputes them from the new counts, so close, reopen and re-close with the
+same counts gives identical balances (covered by tests). Reopening is
+limited to the most recent closed day. There is a single owner for now, so
+"owner-only" is not yet enforced by roles (Phase 2 staff accounts).
 
 ## Develop
 

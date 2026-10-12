@@ -1,29 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../closeday/close_day_tab.dart';
 import '../history/history_screen.dart';
 import '../home/home_screen.dart';
 import '../settings/settings_screen.dart';
 
-/// Bottom navigation: Home, History, Close day, Reports, Settings. Only Home
-/// and Settings exist yet; the others are placeholders for later sprints.
-class AppShell extends StatefulWidget {
+/// Bottom navigation: Home, History, Close day, Reports, Settings. Reports
+/// is a placeholder until Phase 2.
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
 
   @override
-  State<AppShell> createState() => _AppShellState();
+  ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends ConsumerState<AppShell> {
   int _index = 0;
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(_syncReminder);
+  }
+
+  /// Keeps the daily close-day notification in step with the settings.
+  Future<void> _syncReminder() async {
+    final prefs = ref.read(preferencesProvider);
+    final service = ref.read(notificationServiceProvider);
+    if (!prefs.closeReminderEnabled) {
+      await service.cancelCloseReminder();
+      return;
+    }
+    final l10n = lookupAppLocalizations(prefs.locale);
+    await service.requestPermission();
+    await service.scheduleCloseReminder(
+      hour: prefs.closeReminderHour,
+      title: l10n.notifCloseTitle,
+      body: l10n.notifCloseBody,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen(preferencesProvider, (prev, next) {
+      if (prev == null ||
+          prev.closeReminderEnabled != next.closeReminderEnabled ||
+          prev.closeReminderHour != next.closeReminderHour ||
+          prev.languageCode != next.languageCode) {
+        _syncReminder();
+      }
+    });
     final l10n = AppLocalizations.of(context);
     final pages = <Widget>[
       const HomeScreen(),
       const HistoryScreen(),
-      _Placeholder(title: l10n.navCloseDay),
+      const CloseDayTab(),
       _Placeholder(title: l10n.navReports),
       const SettingsScreen(),
     ];

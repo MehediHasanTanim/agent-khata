@@ -1,7 +1,9 @@
+import 'package:drift/drift.dart' show Variable;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/accounts/account_repository.dart';
+import '../features/closeday/day_close_service.dart';
 import '../features/commission/commission_rule.dart';
 import '../features/commission/commission_rule_repository.dart';
 import '../features/customers/customer_repository.dart';
@@ -16,9 +18,11 @@ import 'db/db_settings.dart';
 import 'ledger/account.dart';
 import 'ledger/strategies.dart';
 import 'money/money.dart';
+import 'notifications/notification_service.dart';
 import 'security/key_value_store.dart';
 import 'security/pin_service.dart';
 import 'settings/app_preferences.dart';
+import 'utils/business_calendar.dart';
 import 'utils/uuid_v7.dart';
 
 /// Overridden in `bootstrap()` once SharedPreferences has loaded.
@@ -174,3 +178,48 @@ final customerRepositoryProvider = Provider<CustomerRepository>(
     ref.watch(idGeneratorProvider),
   ),
 );
+
+final dayCloseServiceProvider = Provider<DayCloseService>(
+  (ref) => DayCloseService(
+    db: ref.watch(databaseProvider),
+    txns: ref.watch(transactionRepositoryProvider),
+    audit: ref.watch(auditLoggerProvider),
+    ids: ref.watch(idGeneratorProvider),
+  ),
+);
+
+final notificationServiceProvider = Provider<NotificationService>(
+  (ref) => NotificationService(),
+);
+
+/// Business date of yesterday if it has entries but was not closed.
+final unclosedYesterdayProvider = FutureProvider.autoDispose<String?>((
+  ref,
+) async {
+  // Re-check whenever the ledger changes.
+  ref.watch(balancesProvider);
+  final db = ref.watch(databaseProvider);
+  final hour = await ref.watch(dayRolloverHourProvider.future);
+  final cal = BusinessCalendar(rolloverHour: hour);
+  final today = cal.businessDateOf(DateTime.now().toUtc());
+  final yesterday = cal.previousDate(today);
+  final range = cal.rangeOfDate(yesterday);
+
+  final closed = await (db.select(
+    db.dayCloses,
+  )..where((t) => t.businessDate.equals(yesterday))).getSingleOrNull();
+  if (closed != null && closed.status == 'closed') return null;
+
+  final any = await db
+      .customSelect(
+        "SELECT 1 FROM txn WHERE status = 'active' AND type <> 'adjustment' "
+        'AND occurred_at >= ? AND occurred_at < ? LIMIT 1',
+        variables: [
+          Variable.withInt(range.start.millisecondsSinceEpoch),
+          Variable.withInt(range.end.millisecondsSinceEpoch),
+        ],
+        readsFrom: {db.txns},
+      )
+      .get();
+  return any.isEmpty ? null : yesterday;
+});

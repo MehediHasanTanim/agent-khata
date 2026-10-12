@@ -65,11 +65,14 @@ class HistoryQueries {
     _db.accounts,
     _db.ledgerEntries,
     _db.customers,
+    _db.dayCloses,
   };
 
   static const _selectSql = '''
 SELECT t.id, t.type, t.amount_paisa, t.charge_paisa, t.commission_paisa,
-       t.occurred_at, t.status, t.day_close_id, t.customer_number,
+       t.occurred_at, t.status, t.customer_number,
+       (SELECT d.status FROM day_close d WHERE d.id = t.day_close_id)
+         AS day_status,
        t.reference, t.note, t.void_reason, t.replaces_txn_id,
        c.name AS customer_name,
        (SELECT a.label FROM ledger_entry le
@@ -140,7 +143,7 @@ ${built.where}''',
       isUtc: true,
     ),
     isVoid: r.read<String>('status') == 'void',
-    isLocked: r.readNullable<String>('day_close_id') != null,
+    isLocked: r.readNullable<String>('day_status') == 'closed',
     accountLabel: r.readNullable<String>('account_label'),
     customerNumber: r.readNullable<String>('customer_number'),
     customerName: r.readNullable<String>('customer_name'),

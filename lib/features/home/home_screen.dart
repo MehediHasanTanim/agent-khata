@@ -11,6 +11,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/business_calendar.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../accounts/account_ledger_screen.dart';
+import '../closeday/close_day_screen.dart';
 import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
 import '../entry/entry_screen.dart';
 import '../transactions/transaction_queries.dart';
@@ -149,6 +150,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
+          if (ref.watch(unclosedYesterdayProvider).value case final y?)
+            Container(
+              margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+              decoration: BoxDecoration(
+                color: tokens.warning.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: tokens.warning),
+              ),
+              child: ListTile(
+                leading: Icon(Icons.fact_check_outlined, color: tokens.warning),
+                title: Text(l10n.cdYesterdayOpen),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push<void>(
+                  MaterialPageRoute(
+                    builder: (_) => CloseDayScreen(businessDate: y),
+                  ),
+                ),
+              ),
+            ),
           if (lowLabels.isNotEmpty)
             Container(
               margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),

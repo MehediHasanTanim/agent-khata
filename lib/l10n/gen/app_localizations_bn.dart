@@ -606,4 +606,257 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get entryNoOperator => 'আগে একটি ফ্লেক্সিলোড অপারেটর যোগ করুন';
+
+  @override
+  String get cdTitle => 'দিনের হিসাব মিলান';
+
+  @override
+  String get cdIntro =>
+      'নগদ ও ওয়ালেটের ব্যালেন্স গুনে লিখুন। কোথায় গরমিল হতে পারে আমরা দেখিয়ে দেব।';
+
+  @override
+  String get cdExpected => 'খাতা অনুযায়ী';
+
+  @override
+  String get cdActual => 'গুনে পাওয়া';
+
+  @override
+  String get cdBlankHint => 'মিললে খালি রাখুন';
+
+  @override
+  String get cdCashCounter => 'নোট গুনুন';
+
+  @override
+  String get cdCashCounterTitle => 'ক্যাশ কাউন্টার';
+
+  @override
+  String get cdCounterTotal => 'মোট';
+
+  @override
+  String get cdCounterUse => 'এই মোট ব্যবহার করুন';
+
+  @override
+  String get cdCoins => 'খুচরা';
+
+  @override
+  String get cdReview => 'যাচাই করুন';
+
+  @override
+  String get cdMatches => 'মিলেছে';
+
+  @override
+  String cdShort(String amount) {
+    return '$amount কম';
+  }
+
+  @override
+  String cdExcess(String amount) {
+    return '$amount বেশি';
+  }
+
+  @override
+  String get cdReason => 'কারণ';
+
+  @override
+  String get cdReasonNote => 'নোট (ঐচ্ছিক)';
+
+  @override
+  String get cdReasonShortage => 'ঘাটতি';
+
+  @override
+  String get cdReasonExcess => 'বাড়তি';
+
+  @override
+  String get cdReasonProvider => 'প্রোভাইডার চার্জ';
+
+  @override
+  String get cdReasonCounting => 'গণনায় ভুল';
+
+  @override
+  String get cdReasonTolerance => 'সামান্য পার্থক্য';
+
+  @override
+  String get cdReasonOther => 'অন্যান্য';
+
+  @override
+  String get cdFindGap => 'কোথায় হতে পারে?';
+
+  @override
+  String get cdAddMissing => 'বাদ পড়া এন্ট্রি যোগ করুন';
+
+  @override
+  String get cdClose => 'দিন বন্ধ করুন';
+
+  @override
+  String get cdClosedOk => 'দিন বন্ধ হয়েছে';
+
+  @override
+  String cdTolerance(String amount) {
+    return '$amount পর্যন্ত পার্থক্য নিজে থেকে সমন্বয় হবে';
+  }
+
+  @override
+  String get cdMissingReason => 'প্রতিটি পার্থক্যের জন্য কারণ বেছে নিন';
+
+  @override
+  String get cdAlreadyClosed => 'এই দিন আগেই বন্ধ হয়েছে';
+
+  @override
+  String get cdFailed => 'দিন বন্ধ করা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get cdReopen => 'আবার খুলুন';
+
+  @override
+  String get cdReopenTitle => 'এই দিন আবার খুলবেন?';
+
+  @override
+  String get cdReopenBody => 'বন্ধ করার সময়ের সমন্বয় বাতিল হবে। কারণ লিখুন।';
+
+  @override
+  String get cdReopened => 'দিন আবার খোলা হয়েছে';
+
+  @override
+  String get cdLaterClosed => 'শুধু সবশেষ বন্ধ করা দিনটি আবার খোলা যায়';
+
+  @override
+  String get cdRecentDays => 'সাম্প্রতিক দিন';
+
+  @override
+  String get cdNoDays => 'এখনও কোনো দিন বন্ধ হয়নি';
+
+  @override
+  String get cdStatusClosed => 'বন্ধ';
+
+  @override
+  String get cdStatusReopened => 'আবার খোলা';
+
+  @override
+  String get cdStatusOpen => 'চলমান';
+
+  @override
+  String get cdPickDay => 'কোন দিন?';
+
+  @override
+  String get cdYesterdayOpen => 'গতকালের হিসাব মেলানো হয়নি';
+
+  @override
+  String cdDifference(String amount) {
+    return 'পার্থক্য $amount';
+  }
+
+  @override
+  String sugSameSame(String amount) {
+    return '$amount-এর একটি এন্ট্রি গরমিলের সমান। একই রকম আরেকটি এন্ট্রি বাদ পড়তে পারে।';
+  }
+
+  @override
+  String sugSameOpposite(String amount) {
+    return '$amount-এর একটি এন্ট্রি গরমিলের সমান। এটি দুইবার লেখা হতে পারে বা আসলে হয়নি।';
+  }
+
+  @override
+  String sugFlipped(String amount) {
+    return '$amount-এর এন্ট্রিটি উল্টো দিকে (ইন/আউট) লেখা হতে পারে।';
+  }
+
+  @override
+  String sugEntryDouble(String amount) {
+    return '$amount-এর এন্ট্রি গরমিলের দ্বিগুণ। পরিমাণ ভুল লেখা হতে পারে।';
+  }
+
+  @override
+  String sugGapDouble(String amount) {
+    return 'গরমিল $amount-এর এন্ট্রির দ্বিগুণ। দুইবার ধরা হতে পারে।';
+  }
+
+  @override
+  String sugDuplicate(String amount) {
+    return 'কয়েক মিনিটের মধ্যে $amount-এর দুটি এন্ট্রি আছে। একটি ডুপ্লিকেট হতে পারে।';
+  }
+
+  @override
+  String sugTranspose(String amount, String alt) {
+    return '$alt-এর বদলে $amount লেখা হতে পারে (অঙ্ক উল্টে গেছে)।';
+  }
+
+  @override
+  String sugCross(String other) {
+    return '$other-এ উল্টো পরিমাণ গরমিল। এন্ট্রি ভুল ওয়ালেটে হতে পারে।';
+  }
+
+  @override
+  String get sumTitle => 'দৈনিক সারাংশ';
+
+  @override
+  String get sumEntries => 'এন্ট্রি';
+
+  @override
+  String get sumCashInVolume => 'ক্যাশ ইন মোট';
+
+  @override
+  String get sumCashOutVolume => 'ক্যাশ আউট মোট';
+
+  @override
+  String get sumCommission => 'কমিশন';
+
+  @override
+  String get sumMargin => 'ফ্লেক্সিলোড লাভ';
+
+  @override
+  String get sumExpenses => 'খরচ';
+
+  @override
+  String get sumNet => 'নিট লাভ';
+
+  @override
+  String get sumVariance => 'পার্থক্য';
+
+  @override
+  String get sumNotClosed => 'এখনও বন্ধ হয়নি';
+
+  @override
+  String get sumOpening => 'শুরু';
+
+  @override
+  String get sumIn => 'জমা';
+
+  @override
+  String get sumOut => 'খরচ';
+
+  @override
+  String get sumShareImage => 'ছবি শেয়ার করুন';
+
+  @override
+  String get sumSharePdf => 'PDF শেয়ার করুন';
+
+  @override
+  String get sumShareFailed => 'সারাংশ শেয়ার করা যায়নি';
+
+  @override
+  String get notifCloseTitle => 'দিনের হিসাব মেলানোর সময়';
+
+  @override
+  String get notifCloseBody => 'নগদ ও ওয়ালেট গুনে আজকের হিসাব মিলিয়ে নিন।';
+
+  @override
+  String get notifLowTitle => 'ব্যালেন্স কম';
+
+  @override
+  String notifLowBody(String account) {
+    return '$account কমে আসছে।';
+  }
+
+  @override
+  String get settingsReminder => 'দিনের হিসাব মেলানোর রিমাইন্ডার';
+
+  @override
+  String get settingsReminderTime => 'রিমাইন্ডারের সময়';
+
+  @override
+  String get settingsTolerance => 'এই অঙ্ক পর্যন্ত পার্থক্য উপেক্ষা করুন';
+
+  @override
+  String get entryDayClosed =>
+      'এই দিনের হিসাব বন্ধ। এন্ট্রি যোগ করতে ‘দিনের হিসাব’ থেকে আবার খুলুন।';
 }
