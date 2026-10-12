@@ -19,9 +19,13 @@ import 'ledger/account.dart';
 import 'ledger/strategies.dart';
 import 'money/money.dart';
 import 'notifications/notification_service.dart';
+import 'security/biometric_service.dart';
 import 'security/key_value_store.dart';
 import 'security/pin_service.dart';
+import 'security/secure_screen.dart';
 import 'settings/app_preferences.dart';
+import 'telemetry/analytics.dart';
+import 'telemetry/crash_log.dart';
 import 'utils/business_calendar.dart';
 import 'utils/uuid_v7.dart';
 
@@ -222,4 +226,33 @@ final unclosedYesterdayProvider = FutureProvider.autoDispose<String?>((
       )
       .get();
   return any.isEmpty ? null : yesterday;
+});
+
+final biometricServiceProvider = Provider<BiometricService>(
+  (ref) => LocalAuthBiometricService(),
+);
+
+final secureScreenProvider = Provider<SecureScreen>(
+  (ref) => const SecureScreen(),
+);
+
+/// Overridden in `bootstrap()` with the on-device crash log.
+final crashLogProvider = Provider<CrashLog?>((ref) => null);
+
+/// Overridden in `bootstrap()`; a no-op sink when not available.
+final analyticsProvider = Provider<AnalyticsSink>(
+  (ref) => const NoopAnalytics(),
+);
+
+/// Analytics event counts for the diagnostics report.
+final analyticsCountsProvider = FutureProvider.autoDispose<Map<String, int>>((
+  ref,
+) async {
+  final sink = ref.watch(analyticsProvider);
+  return sink is LocalFileAnalytics ? sink.counts() : <String, int>{};
+});
+
+final shopNameProvider = FutureProvider.autoDispose<String>((ref) async {
+  final v = await DbSettings(ref.watch(databaseProvider)).get('shop_name');
+  return v ?? '';
 });

@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/bootstrap.dart';
+import '../../core/db/db_settings.dart';
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/settings/app_preferences.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../accounts/low_alerts_screen.dart';
+import '../backup/backup_screen.dart';
 import '../commission/commission_rates_screen.dart';
 import '../debug/ledger_debug_screen.dart';
 import '../diagnostics/diagnostics_screen.dart';
 import '../lock/lock_controller.dart';
+import 'about_screen.dart';
+import 'categories_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -136,6 +140,137 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (v) =>
                 controller.update((p) => p.copyWith(maskBalances: v)),
           ),
+          _Header(l10n.textSize),
+          RadioGroup<double>(
+            groupValue: prefs.textScale,
+            onChanged: (v) =>
+                controller.update((p) => p.copyWith(textScale: v ?? 1.0)),
+            child: Column(
+              children: [
+                RadioListTile<double>(
+                  value: 1.0,
+                  title: Text(l10n.textSizeNormal),
+                ),
+                RadioListTile<double>(
+                  value: 1.15,
+                  title: Text(l10n.textSizeLarge),
+                ),
+                RadioListTile<double>(value: 1.3, title: Text(l10n.textSizeXL)),
+              ],
+            ),
+          ),
+          _Header(l10n.rolloverHour),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(l10n.rolloverHint),
+          ),
+          Consumer(
+            builder: (context, ref, _) {
+              final hour = ref.watch(dayRolloverHourProvider).value ?? 4;
+              return RadioGroup<int>(
+                groupValue: hour,
+                onChanged: (v) async {
+                  await DbSettings(ref.read(databaseProvider))
+                      .set(DbSettings.dayRolloverHourKey, '${v ?? 4}');
+                  ref
+                    ..invalidate(dayRolloverHourProvider)
+                    ..invalidate(unclosedYesterdayProvider);
+                },
+                child: Column(
+                  children: [
+                    for (final h in const [0, 3, 4, 5])
+                      RadioListTile<int>(
+                        value: h,
+                        title: Text(
+                          '${digits.localize('$h')}:${digits.localize('00')}',
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+          Consumer(
+            builder: (context, ref, _) {
+              final name = ref.watch(shopNameProvider).value ?? '';
+              return ListTile(
+                leading: const Icon(Icons.storefront_outlined),
+                title: Text(l10n.shopName),
+                subtitle: Text(name.isEmpty ? l10n.shopNameNone : name),
+                onTap: () async {
+                  final c = TextEditingController(text: name);
+                  final value = await showDialog<String>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text(l10n.shopName),
+                      content: TextField(controller: c, autofocus: true),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: Text(l10n.cancel),
+                        ),
+                        FilledButton(
+                          onPressed: () => Navigator.pop(ctx, c.text.trim()),
+                          child: Text(l10n.save),
+                        ),
+                      ],
+                    ),
+                  );
+                  c.dispose();
+                  if (value != null) {
+                    await DbSettings(ref.read(databaseProvider))
+                        .set('shop_name', value);
+                    ref.invalidate(shopNameProvider);
+                  }
+                },
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.category_outlined),
+            title: Text(l10n.categoriesTitle),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const CategoriesScreen()),
+            ),
+          ),
+          SwitchListTile(
+            value: prefs.biometricEnabled,
+            title: Text(l10n.bioToggle),
+            onChanged: (v) async {
+              if (!v) {
+                await controller.update(
+                  (p) => p.copyWith(biometricEnabled: false),
+                );
+                return;
+              }
+              final service = ref.read(biometricServiceProvider);
+              final messenger = ScaffoldMessenger.of(context);
+              if (!await service.isAvailable()) {
+                messenger.showSnackBar(
+                  SnackBar(content: Text(l10n.bioUnavailable)),
+                );
+                return;
+              }
+              if (await service.authenticate(l10n.bioReason)) {
+                await controller.update(
+                  (p) => p.copyWith(biometricEnabled: true),
+                );
+              }
+            },
+          ),
+          SwitchListTile(
+            value: prefs.secureScreen,
+            title: Text(l10n.secureToggle),
+            onChanged: (v) =>
+                controller.update((p) => p.copyWith(secureScreen: v)),
+          ),
+          SwitchListTile(
+            value: prefs.analyticsOptIn,
+            title: Text(l10n.analyticsToggle),
+            subtitle: Text(l10n.analyticsHint),
+            onChanged: (v) =>
+                controller.update((p) => p.copyWith(analyticsOptIn: v)),
+          ),
           SwitchListTile(
             value: prefs.rememberCustomers,
             title: Text(l10n.rememberCustomers),
@@ -192,6 +327,13 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           ListTile(
+            leading: const Icon(Icons.backup_outlined),
+            title: Text(l10n.bkTitle),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const BackupScreen()),
+            ),
+          ),
+          ListTile(
             leading: const Icon(Icons.percent),
             title: Text(l10n.commissionRates),
             onTap: () => Navigator.of(context).push(
@@ -215,6 +357,13 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
             ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(l10n.aboutTitle),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const AboutScreen()),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.speed_outlined),
             title: Text(l10n.diagnostics),

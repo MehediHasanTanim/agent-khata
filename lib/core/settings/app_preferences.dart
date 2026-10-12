@@ -20,6 +20,11 @@ class AppPreferences {
     this.closeReminderEnabled = true,
     this.closeReminderHour = 21,
     this.varianceToleranceTaka = 0,
+    this.lastBackupAtMs,
+    this.biometricEnabled = false,
+    this.secureScreen = true,
+    this.textScale = 1.0,
+    this.analyticsOptIn = false,
   });
 
   final String languageCode;
@@ -48,6 +53,21 @@ class AppPreferences {
   /// Day-close differences up to this many taka are written off silently.
   final int varianceToleranceTaka;
 
+  /// When the last backup file was created (UTC epoch ms), if ever.
+  final int? lastBackupAtMs;
+
+  /// Unlock with fingerprint/face as a convenience on top of the PIN.
+  final bool biometricEnabled;
+
+  /// Block screenshots and hide the app preview in the recents list.
+  final bool secureScreen;
+
+  /// Extra text scaling on top of the system font size (1.0 = none).
+  final double textScale;
+
+  /// Opt-in anonymous usage events (never amounts, numbers or names).
+  final bool analyticsOptIn;
+
   Locale get locale => Locale(languageCode);
 
   DigitFormatter get digits => DigitFormatter(
@@ -67,6 +87,11 @@ class AppPreferences {
     bool? closeReminderEnabled,
     int? closeReminderHour,
     int? varianceToleranceTaka,
+    int? lastBackupAtMs,
+    bool? biometricEnabled,
+    bool? secureScreen,
+    double? textScale,
+    bool? analyticsOptIn,
   }) => AppPreferences(
     languageCode: languageCode ?? this.languageCode,
     digitStyle: digitStyle ?? this.digitStyle,
@@ -86,6 +111,11 @@ class AppPreferences {
   static const _kReminder = 'pref_close_reminder';
   static const _kReminderHour = 'pref_close_reminder_hour';
   static const _kTolerance = 'pref_variance_tolerance';
+  static const _kLastBackup = 'pref_last_backup_ms';
+  static const _kBiometric = 'pref_biometric';
+  static const _kSecure = 'pref_secure_screen';
+  static const _kTextScale = 'pref_text_scale';
+  static const _kAnalytics = 'pref_analytics_opt_in';
 
   factory AppPreferences.load(SharedPreferences prefs) {
     const d = AppPreferences();
@@ -120,6 +150,13 @@ class AppPreferences {
     await prefs.setBool(_kReminder, closeReminderEnabled);
     await prefs.setInt(_kReminderHour, closeReminderHour);
     await prefs.setInt(_kTolerance, varianceToleranceTaka);
+    await prefs.setBool(_kBiometric, biometricEnabled);
+    await prefs.setBool(_kSecure, secureScreen);
+    await prefs.setDouble(_kTextScale, textScale);
+    await prefs.setBool(_kAnalytics, analyticsOptIn);
+    if (lastBackupAtMs != null) {
+      await prefs.setInt(_kLastBackup, lastBackupAtMs!);
+    }
   }
 
   static T? _byName<T extends Enum>(List<T> values, String? name) {

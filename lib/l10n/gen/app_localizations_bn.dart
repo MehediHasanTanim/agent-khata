@@ -859,4 +859,194 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get entryDayClosed =>
       'এই দিনের হিসাব বন্ধ। এন্ট্রি যোগ করতে ‘দিনের হিসাব’ থেকে আবার খুলুন।';
+
+  @override
+  String get bkTitle => 'ব্যাকআপ ও রিস্টোর';
+
+  @override
+  String bkLast(String date) {
+    return 'শেষ ব্যাকআপ: $date';
+  }
+
+  @override
+  String get bkNever => 'এখনও ব্যাকআপ নেওয়া হয়নি';
+
+  @override
+  String get bkNow => 'এখনই ব্যাকআপ নিন';
+
+  @override
+  String get bkRestore => 'ব্যাকআপ ফাইল থেকে রিস্টোর করুন';
+
+  @override
+  String get bkPassphrase => 'ব্যাকআপের পাসফ্রেজ';
+
+  @override
+  String get bkPassphraseConfirm => 'পাসফ্রেজ আবার লিখুন';
+
+  @override
+  String get bkPassphraseWarn =>
+      'এই পাসফ্রেজ ভুলে গেলে ব্যাকআপ খোলা যাবে না। এটি ফিরে পাওয়ার কোনো উপায় নেই।';
+
+  @override
+  String get bkMismatch => 'পাসফ্রেজ দুটি মেলেনি';
+
+  @override
+  String get bkTooShort => 'কমপক্ষে ৬টি অক্ষর দিন';
+
+  @override
+  String get bkCreating => 'ব্যাকআপ তৈরি হচ্ছে…';
+
+  @override
+  String get bkShareText => 'এজেন্ট খাতা ব্যাকআপ';
+
+  @override
+  String get bkDone => 'ব্যাকআপ তৈরি হয়েছে';
+
+  @override
+  String get bkFailed => 'ব্যাকআপ তৈরি করা যায়নি';
+
+  @override
+  String bkRestoreInfo(String date) {
+    return '$date-এ নেওয়া ব্যাকআপ';
+  }
+
+  @override
+  String get bkRestoreConfirmTitle => 'এই ফোনের ডাটা বদলে ফেলবেন?';
+
+  @override
+  String get bkRestoreConfirmBody =>
+      'বর্তমান সব ডাটা এই ব্যাকআপ দিয়ে বদলে যাবে। বর্তমান ডাটার একটি কপি ফোনে রাখা হবে।';
+
+  @override
+  String get bkRestoreWorking => 'রিস্টোর হচ্ছে…';
+
+  @override
+  String get bkRestoreDone =>
+      'রিস্টোর প্রস্তুত। শেষ করতে অ্যাপ বন্ধ করে আবার খুলুন।';
+
+  @override
+  String get bkCloseApp => 'অ্যাপ বন্ধ করুন';
+
+  @override
+  String get bkWrongPassphrase => 'পাসফ্রেজ ভুল, অথবা ফাইল বদলে গেছে';
+
+  @override
+  String get bkNewerSchema =>
+      'এই ব্যাকআপ অ্যাপের নতুন ভার্সনের। আগে অ্যাপ আপডেট করুন।';
+
+  @override
+  String get bkBadFile => 'এটি সঠিক ব্যাকআপ ফাইল নয়';
+
+  @override
+  String get bkCorrupt => 'এই ব্যাকআপ নষ্ট, রিস্টোর করা যাবে না';
+
+  @override
+  String get bkStaleBanner => 'ডাটা নিরাপদ রাখতে ব্যাকআপ নিন';
+
+  @override
+  String get onbRestore => 'ব্যাকআপ থেকে রিস্টোর করুন';
+
+  @override
+  String get bkWhyTitle => 'আপনার হিসাব নিরাপদ রাখুন';
+
+  @override
+  String get bkWhyBody =>
+      'ফোন হারালে বা নষ্ট হলে ব্যাকআপই একমাত্র ভরসা। ফাইলটি Google Drive-এর মতো নিরাপদ জায়গায় রাখুন।';
+
+  @override
+  String get bioToggle => 'আঙুলের ছাপ দিয়ে আনলক';
+
+  @override
+  String get bioReason => 'এজেন্ট খাতা আনলক করুন';
+
+  @override
+  String get bioUse => 'আঙুলের ছাপ ব্যবহার করুন';
+
+  @override
+  String get bioUnavailable => 'এই ফোনে আঙুলের ছাপ সেট করা নেই';
+
+  @override
+  String get secureToggle => 'অ্যাপের প্রিভিউ লুকান ও স্ক্রিনশট বন্ধ রাখুন';
+
+  @override
+  String get textSize => 'লেখার আকার';
+
+  @override
+  String get textSizeNormal => 'স্বাভাবিক';
+
+  @override
+  String get textSizeLarge => 'বড়';
+
+  @override
+  String get textSizeXL => 'আরও বড়';
+
+  @override
+  String get shopName => 'দোকানের নাম';
+
+  @override
+  String get shopNameNone => 'দেওয়া হয়নি';
+
+  @override
+  String get rolloverHour => 'ব্যবসায়িক দিন শুরু হয়';
+
+  @override
+  String get rolloverHint =>
+      'মধ্যরাতের পর এই সময়ের আগের বিক্রি আগের দিনের হিসাবে ধরা হবে।';
+
+  @override
+  String get categoriesTitle => 'খরচের খাত';
+
+  @override
+  String get categoryAdd => 'খাত যোগ করুন';
+
+  @override
+  String get categoryRename => 'নাম বদলান';
+
+  @override
+  String get categoryRemove => 'সরান';
+
+  @override
+  String get aboutTitle => 'অ্যাপ সম্পর্কে';
+
+  @override
+  String aboutVersion(String version) {
+    return 'ভার্সন $version';
+  }
+
+  @override
+  String get aboutDisclaimer =>
+      'এজেন্ট খাতা শুধু হিসাব রাখার অ্যাপ। এটি টাকা লেনদেন করে না এবং বিকাশ, নগদ, রকেট, উপায় বা কোনো মোবাইল অপারেটরের অ্যাপ নয়, তাদের সাথে সম্পর্কিতও নয়।';
+
+  @override
+  String get aboutPrivacy =>
+      'আপনার হিসাব এই ফোনেই থাকে। আপনি নিজে ব্যাকআপ বা রিপোর্ট শেয়ার না করলে কিছুই কোথাও যায় না।';
+
+  @override
+  String get analyticsToggle => 'নাম-পরিচয়হীন ব্যবহারের হিসাব শেয়ার করুন';
+
+  @override
+  String get analyticsHint =>
+      'শুধু “এন্ট্রি সেভ” এর মতো সংখ্যা। কখনও টাকার অঙ্ক, নম্বর বা নাম নয়। ডায়াগনস্টিক্স রিপোর্ট শেয়ার করলেই কেবল যাবে।';
+
+  @override
+  String get diagIntegrity => 'হিসাব যাচাই';
+
+  @override
+  String get diagRunCheck => 'যাচাই করুন';
+
+  @override
+  String get diagVerified => 'হিসাব যাচাই হয়েছে: সব এন্ট্রি মিলেছে';
+
+  @override
+  String get diagProblem =>
+      'হিসাবে সমস্যা পাওয়া গেছে। ব্যাকআপ নিয়ে সাপোর্টের সাথে যোগাযোগ করুন।';
+
+  @override
+  String get diagShareReport => 'ডায়াগনস্টিক্স রিপোর্ট শেয়ার করুন';
+
+  @override
+  String get diagDbSize => 'ডাটাবেসের আকার';
+
+  @override
+  String get diagEntries => 'এন্ট্রি';
 }

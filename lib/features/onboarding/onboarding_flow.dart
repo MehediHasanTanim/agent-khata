@@ -6,6 +6,7 @@ import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money.dart';
 import '../../core/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../backup/restore_flow.dart';
 import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
 import '../commission/commission_rule.dart';
 import '../commission/rate_row.dart';
@@ -242,6 +243,15 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                   key: const ValueKey('onb-quick'),
                   onPressed: _busy ? null : () => _finish(quick: true),
                   child: Text(_busy ? l10n.onbSaving : l10n.onbQuickStart),
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  key: const ValueKey('onb-restore'),
+                  onPressed: _busy ? null : () => runRestoreFlow(context, ref),
+                  child: Text(l10n.onbRestore),
                 ),
               ),
               const SizedBox(height: 8),

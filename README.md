@@ -7,7 +7,7 @@ Specs live in [`docs/`](docs): feature spec, technical design, sprint plan.
 
 ## Status
 
-Sprints 0-4 (foundations, ledger core, onboarding/home/entry, history/edit/flexiload/ledgers, day close) — see
+Sprints 0-5 (foundations through backup, hardening and release prep) — see
 `docs/plan/agent-cashbook-sprint-plan.md`.
 
 | Task | State |
@@ -100,6 +100,27 @@ recomputes them from the new counts, so close, reopen and re-close with the
 same counts gives identical balances (covered by tests). Reopening is
 limited to the most recent closed day. There is a single owner for now, so
 "owner-only" is not yet enforced by roles (Phase 2 staff accounts).
+
+### Sprint 5 (backup, hardening, release prep)
+
+| Task | State |
+|---|---|
+| S5-01 encrypted `.cbk` backup (AES-256-GCM, Argon2id, authenticated header, share sheet) | done |
+| S5-02 restore (checksum, schema check, passphrase, staging DB + integrity check, swap on next start, pre-restore copy kept) | done |
+| S5-03 backup UX (last backup, weekly banner, lost-passphrase warning) | done |
+| S5-04 migration + round-trip test suite | done |
+| S5-05 biometric unlock (on top of the PIN) | done |
+| S5-06 settings completion (text size, rollover hour, shop name, categories, about) | done |
+| S5-07 performance pass | regression tests + indexes done; **device measurements pending** |
+| S5-08 privacy polish (FLAG_SECURE, balance masking, books-verified check) | done |
+| S5-09 accessibility / Bangla QA | partial: text-size setting, 48dp+ targets, labels; **TalkBack and native-speaker review pending** |
+| S5-10 crash log + opt-in anonymous counts | done locally; Firebase Crashlytics **not wired** (needs your Firebase project) |
+| S5-11 release prep | docs in `docs/release/`; release APKs build (arm64 27.5 MB, armv7 24.5 MB, x86_64 29.8 MB, debug-signed without `key.properties`); **signing key, icons, screenshots pending** |
+
+Restore model: the backup is a logical dump (table rows as JSON, gzipped,
+encrypted), so it is independent of the device's database key and restores on
+a new phone. Restore writes a staging database, verifies it, and the next app
+start swaps it in; the previous database is kept as `<db>.pre-restore`.
 
 ## Develop
 

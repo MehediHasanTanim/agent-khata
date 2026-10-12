@@ -78,6 +78,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
   static const _engine = CommissionEngine();
 
   AmountEntry _entry = const AmountEntry();
+  final Stopwatch _openFor = Stopwatch()..start();
   String? _walletId;
   String? _sourceId;
   String? _categoryId;
@@ -289,6 +290,12 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
             .setString(_lastWalletKey, wallet.id);
       }
       await HapticFeedback.mediumImpact();
+      final analytics = ref.read(analyticsProvider);
+      await analytics.log('txn_saved', {'type': widget.kind.name});
+      await analytics.log('entry_time_ms', {
+        'type': widget.kind.name,
+        'ms': _openFor.elapsedMilliseconds,
+      });
 
       // Warn (once) when this entry takes the source below its threshold.
       final threshold = from.lowAlert;

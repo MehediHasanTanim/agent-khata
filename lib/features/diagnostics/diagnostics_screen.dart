@@ -1,14 +1,22 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/bootstrap.dart';
 import '../../core/db/app_database.dart';
 import '../../core/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../backup/restore_flow.dart' show liveDbFileName;
+import '../transactions/integrity_checker.dart';
 
-/// Feasibility measurements for the SQLCipher decision gate (S0-04): cipher
-/// status, journal mode, cold-start time and a write-speed test.
+/// Device-side health: encryption status, timings, a "books verified" check
+/// and a report the user can send to support. Also the place for the S0-04
+/// feasibility numbers (cold start, write speed).
 class DiagnosticsScreen extends ConsumerStatefulWidget {
   const DiagnosticsScreen({super.key});
 
@@ -20,6 +28,32 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
   late final Future<DbInfo> _info = ref.read(databaseProvider).info();
   int? _benchMs;
   bool _running = false;
+  IntegrityReport? _report;
+  bool _checking = false;
+  int? _dbBytes;
+  int _txnCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(_loadFacts);
+  }
+
+  Future<void> _loadFacts() async {
+    final db = ref.read(databaseProvider);
+    final dir = await getApplicationSupportDirectory();
+    final file = File(
+      '${dir.path}/${liveDbFileName(ref.read(flavorProvider))}',
+    );
+    final count = await db
+        .customSelect('SELECT COUNT(*) AS c FROM txn')
+        .getSingle();
+    if (!mounted) return;
+    setState(() {
+      _dbBytes = file.existsSync() ? file.lengthSync() : null;
+      _txnCount = count.read<int>('c');
+    });
+  }
 
   Future<void> _runBench() async {
     setState(() => _running = true);
@@ -43,6 +77,47 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
       _benchMs = watch.elapsedMilliseconds;
       _running = false;
     });
+  }
+
+  Future<void> _check() async {
+    setState(() => _checking = true);
+    final r = await LedgerIntegrityChecker(ref.read(databaseProvider)).run();
+    if (!mounted) return;
+    setState(() {
+      _report = r;
+      _checking = false;
+    });
+  }
+
+  Future<void> _shareReport(DbInfo info) async {
+    final pkg = await PackageInfo.fromPlatform();
+    final counts = await ref.read(analyticsCountsProvider.future);
+    final crash = ref.read(crashLogProvider)?.read() ?? '';
+    final report =
+        _report ??
+        await LedgerIntegrityChecker(ref.read(databaseProvider)).run();
+    final tail = crash.length > 4000
+        ? crash.substring(crash.length - 4000)
+        : crash;
+    final text = StringBuffer()
+      ..writeln('Agent Khata diagnostics')
+      ..writeln('version: ${pkg.version}+${pkg.buildNumber}')
+      ..writeln('flavor: ${ref.read(flavorProvider).name}')
+      ..writeln('schema: ${info.userVersion}')
+      ..writeln('encrypted: ${info.isEncrypted} (${info.cipherVersion})')
+      ..writeln('journal: ${info.journalMode}')
+      ..writeln('db_bytes: $_dbBytes')
+      ..writeln('transactions: $_txnCount')
+      ..writeln('cold_start_ms: $firstFrameMs')
+      ..writeln('books_healthy: ${report.isHealthy}')
+      ..writeln('unbalanced: ${report.unbalancedTxnIds.length}')
+      ..writeln('mismatches: ${report.balanceMismatches.length}')
+      ..writeln('usage_counts: $counts')
+      ..writeln('--- crash log tail ---')
+      ..writeln(tail.isEmpty ? '(none)' : tail);
+    await SharePlus.instance.share(
+      ShareParams(text: text.toString(), subject: 'Agent Khata diagnostics'),
+    );
   }
 
   @override
@@ -79,6 +154,17 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                 title: Text(l10n.diagSchema),
                 subtitle: Text(digits.localize('${info.userVersion}')),
               ),
+              if (_dbBytes != null)
+                ListTile(
+                  title: Text(l10n.diagDbSize),
+                  subtitle: Text(
+                    '${digits.localize((_dbBytes! / 1024).toStringAsFixed(0))} KB',
+                  ),
+                ),
+              ListTile(
+                title: Text(l10n.diagEntries),
+                subtitle: Text(digits.localize('$_txnCount')),
+              ),
               ListTile(
                 title: Text(l10n.diagColdStart),
                 subtitle: Text(
@@ -97,6 +183,41 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                 trailing: FilledButton(
                   onPressed: _running ? null : _runBench,
                   child: Text(l10n.diagRunBench),
+                ),
+              ),
+              const Divider(),
+              ListTile(
+                title: Text(l10n.diagIntegrity),
+                subtitle: _report == null
+                    ? null
+                    : Text(
+                        _report!.isHealthy
+                            ? l10n.diagVerified
+                            : l10n.diagProblem,
+                      ),
+                leading: Icon(
+                  _report == null
+                      ? Icons.rule
+                      : _report!.isHealthy
+                      ? Icons.verified
+                      : Icons.error_outline,
+                  color: _report == null
+                      ? null
+                      : _report!.isHealthy
+                      ? Colors.green
+                      : Theme.of(context).colorScheme.error,
+                ),
+                trailing: FilledButton(
+                  onPressed: _checking ? null : _check,
+                  child: Text(l10n.diagRunCheck),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.ios_share),
+                  label: Text(l10n.diagShareReport),
+                  onPressed: () => _shareReport(info),
                 ),
               ),
             ],

@@ -34,6 +34,12 @@ class LockController extends Notifier<LockStatus> {
     return result;
   }
 
+  /// Called after a successful system biometric prompt. Only valid when a
+  /// PIN exists (biometrics are a convenience, never the only secret).
+  void unlockWithBiometric() {
+    if (state == LockStatus.locked) state = LockStatus.unlocked;
+  }
+
   Future<Duration?> lockoutRemaining() => _pin.lockoutRemaining();
 
   void lock() {

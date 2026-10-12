@@ -11,6 +11,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/business_calendar.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../accounts/account_ledger_screen.dart';
+import '../backup/backup_screen.dart';
 import '../closeday/close_day_screen.dart';
 import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
 import '../entry/entry_screen.dart';
@@ -120,8 +121,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(4),
-            child: SizedBox(
-              height: 76,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 76),
               child: FilledButton.tonal(
                 key: ValueKey('action-${kind.name}'),
                 style: FilledButton.styleFrom(
@@ -166,6 +167,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   MaterialPageRoute(
                     builder: (_) => CloseDayScreen(businessDate: y),
                   ),
+                ),
+              ),
+            ),
+          if (accounts.isNotEmpty && _backupStale(prefs.lastBackupAtMs))
+            Container(
+              margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: theme.colorScheme.primary),
+              ),
+              child: ListTile(
+                leading: const Icon(Icons.backup_outlined),
+                title: Text(l10n.bkStaleBanner),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push<void>(
+                  MaterialPageRoute(builder: (_) => const BackupScreen()),
                 ),
               ),
             ),
@@ -322,6 +340,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
+}
+
+/// No backup yet, or the last one is more than a week old.
+bool _backupStale(int? lastMs) {
+  if (lastMs == null) return true;
+  final age = DateTime.now().toUtc().millisecondsSinceEpoch - lastMs;
+  return age > const Duration(days: 7).inMilliseconds;
 }
 
 class _Stat extends StatelessWidget {

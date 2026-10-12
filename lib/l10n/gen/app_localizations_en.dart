@@ -860,4 +860,194 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get entryDayClosed =>
       'This day is closed. Reopen it from Close day to add entries.';
+
+  @override
+  String get bkTitle => 'Backup and restore';
+
+  @override
+  String bkLast(String date) {
+    return 'Last backup: $date';
+  }
+
+  @override
+  String get bkNever => 'No backup yet';
+
+  @override
+  String get bkNow => 'Back up now';
+
+  @override
+  String get bkRestore => 'Restore from a backup file';
+
+  @override
+  String get bkPassphrase => 'Backup passphrase';
+
+  @override
+  String get bkPassphraseConfirm => 'Repeat passphrase';
+
+  @override
+  String get bkPassphraseWarn =>
+      'If you forget this passphrase, the backup cannot be opened. It cannot be recovered.';
+
+  @override
+  String get bkMismatch => 'The passphrases do not match';
+
+  @override
+  String get bkTooShort => 'Use at least 6 characters';
+
+  @override
+  String get bkCreating => 'Creating backup…';
+
+  @override
+  String get bkShareText => 'Agent Khata backup';
+
+  @override
+  String get bkDone => 'Backup created';
+
+  @override
+  String get bkFailed => 'Could not create the backup';
+
+  @override
+  String bkRestoreInfo(String date) {
+    return 'Backup made on $date';
+  }
+
+  @override
+  String get bkRestoreConfirmTitle => 'Replace the data on this phone?';
+
+  @override
+  String get bkRestoreConfirmBody =>
+      'All current data will be replaced by this backup. A copy of the current data is kept on the phone.';
+
+  @override
+  String get bkRestoreWorking => 'Restoring…';
+
+  @override
+  String get bkRestoreDone =>
+      'Restore is ready. Close and reopen the app to finish.';
+
+  @override
+  String get bkCloseApp => 'Close app';
+
+  @override
+  String get bkWrongPassphrase => 'Wrong passphrase, or the file was changed';
+
+  @override
+  String get bkNewerSchema =>
+      'This backup is from a newer version of the app. Please update the app first.';
+
+  @override
+  String get bkBadFile => 'This is not a valid backup file';
+
+  @override
+  String get bkCorrupt => 'This backup is damaged and cannot be restored';
+
+  @override
+  String get bkStaleBanner => 'Back up your data to keep it safe';
+
+  @override
+  String get onbRestore => 'Restore from a backup';
+
+  @override
+  String get bkWhyTitle => 'Keep your books safe';
+
+  @override
+  String get bkWhyBody =>
+      'If this phone is lost or broken, a backup is the only way to get your records back. Save the file somewhere safe, like Google Drive.';
+
+  @override
+  String get bioToggle => 'Unlock with fingerprint';
+
+  @override
+  String get bioReason => 'Unlock Agent Khata';
+
+  @override
+  String get bioUse => 'Use fingerprint';
+
+  @override
+  String get bioUnavailable => 'Fingerprint is not set up on this phone';
+
+  @override
+  String get secureToggle => 'Hide app preview and block screenshots';
+
+  @override
+  String get textSize => 'Text size';
+
+  @override
+  String get textSizeNormal => 'Normal';
+
+  @override
+  String get textSizeLarge => 'Large';
+
+  @override
+  String get textSizeXL => 'Extra large';
+
+  @override
+  String get shopName => 'Shop name';
+
+  @override
+  String get shopNameNone => 'Not set';
+
+  @override
+  String get rolloverHour => 'Business day starts at';
+
+  @override
+  String get rolloverHint =>
+      'Sales after midnight but before this time count for the previous day.';
+
+  @override
+  String get categoriesTitle => 'Expense categories';
+
+  @override
+  String get categoryAdd => 'Add category';
+
+  @override
+  String get categoryRename => 'Rename';
+
+  @override
+  String get categoryRemove => 'Remove';
+
+  @override
+  String get aboutTitle => 'About';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get aboutDisclaimer =>
+      'Agent Khata is a record-keeping tool. It does not move money and is not an app of bKash, Nagad, Rocket, Upay or any mobile operator, and is not affiliated with them.';
+
+  @override
+  String get aboutPrivacy =>
+      'Your records stay on this phone. Nothing is sent anywhere unless you share a backup or report yourself.';
+
+  @override
+  String get analyticsToggle => 'Share anonymous usage counts';
+
+  @override
+  String get analyticsHint =>
+      'Only counts like \"entries saved\". Never amounts, numbers or names. Included only if you share a diagnostics report.';
+
+  @override
+  String get diagIntegrity => 'Books check';
+
+  @override
+  String get diagRunCheck => 'Run check';
+
+  @override
+  String get diagVerified => 'Books verified: every entry balances';
+
+  @override
+  String get diagProblem =>
+      'A problem was found in the books. Please back up and contact support.';
+
+  @override
+  String get diagShareReport => 'Share diagnostics report';
+
+  @override
+  String get diagDbSize => 'Database size';
+
+  @override
+  String get diagEntries => 'Entries';
 }

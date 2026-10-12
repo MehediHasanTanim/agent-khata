@@ -29,10 +29,34 @@ class _PinScreenState extends ConsumerState<PinScreen> {
   Timer? _ticker;
   bool _busy = false;
 
+  bool _bioAvailable = false;
+
   @override
   void initState() {
     super.initState();
-    if (widget.mode == PinScreenMode.unlock) _refreshLockout();
+    if (widget.mode == PinScreenMode.unlock) {
+      _refreshLockout();
+      Future.microtask(_initBiometric);
+    }
+  }
+
+  Future<void> _initBiometric() async {
+    if (!ref.read(preferencesProvider).biometricEnabled) return;
+    final service = ref.read(biometricServiceProvider);
+    if (!await service.isAvailable() || !mounted) return;
+    setState(() => _bioAvailable = true);
+    await _tryBiometric();
+  }
+
+  Future<void> _tryBiometric() async {
+    if (_lockedFor != null) return;
+    final l10n = AppLocalizations.of(context);
+    final ok = await ref
+        .read(biometricServiceProvider)
+        .authenticate(l10n.bioReason);
+    if (ok && mounted) {
+      ref.read(lockControllerProvider.notifier).unlockWithBiometric();
+    }
   }
 
   @override
@@ -188,6 +212,16 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                             ),
                           ),
                   ),
+                  if (_bioAvailable)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: TextButton.icon(
+                        key: const ValueKey('bio-unlock'),
+                        icon: const Icon(Icons.fingerprint),
+                        label: Text(l10n.bioUse),
+                        onPressed: _tryBiometric,
+                      ),
+                    ),
                   PinPad(
                     digits: digits,
                     onDigit: _onDigit,

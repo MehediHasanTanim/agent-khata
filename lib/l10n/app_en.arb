@@ -485,5 +485,84 @@
   "settingsReminder": "Day-close reminder",
   "settingsReminderTime": "Reminder time",
   "settingsTolerance": "Ignore differences up to",
-  "entryDayClosed": "This day is closed. Reopen it from Close day to add entries."
+  "entryDayClosed": "This day is closed. Reopen it from Close day to add entries.",
+  "bkTitle": "Backup and restore",
+  "bkLast": "Last backup: {date}",
+  "@bkLast": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bkNever": "No backup yet",
+  "bkNow": "Back up now",
+  "bkRestore": "Restore from a backup file",
+  "bkPassphrase": "Backup passphrase",
+  "bkPassphraseConfirm": "Repeat passphrase",
+  "bkPassphraseWarn": "If you forget this passphrase, the backup cannot be opened. It cannot be recovered.",
+  "bkMismatch": "The passphrases do not match",
+  "bkTooShort": "Use at least 6 characters",
+  "bkCreating": "Creating backup…",
+  "bkShareText": "Agent Khata backup",
+  "bkDone": "Backup created",
+  "bkFailed": "Could not create the backup",
+  "bkRestoreInfo": "Backup made on {date}",
+  "@bkRestoreInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bkRestoreConfirmTitle": "Replace the data on this phone?",
+  "bkRestoreConfirmBody": "All current data will be replaced by this backup. A copy of the current data is kept on the phone.",
+  "bkRestoreWorking": "Restoring…",
+  "bkRestoreDone": "Restore is ready. Close and reopen the app to finish.",
+  "bkCloseApp": "Close app",
+  "bkWrongPassphrase": "Wrong passphrase, or the file was changed",
+  "bkNewerSchema": "This backup is from a newer version of the app. Please update the app first.",
+  "bkBadFile": "This is not a valid backup file",
+  "bkCorrupt": "This backup is damaged and cannot be restored",
+  "bkStaleBanner": "Back up your data to keep it safe",
+  "onbRestore": "Restore from a backup",
+  "bkWhyTitle": "Keep your books safe",
+  "bkWhyBody": "If this phone is lost or broken, a backup is the only way to get your records back. Save the file somewhere safe, like Google Drive.",
+  "bioToggle": "Unlock with fingerprint",
+  "bioReason": "Unlock Agent Khata",
+  "bioUse": "Use fingerprint",
+  "bioUnavailable": "Fingerprint is not set up on this phone",
+  "secureToggle": "Hide app preview and block screenshots",
+  "textSize": "Text size",
+  "textSizeNormal": "Normal",
+  "textSizeLarge": "Large",
+  "textSizeXL": "Extra large",
+  "shopName": "Shop name",
+  "shopNameNone": "Not set",
+  "rolloverHour": "Business day starts at",
+  "rolloverHint": "Sales after midnight but before this time count for the previous day.",
+  "categoriesTitle": "Expense categories",
+  "categoryAdd": "Add category",
+  "categoryRename": "Rename",
+  "categoryRemove": "Remove",
+  "aboutTitle": "About",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutDisclaimer": "Agent Khata is a record-keeping tool. It does not move money and is not an app of bKash, Nagad, Rocket, Upay or any mobile operator, and is not affiliated with them.",
+  "aboutPrivacy": "Your records stay on this phone. Nothing is sent anywhere unless you share a backup or report yourself.",
+  "analyticsToggle": "Share anonymous usage counts",
+  "analyticsHint": "Only counts like \"entries saved\". Never amounts, numbers or names. Included only if you share a diagnostics report.",
+  "diagIntegrity": "Books check",
+  "diagRunCheck": "Run check",
+  "diagVerified": "Books verified: every entry balances",
+  "diagProblem": "A problem was found in the books. Please back up and contact support.",
+  "diagShareReport": "Share diagnostics report",
+  "diagDbSize": "Database size",
+  "diagEntries": "Entries"
 }

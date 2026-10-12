@@ -1651,6 +1651,354 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This day is closed. Reopen it from Close day to add entries.'**
   String get entryDayClosed;
+
+  /// No description provided for @bkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup and restore'**
+  String get bkTitle;
+
+  /// No description provided for @bkLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup: {date}'**
+  String bkLast(String date);
+
+  /// No description provided for @bkNever.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup yet'**
+  String get bkNever;
+
+  /// No description provided for @bkNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get bkNow;
+
+  /// No description provided for @bkRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from a backup file'**
+  String get bkRestore;
+
+  /// No description provided for @bkPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup passphrase'**
+  String get bkPassphrase;
+
+  /// No description provided for @bkPassphraseConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat passphrase'**
+  String get bkPassphraseConfirm;
+
+  /// No description provided for @bkPassphraseWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'If you forget this passphrase, the backup cannot be opened. It cannot be recovered.'**
+  String get bkPassphraseWarn;
+
+  /// No description provided for @bkMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The passphrases do not match'**
+  String get bkMismatch;
+
+  /// No description provided for @bkTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 6 characters'**
+  String get bkTooShort;
+
+  /// No description provided for @bkCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating backup…'**
+  String get bkCreating;
+
+  /// No description provided for @bkShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent Khata backup'**
+  String get bkShareText;
+
+  /// No description provided for @bkDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup created'**
+  String get bkDone;
+
+  /// No description provided for @bkFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create the backup'**
+  String get bkFailed;
+
+  /// No description provided for @bkRestoreInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup made on {date}'**
+  String bkRestoreInfo(String date);
+
+  /// No description provided for @bkRestoreConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace the data on this phone?'**
+  String get bkRestoreConfirmTitle;
+
+  /// No description provided for @bkRestoreConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'All current data will be replaced by this backup. A copy of the current data is kept on the phone.'**
+  String get bkRestoreConfirmBody;
+
+  /// No description provided for @bkRestoreWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring…'**
+  String get bkRestoreWorking;
+
+  /// No description provided for @bkRestoreDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore is ready. Close and reopen the app to finish.'**
+  String get bkRestoreDone;
+
+  /// No description provided for @bkCloseApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Close app'**
+  String get bkCloseApp;
+
+  /// No description provided for @bkWrongPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong passphrase, or the file was changed'**
+  String get bkWrongPassphrase;
+
+  /// No description provided for @bkNewerSchema.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup is from a newer version of the app. Please update the app first.'**
+  String get bkNewerSchema;
+
+  /// No description provided for @bkBadFile.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not a valid backup file'**
+  String get bkBadFile;
+
+  /// No description provided for @bkCorrupt.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup is damaged and cannot be restored'**
+  String get bkCorrupt;
+
+  /// No description provided for @bkStaleBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up your data to keep it safe'**
+  String get bkStaleBanner;
+
+  /// No description provided for @onbRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from a backup'**
+  String get onbRestore;
+
+  /// No description provided for @bkWhyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your books safe'**
+  String get bkWhyTitle;
+
+  /// No description provided for @bkWhyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If this phone is lost or broken, a backup is the only way to get your records back. Save the file somewhere safe, like Google Drive.'**
+  String get bkWhyBody;
+
+  /// No description provided for @bioToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock with fingerprint'**
+  String get bioToggle;
+
+  /// No description provided for @bioReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Agent Khata'**
+  String get bioReason;
+
+  /// No description provided for @bioUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use fingerprint'**
+  String get bioUse;
+
+  /// No description provided for @bioUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Fingerprint is not set up on this phone'**
+  String get bioUnavailable;
+
+  /// No description provided for @secureToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide app preview and block screenshots'**
+  String get secureToggle;
+
+  /// No description provided for @textSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Text size'**
+  String get textSize;
+
+  /// No description provided for @textSizeNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get textSizeNormal;
+
+  /// No description provided for @textSizeLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Large'**
+  String get textSizeLarge;
+
+  /// No description provided for @textSizeXL.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra large'**
+  String get textSizeXL;
+
+  /// No description provided for @shopName.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop name'**
+  String get shopName;
+
+  /// No description provided for @shopNameNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get shopNameNone;
+
+  /// No description provided for @rolloverHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Business day starts at'**
+  String get rolloverHour;
+
+  /// No description provided for @rolloverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales after midnight but before this time count for the previous day.'**
+  String get rolloverHint;
+
+  /// No description provided for @categoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense categories'**
+  String get categoriesTitle;
+
+  /// No description provided for @categoryAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add category'**
+  String get categoryAdd;
+
+  /// No description provided for @categoryRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get categoryRename;
+
+  /// No description provided for @categoryRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get categoryRemove;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String aboutVersion(String version);
+
+  /// No description provided for @aboutDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent Khata is a record-keeping tool. It does not move money and is not an app of bKash, Nagad, Rocket, Upay or any mobile operator, and is not affiliated with them.'**
+  String get aboutDisclaimer;
+
+  /// No description provided for @aboutPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Your records stay on this phone. Nothing is sent anywhere unless you share a backup or report yourself.'**
+  String get aboutPrivacy;
+
+  /// No description provided for @analyticsToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share anonymous usage counts'**
+  String get analyticsToggle;
+
+  /// No description provided for @analyticsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only counts like \"entries saved\". Never amounts, numbers or names. Included only if you share a diagnostics report.'**
+  String get analyticsHint;
+
+  /// No description provided for @diagIntegrity.
+  ///
+  /// In en, this message translates to:
+  /// **'Books check'**
+  String get diagIntegrity;
+
+  /// No description provided for @diagRunCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Run check'**
+  String get diagRunCheck;
+
+  /// No description provided for @diagVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Books verified: every entry balances'**
+  String get diagVerified;
+
+  /// No description provided for @diagProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'A problem was found in the books. Please back up and contact support.'**
+  String get diagProblem;
+
+  /// No description provided for @diagShareReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Share diagnostics report'**
+  String get diagShareReport;
+
+  /// No description provided for @diagDbSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Database size'**
+  String get diagDbSize;
+
+  /// No description provided for @diagEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get diagEntries;
 }
 
 class _AppLocalizationsDelegate
