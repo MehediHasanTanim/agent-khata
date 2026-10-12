@@ -14,6 +14,8 @@ class AppPreferences {
     this.bangladeshiGrouping = true,
     this.theme = AppThemeChoice.light,
     this.autoLockSeconds = 30,
+    this.maskBalances = false,
+    this.largeAmountTaka = 50000,
   });
 
   final String languageCode;
@@ -23,6 +25,12 @@ class AppPreferences {
 
   /// Seconds in the background before the app locks. 0 locks immediately.
   final int autoLockSeconds;
+
+  /// Hide balances on home until the card is tapped.
+  final bool maskBalances;
+
+  /// Entries at or above this many taka ask for confirmation.
+  final int largeAmountTaka;
 
   Locale get locale => Locale(languageCode);
 
@@ -37,6 +45,8 @@ class AppPreferences {
     bool? bangladeshiGrouping,
     AppThemeChoice? theme,
     int? autoLockSeconds,
+    bool? maskBalances,
+    int? largeAmountTaka,
   }) => AppPreferences(
     languageCode: languageCode ?? this.languageCode,
     digitStyle: digitStyle ?? this.digitStyle,
@@ -50,6 +60,8 @@ class AppPreferences {
   static const _kGrouping = 'pref_bd_grouping';
   static const _kTheme = 'pref_theme';
   static const _kAutoLock = 'pref_auto_lock_s';
+  static const _kMask = 'pref_mask_balances';
+  static const _kLarge = 'pref_large_amount';
 
   factory AppPreferences.load(SharedPreferences prefs) {
     const d = AppPreferences();
@@ -62,6 +74,8 @@ class AppPreferences {
       theme:
           _byName(AppThemeChoice.values, prefs.getString(_kTheme)) ?? d.theme,
       autoLockSeconds: prefs.getInt(_kAutoLock) ?? d.autoLockSeconds,
+      maskBalances: prefs.getBool(_kMask) ?? d.maskBalances,
+      largeAmountTaka: prefs.getInt(_kLarge) ?? d.largeAmountTaka,
     );
   }
 
@@ -71,6 +85,8 @@ class AppPreferences {
     await prefs.setBool(_kGrouping, bangladeshiGrouping);
     await prefs.setString(_kTheme, theme.name);
     await prefs.setInt(_kAutoLock, autoLockSeconds);
+    await prefs.setBool(_kMask, maskBalances);
+    await prefs.setInt(_kLarge, largeAmountTaka);
   }
 
   static T? _byName<T extends Enum>(List<T> values, String? name) {

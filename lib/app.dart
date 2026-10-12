@@ -5,18 +5,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/bootstrap.dart';
 import 'core/providers.dart';
 import 'core/theme/app_theme.dart';
-import 'features/home/home_screen.dart';
 import 'features/lock/lock_gate.dart';
+import 'features/onboarding/onboarding_flow.dart';
+import 'features/shell/app_shell.dart';
 import 'l10n/gen/app_localizations.dart';
 
 class KhataApp extends ConsumerWidget {
-  const KhataApp({super.key, required this.flavor});
+  const KhataApp({super.key, required this.flavor, this.homeBuilder});
 
   final Flavor flavor;
+
+  /// Overrides the post-unlock screen (used by widget tests).
+  final WidgetBuilder? homeBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prefs = ref.watch(preferencesProvider);
+    final onboarded = ref.watch(onboardingDoneProvider);
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       debugShowCheckedModeBanner: flavor == Flavor.prod ? false : true,
@@ -29,7 +34,11 @@ class KhataApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: buildTheme(prefs.theme),
-      home: const LockGate(child: HomeScreen()),
+      home: onboarded
+          ? LockGate(
+              child: Builder(builder: homeBuilder ?? (_) => const AppShell()),
+            )
+          : const OnboardingFlow(),
     );
   }
 }

@@ -7,7 +7,7 @@ Specs live in [`docs/`](docs): feature spec, technical design, sprint plan.
 
 ## Status
 
-Sprint 0 (foundations) and Sprint 1 (ledger core) — see
+Sprints 0 (foundations), 1 (ledger core) and 2 (onboarding, home, fast entry) — see
 `docs/plan/agent-cashbook-sprint-plan.md`.
 
 | Task | State |
@@ -42,6 +42,26 @@ margin, adjustments) and expense-category accounts. Provider commission on
 cash-out/cash-in is recorded on the transaction but not posted (it is credited
 later; reconciled in Phase 2). Flexiload: `amount` is the price charged, the
 load balance falls by `amount - margin`.
+
+### Sprint 2 (onboarding, home, fast entry)
+
+| Task | State |
+|---|---|
+| S2-01 onboarding (language, wallets/operators, balances, rates, shop; quick start) | done |
+| S2-02 commission setup + effective-dated rate editing (Settings > Commission rates) | done |
+| S2-03 home balance cards (low highlight, tap-to-reveal masking) | done |
+| S2-04 custom keypad (000, backspace, chips, Bangla digits) | done |
+| S2-05 cash-out / cash-in entry with live commission | done |
+| S2-06 undo snackbar + last 5 entries | done |
+| S2-07 learned quick-amount chips + repeat last | done |
+| S2-08 entry guards (negative source, large amount, duplicate) | done |
+| S2-09 float purchase entry | done |
+| S2-10 expense entry with category chips + custom category | done |
+| S2-11 navigation shell (History, Close day, Reports are placeholders) | done |
+
+Not yet: flexiload entry (S3-01), account ledger on card tap (S3-08),
+low-balance thresholds UI (S3-10). The business-day "today" totals use the
+rollover hour (default 4) and are computed when the home screen builds.
 
 ## Develop
 

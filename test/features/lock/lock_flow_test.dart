@@ -11,7 +11,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> _pumpApp(WidgetTester tester, {String? existingPin}) async {
-  SharedPreferences.setMockInitialValues({'pref_language': 'en'});
+  SharedPreferences.setMockInitialValues({
+    'pref_language': 'en',
+    'onboarding_done': true,
+  });
   final prefs = await SharedPreferences.getInstance();
   final store = MemoryKeyValueStore();
   final service = PinService(store: store, hasher: PinHasher(iterations: 10));
@@ -27,7 +30,11 @@ Future<void> _pumpApp(WidgetTester tester, {String? existingPin}) async {
         keyValueStoreProvider.overrideWithValue(store),
         pinServiceProvider.overrideWithValue(service),
       ],
-      child: const KhataApp(flavor: Flavor.dev),
+      child: KhataApp(
+        flavor: Flavor.dev,
+        homeBuilder: (_) =>
+            const Scaffold(body: Text('Your cash book will appear here.')),
+      ),
     ),
   );
   await tester.pumpAndSettle();
@@ -53,7 +60,6 @@ void main() {
     expect(find.text('Confirm your PIN'), findsOneWidget);
     await _enter(tester, '2468');
 
-    expect(find.text('Home'), findsNothing); // placeholder title is app name
     expect(find.text('Your cash book will appear here.'), findsOneWidget);
   });
 

@@ -18,12 +18,20 @@ class SequentialIds implements IdGenerator {
 
 /// In-memory DB with a standard set of accounts and wired repositories.
 class LedgerFixture {
-  LedgerFixture._(this.db, this.ids, this.accounts, this.txns, this.clock);
+  LedgerFixture._(
+    this.db,
+    this.ids,
+    this.accounts,
+    this.txns,
+    this.audit,
+    this.clock,
+  );
 
   final AppDatabase db;
   final SequentialIds ids;
   final AccountRepository accounts;
   final TransactionRepository txns;
+  final AuditLogger audit;
   DateTime Function() clock;
 
   late String cash;
@@ -43,15 +51,16 @@ class LedgerFixture {
     final ids = SequentialIds();
     DateTime clock() => fixedNow;
     final accounts = AccountRepository(db, ids, clock: clock);
+    final audit = AuditLogger(db, ids, clock: clock);
     final txns = TransactionRepository(
       db: db,
       registry: PostingRegistry.standard(),
       ids: ids,
-      audit: AuditLogger(db, ids, clock: clock),
+      audit: audit,
       deviceId: 'test-device',
       clock: clock,
     );
-    final f = LedgerFixture._(db, ids, accounts, txns, clock);
+    final f = LedgerFixture._(db, ids, accounts, txns, audit, clock);
     await accounts.ensureSystemAccounts();
     f.cash = await accounts.create(
       kind: AccountKind.cash,

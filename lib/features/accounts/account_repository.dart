@@ -120,6 +120,14 @@ class AccountRepository {
     return query.watch().map((rows) => rows.map(fromRow).toList());
   }
 
+  /// Active accounts of one [kind], e.g. expense categories.
+  Stream<List<Account>> watchByKind(AccountKind kind) {
+    final query = _db.select(_db.accounts)
+      ..where((t) => t.kind.equals(kind.dbName) & t.isActive.equals(true))
+      ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]);
+    return query.watch().map((rows) => rows.map(fromRow).toList());
+  }
+
   static const _balanceSql = '''
 SELECT a.id AS account_id,
        a.opening_paisa + COALESCE((

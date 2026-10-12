@@ -349,6 +349,510 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{seconds} seconds'**
   String autoLockSeconds(String seconds);
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @saveAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Save anyway'**
+  String get saveAnyway;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get comingSoon;
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get navHistory;
+
+  /// No description provided for @navCloseDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Close day'**
+  String get navCloseDay;
+
+  /// No description provided for @navReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get navReports;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get navSettings;
+
+  /// No description provided for @onbWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Agent Khata'**
+  String get onbWelcomeTitle;
+
+  /// No description provided for @onbWelcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your cash book in about two minutes.'**
+  String get onbWelcomeBody;
+
+  /// No description provided for @onbQuickStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick start with defaults'**
+  String get onbQuickStart;
+
+  /// No description provided for @onbStepByStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up step by step'**
+  String get onbStepByStep;
+
+  /// No description provided for @onbProvidersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Which wallets do you run?'**
+  String get onbProvidersTitle;
+
+  /// No description provided for @onbProvidersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick all that apply. You can add more later.'**
+  String get onbProvidersSubtitle;
+
+  /// No description provided for @onbOperatorsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexiload operators'**
+  String get onbOperatorsTitle;
+
+  /// No description provided for @onbBalancesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening balances'**
+  String get onbBalancesTitle;
+
+  /// No description provided for @onbBalancesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter what you have right now.'**
+  String get onbBalancesSubtitle;
+
+  /// No description provided for @onbCashLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in drawer'**
+  String get onbCashLabel;
+
+  /// No description provided for @onbRatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission rates'**
+  String get onbRatesTitle;
+
+  /// No description provided for @onbRatesNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'These are sample rates only. Please check them with your provider.'**
+  String get onbRatesNotice;
+
+  /// No description provided for @onbShopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop name'**
+  String get onbShopTitle;
+
+  /// No description provided for @onbShopHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Rahim Telecom'**
+  String get onbShopHint;
+
+  /// No description provided for @onbFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish setup'**
+  String get onbFinish;
+
+  /// No description provided for @onbSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting up…'**
+  String get onbSaving;
+
+  /// No description provided for @onbError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not finish setup. Please try again.'**
+  String get onbError;
+
+  /// No description provided for @amountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount'**
+  String get amountInvalid;
+
+  /// No description provided for @rateModePerThousand.
+  ///
+  /// In en, this message translates to:
+  /// **'Per ৳1,000'**
+  String get rateModePerThousand;
+
+  /// No description provided for @rateModePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Percent (%)'**
+  String get rateModePercent;
+
+  /// No description provided for @rateModeFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed ৳'**
+  String get rateModeFixed;
+
+  /// No description provided for @rateValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get rateValue;
+
+  /// No description provided for @rateInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid rate'**
+  String get rateInvalid;
+
+  /// No description provided for @rateTooHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'This looks too high'**
+  String get rateTooHigh;
+
+  /// No description provided for @rateSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate saved'**
+  String get rateSaved;
+
+  /// No description provided for @rateEffectiveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A new rate applies to new entries only.'**
+  String get rateEffectiveNote;
+
+  /// No description provided for @commissionRates.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission rates'**
+  String get commissionRates;
+
+  /// No description provided for @txnCashOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash out'**
+  String get txnCashOut;
+
+  /// No description provided for @txnCashIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in'**
+  String get txnCashIn;
+
+  /// No description provided for @txnFlexiload.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexiload'**
+  String get txnFlexiload;
+
+  /// No description provided for @txnFloatPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy float'**
+  String get txnFloatPurchase;
+
+  /// No description provided for @txnExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get txnExpense;
+
+  /// No description provided for @txnOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get txnOther;
+
+  /// No description provided for @entryWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get entryWallet;
+
+  /// No description provided for @entryPaidFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid from'**
+  String get entryPaidFrom;
+
+  /// No description provided for @entryCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get entryCategory;
+
+  /// No description provided for @entryNewCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'New category'**
+  String get entryNewCategory;
+
+  /// No description provided for @entryCategoryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Category name'**
+  String get entryCategoryName;
+
+  /// No description provided for @entryMoreDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'More details (optional)'**
+  String get entryMoreDetails;
+
+  /// No description provided for @entryCustomerNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer number'**
+  String get entryCustomerNumber;
+
+  /// No description provided for @entryNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get entryNote;
+
+  /// No description provided for @entryTrxId.
+  ///
+  /// In en, this message translates to:
+  /// **'TrxID'**
+  String get entryTrxId;
+
+  /// No description provided for @entryCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission: {amount}'**
+  String entryCommission(String amount);
+
+  /// No description provided for @entryRepeatLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last: {amount}'**
+  String entryRepeatLast(String amount);
+
+  /// No description provided for @entryNoWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a wallet first'**
+  String get entryNoWallet;
+
+  /// No description provided for @entrySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get entrySaved;
+
+  /// No description provided for @entryUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry undone'**
+  String get entryUndone;
+
+  /// No description provided for @entrySaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save. Please try again.'**
+  String get entrySaveFailed;
+
+  /// No description provided for @warnNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'{account} will go below zero'**
+  String warnNegative(String account);
+
+  /// No description provided for @warnLargeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Large amount'**
+  String get warnLargeTitle;
+
+  /// No description provided for @warnLargeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} is a large amount. Save it?'**
+  String warnLargeBody(String amount);
+
+  /// No description provided for @warnDuplicateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible duplicate'**
+  String get warnDuplicateTitle;
+
+  /// No description provided for @warnDuplicateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A similar entry was saved a moment ago. Save again?'**
+  String get warnDuplicateBody;
+
+  /// No description provided for @homeCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get homeCash;
+
+  /// No description provided for @homeFlexiloadTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexiload'**
+  String get homeFlexiloadTotal;
+
+  /// No description provided for @homeLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get homeLow;
+
+  /// No description provided for @homeTapToReveal.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to show'**
+  String get homeTapToReveal;
+
+  /// No description provided for @homeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get homeToday;
+
+  /// No description provided for @homeTodayEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get homeTodayEntries;
+
+  /// No description provided for @homeTodayCashIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in'**
+  String get homeTodayCashIn;
+
+  /// No description provided for @homeTodayCashOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash out'**
+  String get homeTodayCashOut;
+
+  /// No description provided for @homeTodayCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission'**
+  String get homeTodayCommission;
+
+  /// No description provided for @homeRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 5 entries'**
+  String get homeRecent;
+
+  /// No description provided for @homeNoEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries yet. Tap a button above to start.'**
+  String get homeNoEntries;
+
+  /// No description provided for @maskBalances.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide balances until tapped'**
+  String get maskBalances;
+
+  /// No description provided for @largeAmountWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warn for amounts of'**
+  String get largeAmountWarning;
+
+  /// No description provided for @catRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get catRent;
+
+  /// No description provided for @catElectricity.
+  ///
+  /// In en, this message translates to:
+  /// **'Electricity'**
+  String get catElectricity;
+
+  /// No description provided for @catTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get catTransport;
+
+  /// No description provided for @catStaffPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff pay'**
+  String get catStaffPay;
+
+  /// No description provided for @catTea.
+  ///
+  /// In en, this message translates to:
+  /// **'Tea & snacks'**
+  String get catTea;
+
+  /// No description provided for @catOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get catOther;
 }
 
 class _AppLocalizationsDelegate

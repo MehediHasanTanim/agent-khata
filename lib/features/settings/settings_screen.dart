@@ -6,6 +6,7 @@ import '../../core/i18n/digit_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/settings/app_preferences.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../commission/commission_rates_screen.dart';
 import '../debug/ledger_debug_screen.dart';
 import '../diagnostics/diagnostics_screen.dart';
 import '../lock/lock_controller.dart';
@@ -110,14 +111,44 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          _Header(l10n.largeAmountWarning),
+          RadioGroup<int>(
+            groupValue: prefs.largeAmountTaka,
+            onChanged: (v) => controller.update(
+              (p) => p.copyWith(largeAmountTaka: v ?? p.largeAmountTaka),
+            ),
+            child: Column(
+              children: [
+                for (final t in const [10000, 50000, 100000])
+                  RadioListTile<int>(
+                    value: t,
+                    title: Text(
+                      '৳ ${digits.localize(digits.group(t.toString()))}',
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          SwitchListTile(
+            value: prefs.maskBalances,
+            title: Text(l10n.maskBalances),
+            onChanged: (v) =>
+                controller.update((p) => p.copyWith(maskBalances: v)),
+          ),
           const Divider(),
+          ListTile(
+            leading: const Icon(Icons.percent),
+            title: Text(l10n.commissionRates),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const CommissionRatesScreen(),
+              ),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.lock_outline),
             title: Text(l10n.lockNow),
-            onTap: () {
-              Navigator.of(context).popUntil((r) => r.isFirst);
-              ref.read(lockControllerProvider.notifier).lock();
-            },
+            onTap: () => ref.read(lockControllerProvider.notifier).lock(),
           ),
           if (ref.watch(flavorProvider) == Flavor.dev)
             ListTile(

@@ -2,12 +2,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/accounts/account_repository.dart';
+import '../features/commission/commission_rule.dart';
 import '../features/commission/commission_rule_repository.dart';
+import '../features/onboarding/onboarding_service.dart';
+import '../features/transactions/transaction_queries.dart';
 import '../features/transactions/transaction_repository.dart';
 import 'audit/audit_logger.dart';
 import 'bootstrap.dart';
 import 'db/app_database.dart';
+import 'db/db_settings.dart';
+import 'ledger/account.dart';
 import 'ledger/strategies.dart';
+import 'money/money.dart';
 import 'security/key_value_store.dart';
 import 'security/pin_service.dart';
 import 'settings/app_preferences.dart';
@@ -65,8 +71,55 @@ final accountRepositoryProvider = Provider<AccountRepository>(
 );
 
 final commissionRuleRepositoryProvider = Provider<CommissionRuleRepository>(
-  (ref) => CommissionRuleRepository(ref.watch(databaseProvider)),
+  (ref) => CommissionRuleRepository(
+    ref.watch(databaseProvider),
+    ref.watch(idGeneratorProvider),
+    ref.watch(auditLoggerProvider),
+  ),
 );
+
+final transactionQueriesProvider = Provider<TransactionQueries>(
+  (ref) => TransactionQueries(ref.watch(databaseProvider)),
+);
+
+final onboardingServiceProvider = Provider<OnboardingService>(
+  (ref) => OnboardingService(
+    db: ref.watch(databaseProvider),
+    accounts: ref.watch(accountRepositoryProvider),
+    rules: ref.watch(commissionRuleRepositoryProvider),
+  ),
+);
+
+/// Counted accounts (cash, wallets, loads, bank), live.
+final accountsProvider = StreamProvider<List<Account>>(
+  (ref) => ref.watch(accountRepositoryProvider).watchCounted(),
+);
+
+/// Live balance of every account, keyed by account id.
+final balancesProvider = StreamProvider<Map<String, Money>>(
+  (ref) => ref.watch(accountRepositoryProvider).watchBalances(),
+);
+
+final commissionRulesProvider = StreamProvider<List<CommissionRule>>(
+  (ref) => ref.watch(commissionRuleRepositoryProvider).watchAll(),
+);
+
+/// Whether first-run onboarding has been completed.
+final onboardingDoneProvider = NotifierProvider<OnboardingDone, bool>(
+  OnboardingDone.new,
+);
+
+class OnboardingDone extends Notifier<bool> {
+  static const _key = 'onboarding_done';
+
+  @override
+  bool build() => ref.watch(sharedPreferencesProvider).getBool(_key) ?? false;
+
+  Future<void> complete() async {
+    state = true;
+    await ref.read(sharedPreferencesProvider).setBool(_key, true);
+  }
+}
 
 final postingRegistryProvider = Provider<PostingRegistry>(
   (ref) => PostingRegistry.standard(),
@@ -91,4 +144,9 @@ final transactionRepositoryProvider = Provider<TransactionRepository>(
     audit: ref.watch(auditLoggerProvider),
     deviceId: ref.watch(deviceIdProvider),
   ),
+);
+
+/// Business-day rollover hour from the `setting` table.
+final dayRolloverHourProvider = FutureProvider<int>(
+  (ref) => DbSettings(ref.watch(databaseProvider)).dayRolloverHour(),
 );

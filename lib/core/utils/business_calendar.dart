@@ -24,4 +24,18 @@ class BusinessCalendar {
     final d = shifted.day.toString().padLeft(2, '0');
     return '${shifted.year.toString().padLeft(4, '0')}-$m-$d';
   }
+
+  /// UTC `[start, end)` of the business day that [instant] belongs to.
+  ({DateTime start, DateTime end}) dayRange(DateTime instant) {
+    final shifted = dhakaWallClock(instant)
+        .subtract(Duration(hours: rolloverHour));
+    final dhakaStart = DateTime.utc(
+      shifted.year,
+      shifted.month,
+      shifted.day,
+      rolloverHour,
+    );
+    final start = dhakaStart.subtract(dhakaOffset);
+    return (start: start, end: start.add(const Duration(days: 1)));
+  }
 }

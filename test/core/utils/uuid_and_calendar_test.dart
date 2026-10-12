@@ -5,6 +5,7 @@ import 'package:agentkhata/core/utils/uuid_v7.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  dayRangeTests();
   group('UuidV7Generator', () {
     test('has v7 version and RFC variant bits', () {
       final id = UuidV7Generator(random: Random(1)).next();
@@ -73,6 +74,37 @@ void main() {
       const cal = BusinessCalendar(rolloverHour: 4);
       expect(cal.businessDateOf(DateTime.utc(2026, 12, 31, 19)), '2026-12-31');
       expect(cal.businessDateOf(DateTime.utc(2026, 12, 31, 22)), '2027-01-01');
+    });
+  });
+}
+
+void dayRangeTests() {
+  group('BusinessCalendar.dayRange', () {
+    test('midnight rollover: Dhaka day = 18:00 UTC to 18:00 UTC', () {
+      const cal = BusinessCalendar();
+      final r = cal.dayRange(DateTime.utc(2026, 10, 20, 10)); // 16:00 Dhaka
+      expect(r.start, DateTime.utc(2026, 10, 19, 18));
+      expect(r.end, DateTime.utc(2026, 10, 20, 18));
+    });
+
+    test('4am rollover: day runs 04:00 to 04:00 Dhaka', () {
+      const cal = BusinessCalendar(rolloverHour: 4);
+      // 01:30 Dhaka on the 21st belongs to business day the 20th.
+      final r = cal.dayRange(DateTime.utc(2026, 10, 20, 19, 30));
+      expect(r.start, DateTime.utc(2026, 10, 19, 22)); // 04:00 Dhaka on 20th
+      expect(r.end, DateTime.utc(2026, 10, 20, 22));
+    });
+
+    test('range agrees with businessDateOf', () {
+      const cal = BusinessCalendar(rolloverHour: 4);
+      final at = DateTime.utc(2026, 12, 31, 21);
+      final r = cal.dayRange(at);
+      expect(cal.businessDateOf(r.start), cal.businessDateOf(at));
+      expect(
+        cal.businessDateOf(r.end.subtract(const Duration(milliseconds: 1))),
+        cal.businessDateOf(at),
+      );
+      expect(cal.businessDateOf(r.end), isNot(cal.businessDateOf(at)));
     });
   });
 }

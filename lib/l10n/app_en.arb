@@ -83,5 +83,117 @@
         "type": "String"
       }
     }
-  }
+  },
+  "next": "Next",
+  "back": "Back",
+  "save": "Save",
+  "cancel": "Cancel",
+  "saveAnyway": "Save anyway",
+  "undo": "Undo",
+  "comingSoon": "Coming soon",
+  "navHome": "Home",
+  "navHistory": "History",
+  "navCloseDay": "Close day",
+  "navReports": "Reports",
+  "navSettings": "Settings",
+  "onbWelcomeTitle": "Welcome to Agent Khata",
+  "onbWelcomeBody": "Set up your cash book in about two minutes.",
+  "onbQuickStart": "Quick start with defaults",
+  "onbStepByStep": "Set up step by step",
+  "onbProvidersTitle": "Which wallets do you run?",
+  "onbProvidersSubtitle": "Pick all that apply. You can add more later.",
+  "onbOperatorsTitle": "Flexiload operators",
+  "onbBalancesTitle": "Opening balances",
+  "onbBalancesSubtitle": "Enter what you have right now.",
+  "onbCashLabel": "Cash in drawer",
+  "onbRatesTitle": "Commission rates",
+  "onbRatesNotice": "These are sample rates only. Please check them with your provider.",
+  "onbShopTitle": "Shop name",
+  "onbShopHint": "e.g. Rahim Telecom",
+  "onbFinish": "Finish setup",
+  "onbSaving": "Setting up…",
+  "onbError": "Could not finish setup. Please try again.",
+  "amountInvalid": "Enter a valid amount",
+  "rateModePerThousand": "Per ৳1,000",
+  "rateModePercent": "Percent (%)",
+  "rateModeFixed": "Fixed ৳",
+  "rateValue": "Value",
+  "rateInvalid": "Invalid rate",
+  "rateTooHigh": "This looks too high",
+  "rateSaved": "Rate saved",
+  "rateEffectiveNote": "A new rate applies to new entries only.",
+  "commissionRates": "Commission rates",
+  "txnCashOut": "Cash out",
+  "txnCashIn": "Cash in",
+  "txnFlexiload": "Flexiload",
+  "txnFloatPurchase": "Buy float",
+  "txnExpense": "Expense",
+  "txnOther": "Other",
+  "entryWallet": "Wallet",
+  "entryPaidFrom": "Paid from",
+  "entryCategory": "Category",
+  "entryNewCategory": "New category",
+  "entryCategoryName": "Category name",
+  "entryMoreDetails": "More details (optional)",
+  "entryCustomerNumber": "Customer number",
+  "entryNote": "Note",
+  "entryTrxId": "TrxID",
+  "entryCommission": "Commission: {amount}",
+  "@entryCommission": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "entryRepeatLast": "Last: {amount}",
+  "@entryRepeatLast": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "entryNoWallet": "Add a wallet first",
+  "entrySaved": "Saved",
+  "entryUndone": "Entry undone",
+  "entrySaveFailed": "Could not save. Please try again.",
+  "warnNegative": "{account} will go below zero",
+  "@warnNegative": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "warnLargeTitle": "Large amount",
+  "warnLargeBody": "{amount} is a large amount. Save it?",
+  "@warnLargeBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "warnDuplicateTitle": "Possible duplicate",
+  "warnDuplicateBody": "A similar entry was saved a moment ago. Save again?",
+  "homeCash": "Cash",
+  "homeFlexiloadTotal": "Flexiload",
+  "homeLow": "Low",
+  "homeTapToReveal": "Tap to show",
+  "homeToday": "Today",
+  "homeTodayEntries": "Entries",
+  "homeTodayCashIn": "Cash in",
+  "homeTodayCashOut": "Cash out",
+  "homeTodayCommission": "Commission",
+  "homeRecent": "Last 5 entries",
+  "homeNoEntries": "No entries yet. Tap a button above to start.",
+  "maskBalances": "Hide balances until tapped",
+  "largeAmountWarning": "Warn for amounts of",
+  "catRent": "Rent",
+  "catElectricity": "Electricity",
+  "catTransport": "Transport",
+  "catStaffPay": "Staff pay",
+  "catTea": "Tea & snacks",
+  "catOther": "Other"
 }
