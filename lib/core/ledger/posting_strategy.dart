@@ -33,7 +33,11 @@ abstract class PostingStrategy {
 
 /// Shared validation helpers for strategies.
 mixin PostingChecks {
-  void requireBasics(TransactionDraft d, {bool allowCharge = false}) {
+  void requireBasics(
+    TransactionDraft d, {
+    bool allowCharge = false,
+    bool allowDiscount = false,
+  }) {
     if (!d.amount.isPositive) {
       throw const PostingException('amount_not_positive', 'Amount must be > 0');
     }
@@ -44,6 +48,24 @@ mixin PostingChecks {
       throw const PostingException(
         'charge_not_allowed',
         'This transaction type does not take a charge',
+      );
+    }
+    if (d.discount.isNegative || (!allowDiscount && !d.discount.isZero)) {
+      throw const PostingException(
+        'discount_not_allowed',
+        'This transaction type does not take a discount',
+      );
+    }
+    if (d.discount > d.amount) {
+      throw const PostingException(
+        'discount_exceeds_amount',
+        'Discount cannot exceed the amount',
+      );
+    }
+    if (!d.discount.isZero && !d.charge.isZero) {
+      throw const PostingException(
+        'charge_and_discount',
+        'Use either a charge or a discount, not both',
       );
     }
     if (d.commission.isNegative) {

@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   dayRangeTests();
+  monthRangeTests();
   group('UuidV7Generator', () {
     test('has v7 version and RFC variant bits', () {
       final id = UuidV7Generator(random: Random(1)).next();
@@ -105,6 +106,31 @@ void dayRangeTests() {
         cal.businessDateOf(at),
       );
       expect(cal.businessDateOf(r.end), isNot(cal.businessDateOf(at)));
+    });
+  });
+}
+
+void monthRangeTests() {
+  group('BusinessCalendar.monthRange', () {
+    test('month boundaries follow Dhaka time and the rollover hour', () {
+      const cal = BusinessCalendar(rolloverHour: 4);
+      final r = cal.monthRange(DateTime.utc(2026, 10, 20, 10));
+      // 1 Oct 04:00 Dhaka = 30 Sep 22:00 UTC; 1 Nov 04:00 Dhaka likewise.
+      expect(r.start, DateTime.utc(2026, 9, 30, 22));
+      expect(r.end, DateTime.utc(2026, 10, 31, 22));
+    });
+
+    test('early morning before rollover belongs to the previous month', () {
+      const cal = BusinessCalendar(rolloverHour: 4);
+      // 02:00 Dhaka on 1 Nov = 20:00 UTC on 31 Oct -> still October.
+      final r = cal.monthRange(DateTime.utc(2026, 10, 31, 20));
+      expect(r.start, DateTime.utc(2026, 9, 30, 22));
+    });
+
+    test('December rolls into January', () {
+      const cal = BusinessCalendar();
+      final r = cal.monthRange(DateTime.utc(2026, 12, 15));
+      expect(r.end, DateTime.utc(2026, 12, 31, 18));
     });
   });
 }

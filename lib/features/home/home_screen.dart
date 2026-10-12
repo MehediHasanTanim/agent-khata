@@ -10,6 +10,7 @@ import '../../core/providers.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/business_calendar.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../accounts/account_ledger_screen.dart';
 import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
 import '../entry/entry_screen.dart';
 import '../transactions/transaction_queries.dart';
@@ -87,11 +88,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       (sum, a) => sum + (balances[a.id] ?? Money.zero),
     );
 
+    final lowLabels = [
+      for (final a in accounts)
+        if (a.lowAlert != null && (balances[a.id] ?? Money.zero) <= a.lowAlert!)
+          a.kind == AccountKind.cash ? l10n.homeCash : a.label,
+    ];
+
     final cards = <BalanceCardData>[
       for (final a in accounts)
         if (a.kind != AccountKind.load && a.kind != AccountKind.bank)
           BalanceCardData(
             id: a.id,
+            account: a,
             label: a.kind == AccountKind.cash ? l10n.homeCash : a.label,
             balance: balances[a.id] ?? Money.zero,
             isLow:
@@ -141,6 +149,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
+          if (lowLabels.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: tokens.warning.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: tokens.warning),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.warning_amber, color: tokens.warning),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(l10n.lowBanner(lowLabels.join(', ')))),
+                ],
+              ),
+            ),
           SizedBox(
             height: 112,
             child: ListView.separated(
@@ -155,13 +180,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   data: c,
                   amountText: hidden ? '৳ ••••' : money.format(c.balance),
                   hidden: hidden,
-                  onTap: prefs.maskBalances
-                      ? () => setState(() {
-                          _revealed.contains(c.id)
-                              ? _revealed.remove(c.id)
-                              : _revealed.add(c.id);
-                        })
-                      : null,
+                  onTap: () {
+                    if (hidden) {
+                      setState(() => _revealed.add(c.id));
+                    } else if (c.account != null) {
+                      Navigator.of(context).push<void>(
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              AccountLedgerScreen(account: c.account!),
+                        ),
+                      );
+                    }
+                  },
                 );
               },
             ),
@@ -189,17 +219,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Row(
                   children: [
                     action(
+                      EntryKind.flexiload,
+                      l10n.txnFlexiload,
+                      Icons.phone_android,
+                      tokens.cashIn,
+                    ),
+                    action(
                       EntryKind.floatPurchase,
                       l10n.txnFloatPurchase,
                       Icons.account_balance_wallet_outlined,
                       theme.colorScheme.primary,
                     ),
+                  ],
+                ),
+                Row(
+                  children: [
                     action(
                       EntryKind.expense,
                       l10n.txnExpense,
                       Icons.receipt_long_outlined,
                       theme.colorScheme.secondary,
                     ),
+                    const Expanded(child: SizedBox.shrink()),
                   ],
                 ),
               ],

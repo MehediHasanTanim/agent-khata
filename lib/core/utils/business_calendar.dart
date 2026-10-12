@@ -38,4 +38,17 @@ class BusinessCalendar {
     final start = dhakaStart.subtract(dhakaOffset);
     return (start: start, end: start.add(const Duration(days: 1)));
   }
+
+  /// UTC `[start, end)` of the business month containing [instant].
+  ({DateTime start, DateTime end}) monthRange(DateTime instant) {
+    final shifted = dhakaWallClock(instant)
+        .subtract(Duration(hours: rolloverHour));
+    DateTime boundary(int year, int month) =>
+        DateTime.utc(year, month, 1, rolloverHour).subtract(dhakaOffset);
+    final start = boundary(shifted.year, shifted.month);
+    final end = shifted.month == 12
+        ? boundary(shifted.year + 1, 1)
+        : boundary(shifted.year, shifted.month + 1);
+    return (start: start, end: end);
+  }
 }

@@ -142,10 +142,11 @@ abstract class _MoveStrategy extends PostingStrategy with PostingChecks {
   Set<AccountKind> get fromKinds;
   Set<AccountKind> get toKinds;
   bool get allowCharge => false;
+  bool get allowDiscount => false;
 
   @override
   void validate(TransactionDraft d, AccountResolver accounts) {
-    requireBasics(d, allowCharge: allowCharge);
+    requireBasics(d, allowCharge: allowCharge, allowDiscount: allowDiscount);
     requireDistinct(d);
     final from = requireAccount(d.fromAccountId, accounts, fromKinds, 'from');
     final to = requireAccount(d.toAccountId, accounts, toKinds, 'to');
@@ -160,7 +161,7 @@ abstract class _MoveStrategy extends PostingStrategy with PostingChecks {
     final entries = [
       LedgerEntryDraft(
         accountId: d.fromAccountId!,
-        deltaPaisa: -(d.amount.paisa + d.charge.paisa),
+        deltaPaisa: -(d.amount.paisa + d.charge.paisa - d.discount.paisa),
       ),
       LedgerEntryDraft(accountId: d.toAccountId!, deltaPaisa: d.amount.paisa),
       if (!d.charge.isZero)
@@ -168,15 +169,25 @@ abstract class _MoveStrategy extends PostingStrategy with PostingChecks {
           accountId: accounts.externalAccountId,
           deltaPaisa: d.charge.paisa,
         ),
+      if (!d.discount.isZero)
+        LedgerEntryDraft(
+          accountId: accounts.externalAccountId,
+          deltaPaisa: -d.discount.paisa,
+        ),
     ];
     assertBalanced(entries);
     return entries;
   }
 }
 
-/// Buying e-float (or load stock) with cash or from the bank.
+/// Buying e-float (or load stock) with cash or from the bank. `amount` is
+/// what arrives; a `charge` means more was paid, a `discount` means less.
 class FloatPurchaseStrategy extends _MoveStrategy {
   const FloatPurchaseStrategy();
+  @override
+  bool get allowCharge => true;
+  @override
+  bool get allowDiscount => true;
   @override
   TransactionType get type => TransactionType.floatPurchase;
   @override

@@ -7,7 +7,7 @@ Specs live in [`docs/`](docs): feature spec, technical design, sprint plan.
 
 ## Status
 
-Sprints 0 (foundations), 1 (ledger core) and 2 (onboarding, home, fast entry) — see
+Sprints 0 (foundations), 1 (ledger core), 2 (onboarding, home, fast entry) and 3 (history, edit/void, flexiload, ledgers) — see
 `docs/plan/agent-cashbook-sprint-plan.md`.
 
 | Task | State |
@@ -62,6 +62,23 @@ load balance falls by `amount - margin`.
 Not yet: flexiload entry (S3-01), account ledger on card tap (S3-08),
 low-balance thresholds UI (S3-10). The business-day "today" totals use the
 rollover hour (default 4) and are computed when the home screen builds.
+
+### Sprint 3 (history, edit/void, flexiload, ledgers)
+
+| Task | State |
+|---|---|
+| S3-01 flexiload entry (operator, price, live margin) | done |
+| S3-02 load purchase (float purchase to a load account, optional amount paid -> charge/discount) | done |
+| S3-03 history list (day groups, type icons+text, keyset paging, Today/Yesterday/Week/Month/All) | done |
+| S3-04 search (amount, number, name, note, TrxID) + type/account/date filters | done |
+| S3-05 transaction detail (commission snapshot, accounts, audit trail, lineage) | done |
+| S3-06 void with required reason | done |
+| S3-07 edit = new txn + void original, atomic | done |
+| S3-08 account ledger (running balance, range filter, paper-style columns) | done |
+| S3-09 manual balance adjustment with mandatory reason | done |
+| S3-10 low-balance thresholds + home banner | done (local notification deferred to S4-10 with reminders) |
+| S3-11 customer quick-fill (opt-in, stored only on device) | done |
+| S3-12 expense list = History filtered to Expense, with totals | done |
 
 ## Develop
 

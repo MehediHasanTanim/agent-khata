@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/ledger/account.dart';
 import '../../core/money/money.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../l10n/gen/app_localizations.dart';
@@ -10,9 +11,13 @@ class BalanceCardData {
     required this.label,
     required this.balance,
     required this.isLow,
+    this.account,
   });
 
   final String id;
+
+  /// The account behind the card; null for the combined flexiload card.
+  final Account? account;
   final String label;
   final Money balance;
   final bool isLow;

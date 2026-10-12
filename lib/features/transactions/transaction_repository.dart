@@ -71,6 +71,7 @@ class TransactionRepository {
               customerNumber: Value(draft.customerNumber),
               reference: Value(draft.reference),
               note: Value(draft.note),
+              replacesTxnId: Value(draft.replacesTxnId),
               createdBy: draft.createdBy,
               shiftId: Value(draft.shiftId),
               deviceId: _deviceId,
@@ -101,6 +102,7 @@ class TransactionRepository {
           'commission_paisa': draft.commission.paisa,
           'from': draft.fromAccountId,
           'to': draft.toAccountId,
+          if (draft.replacesTxnId != null) 'replaces': draft.replacesTxnId,
         },
       );
       return id;
@@ -114,43 +116,82 @@ class TransactionRepository {
     required String reason,
     required String userId,
   }) {
+    _requireReason(reason);
+    return _db.transaction(
+      () => _voidRow(txnId, reason: reason, userId: userId, action: 'txn_void'),
+    );
+  }
+
+  /// Replaces [originalId] with [replacement]: a new transaction pointing at
+  /// the original, and the original voided, in one atomic step. Returns the
+  /// new transaction id. Throws [DayLockedException] if either side is in a
+  /// closed day.
+  Future<String> edit(
+    String originalId,
+    TransactionDraft replacement, {
+    required String userId,
+    String reason = 'edited',
+  }) {
+    _requireReason(reason);
+    return _db.transaction(() async {
+      final newId = await post(
+        replacement.withReplaces(originalId),
+        // Posting first lets validation fail before anything is voided.
+      );
+      await _voidRow(
+        originalId,
+        reason: reason,
+        userId: userId,
+        action: 'txn_edit',
+        extra: {'replaced_by': newId},
+      );
+      return newId;
+    });
+  }
+
+  void _requireReason(String reason) {
     if (reason.trim().isEmpty) {
       throw ArgumentError.value(reason, 'reason', 'a reason is required');
     }
-    return _db.transaction(() async {
-      final row = await (_db.select(
-        _db.txns,
-      )..where((t) => t.id.equals(txnId))).getSingleOrNull();
-      if (row == null) throw StateError('Unknown transaction $txnId');
-      if (row.status == 'void') {
-        throw StateError('Transaction $txnId is already void');
-      }
-      if (row.dayCloseId != null) {
-        final dc = await (_db.select(
-          _db.dayCloses,
-        )..where((t) => t.id.equals(row.dayCloseId!))).getSingle();
-        if (dc.status != 'reopened') {
-          throw DayLockedException(dc.businessDate);
-        }
-      }
-      final now = _clock().toUtc().millisecondsSinceEpoch;
-      await (_db.update(_db.txns)..where((t) => t.id.equals(txnId))).write(
-        TxnsCompanion(
-          status: const Value('void'),
-          voidReason: Value(reason),
-          voidedAt: Value(now),
-        ),
-      );
-      await _audit.log(
-        userId: userId,
-        action: 'txn_void',
-        entity: 'txn',
-        entityId: txnId,
-        before: {'status': 'active'},
-        after: {'status': 'void'},
-        reason: reason,
-      );
-    });
+  }
+
+  Future<void> _voidRow(
+    String txnId, {
+    required String reason,
+    required String userId,
+    required String action,
+    Map<String, Object?>? extra,
+  }) async {
+    final row = await (_db.select(
+      _db.txns,
+    )..where((t) => t.id.equals(txnId))).getSingleOrNull();
+    if (row == null) throw StateError('Unknown transaction $txnId');
+    if (row.status == 'void') {
+      throw StateError('Transaction $txnId is already void');
+    }
+    if (row.dayCloseId != null) {
+      final dc = await (_db.select(
+        _db.dayCloses,
+      )..where((t) => t.id.equals(row.dayCloseId!))).getSingle();
+      if (dc.status != 'reopened') throw DayLockedException(dc.businessDate);
+    }
+    final now = _clock().toUtc().millisecondsSinceEpoch;
+    await (_db.update(_db.txns)..where((t) => t.id.equals(txnId))).write(
+      TxnsCompanion(
+        status: const Value('void'),
+        voidReason: Value(reason),
+        voidedAt: Value(now),
+      ),
+    );
+    await _audit.log(
+      userId: userId,
+      action: action,
+      entity: 'txn',
+      entityId: txnId,
+      before: {'status': 'active'},
+      after: {'status': 'void', ...?extra},
+      reason: reason,
+    );
   }
 
   Future<AccountResolver> _loadResolver(TransactionDraft draft) async {

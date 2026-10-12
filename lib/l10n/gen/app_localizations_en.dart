@@ -410,4 +410,199 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catOther => 'Other';
+
+  @override
+  String get histToday => 'Today';
+
+  @override
+  String get histYesterday => 'Yesterday';
+
+  @override
+  String get histWeek => 'Week';
+
+  @override
+  String get histMonth => 'Month';
+
+  @override
+  String get histAll => 'All';
+
+  @override
+  String get histSearchHint => 'Search amount, number, note, TrxID';
+
+  @override
+  String get histEmpty => 'Nothing found';
+
+  @override
+  String histCount(String count) {
+    return '$count entries';
+  }
+
+  @override
+  String histTotal(String amount) {
+    return 'Total $amount';
+  }
+
+  @override
+  String get histLoadMore => 'Load more';
+
+  @override
+  String get histAccountFilter => 'Account';
+
+  @override
+  String get histAllAccounts => 'All accounts';
+
+  @override
+  String get histClearFilters => 'Clear filters';
+
+  @override
+  String get labelVoided => 'Voided';
+
+  @override
+  String get labelLocked => 'Closed day';
+
+  @override
+  String get detailTitle => 'Entry details';
+
+  @override
+  String get detailAmount => 'Amount';
+
+  @override
+  String get detailCharge => 'Charge';
+
+  @override
+  String get detailCommission => 'Commission';
+
+  @override
+  String detailRule(String rule) {
+    return 'Rate used: $rule';
+  }
+
+  @override
+  String get detailWhen => 'Time';
+
+  @override
+  String get detailRecorded => 'Recorded at';
+
+  @override
+  String get detailBy => 'Entered by';
+
+  @override
+  String get detailAccounts => 'Accounts';
+
+  @override
+  String get detailAudit => 'Change history';
+
+  @override
+  String get detailReplaces => 'This entry replaces an earlier one';
+
+  @override
+  String get detailReplacedBy => 'Replaced by a newer entry';
+
+  @override
+  String get detailVoid => 'Void entry';
+
+  @override
+  String get detailEdit => 'Edit';
+
+  @override
+  String get detailVoidReason => 'Reason';
+
+  @override
+  String get detailVoidConfirm => 'Void';
+
+  @override
+  String detailVoidedBecause(String reason) {
+    return 'Voided: $reason';
+  }
+
+  @override
+  String get detailLockedHint =>
+      'This day is closed, so the entry cannot be changed.';
+
+  @override
+  String get detailActionFailed => 'Could not complete this action.';
+
+  @override
+  String ledgerTitle(String account) {
+    return '$account statement';
+  }
+
+  @override
+  String get ledgerDate => 'Date';
+
+  @override
+  String get ledgerIn => 'In';
+
+  @override
+  String get ledgerOut => 'Out';
+
+  @override
+  String get ledgerBalance => 'Balance';
+
+  @override
+  String get ledgerAdjust => 'Adjust balance';
+
+  @override
+  String get ledgerEmpty => 'No entries in this period';
+
+  @override
+  String get adjTitle => 'Adjust balance';
+
+  @override
+  String get adjIncrease => 'Increase';
+
+  @override
+  String get adjDecrease => 'Decrease';
+
+  @override
+  String get adjReason => 'Reason (required)';
+
+  @override
+  String adjCurrent(String amount) {
+    return 'Current balance: $amount';
+  }
+
+  @override
+  String adjNew(String amount) {
+    return 'New balance: $amount';
+  }
+
+  @override
+  String get lowTitle => 'Low balance alerts';
+
+  @override
+  String get lowSubtitle =>
+      'Warn me when an account falls to this amount. Leave empty for no alert.';
+
+  @override
+  String lowBanner(String accounts) {
+    return 'Low balance: $accounts';
+  }
+
+  @override
+  String get rememberCustomers => 'Remember customers';
+
+  @override
+  String get rememberCustomersHint =>
+      'Suggest numbers and names you typed before. Stored only on this phone.';
+
+  @override
+  String get entryCustomerName => 'Customer name';
+
+  @override
+  String get entryOperator => 'Operator';
+
+  @override
+  String entryMargin(String amount) {
+    return 'Margin: $amount';
+  }
+
+  @override
+  String get entryPaidAmount => 'Amount paid (if different)';
+
+  @override
+  String get entryEditTitle => 'Edit entry';
+
+  @override
+  String get entryNoOperator => 'Add a flexiload operator first';
 }

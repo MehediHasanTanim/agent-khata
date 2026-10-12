@@ -4,7 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../features/accounts/account_repository.dart';
 import '../features/commission/commission_rule.dart';
 import '../features/commission/commission_rule_repository.dart';
+import '../features/customers/customer_repository.dart';
 import '../features/onboarding/onboarding_service.dart';
+import '../features/transactions/history_queries.dart';
 import '../features/transactions/transaction_queries.dart';
 import '../features/transactions/transaction_repository.dart';
 import 'audit/audit_logger.dart';
@@ -149,4 +151,26 @@ final transactionRepositoryProvider = Provider<TransactionRepository>(
 /// Business-day rollover hour from the `setting` table.
 final dayRolloverHourProvider = FutureProvider<int>(
   (ref) => DbSettings(ref.watch(databaseProvider)).dayRolloverHour(),
+);
+
+final historyQueriesProvider = Provider<HistoryQueries>(
+  (ref) => HistoryQueries(ref.watch(databaseProvider)),
+);
+
+final accountLedgerQueriesProvider = Provider<AccountLedgerQueries>(
+  (ref) => AccountLedgerQueries(ref.watch(databaseProvider)),
+);
+
+final transactionDetailLoaderProvider = Provider<TransactionDetailLoader>(
+  (ref) => TransactionDetailLoader(
+    ref.watch(databaseProvider),
+    ref.watch(historyQueriesProvider),
+  ),
+);
+
+final customerRepositoryProvider = Provider<CustomerRepository>(
+  (ref) => CustomerRepository(
+    ref.watch(databaseProvider),
+    ref.watch(idGeneratorProvider),
+  ),
 );

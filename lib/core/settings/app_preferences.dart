@@ -16,6 +16,7 @@ class AppPreferences {
     this.autoLockSeconds = 30,
     this.maskBalances = false,
     this.largeAmountTaka = 50000,
+    this.rememberCustomers = false,
   });
 
   final String languageCode;
@@ -32,6 +33,9 @@ class AppPreferences {
   /// Entries at or above this many taka ask for confirmation.
   final int largeAmountTaka;
 
+  /// Opt-in: remember customer numbers/names and suggest them.
+  final bool rememberCustomers;
+
   Locale get locale => Locale(languageCode);
 
   DigitFormatter get digits => DigitFormatter(
@@ -47,6 +51,7 @@ class AppPreferences {
     int? autoLockSeconds,
     bool? maskBalances,
     int? largeAmountTaka,
+    bool? rememberCustomers,
   }) => AppPreferences(
     languageCode: languageCode ?? this.languageCode,
     digitStyle: digitStyle ?? this.digitStyle,
@@ -62,6 +67,7 @@ class AppPreferences {
   static const _kAutoLock = 'pref_auto_lock_s';
   static const _kMask = 'pref_mask_balances';
   static const _kLarge = 'pref_large_amount';
+  static const _kRemember = 'pref_remember_customers';
 
   factory AppPreferences.load(SharedPreferences prefs) {
     const d = AppPreferences();
@@ -76,6 +82,7 @@ class AppPreferences {
       autoLockSeconds: prefs.getInt(_kAutoLock) ?? d.autoLockSeconds,
       maskBalances: prefs.getBool(_kMask) ?? d.maskBalances,
       largeAmountTaka: prefs.getInt(_kLarge) ?? d.largeAmountTaka,
+      rememberCustomers: prefs.getBool(_kRemember) ?? d.rememberCustomers,
     );
   }
 
@@ -87,6 +94,7 @@ class AppPreferences {
     await prefs.setInt(_kAutoLock, autoLockSeconds);
     await prefs.setBool(_kMask, maskBalances);
     await prefs.setInt(_kLarge, largeAmountTaka);
+    await prefs.setBool(_kRemember, rememberCustomers);
   }
 
   static T? _byName<T extends Enum>(List<T> values, String? name) {

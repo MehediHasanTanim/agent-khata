@@ -91,6 +91,13 @@ class AccountRepository {
     );
   }
 
+  /// Sets or clears (null) the low-balance threshold.
+  Future<void> setLowAlert(String id, Money? threshold) async {
+    await (_db.update(_db.accounts)..where((t) => t.id.equals(id))).write(
+      AccountsCompanion(lowAlertPaisa: Value(threshold?.paisa)),
+    );
+  }
+
   /// Deactivated accounts keep their history but cannot receive postings.
   Future<void> setActive(String id, {required bool active}) async {
     await (_db.update(_db.accounts)..where((t) => t.id.equals(id))).write(

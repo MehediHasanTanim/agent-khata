@@ -195,5 +195,126 @@
   "catTransport": "Transport",
   "catStaffPay": "Staff pay",
   "catTea": "Tea & snacks",
-  "catOther": "Other"
+  "catOther": "Other",
+  "histToday": "Today",
+  "histYesterday": "Yesterday",
+  "histWeek": "Week",
+  "histMonth": "Month",
+  "histAll": "All",
+  "histSearchHint": "Search amount, number, note, TrxID",
+  "histEmpty": "Nothing found",
+  "histCount": "{count} entries",
+  "@histCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "histTotal": "Total {amount}",
+  "@histTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "histLoadMore": "Load more",
+  "histAccountFilter": "Account",
+  "histAllAccounts": "All accounts",
+  "histClearFilters": "Clear filters",
+  "labelVoided": "Voided",
+  "labelLocked": "Closed day",
+  "detailTitle": "Entry details",
+  "detailAmount": "Amount",
+  "detailCharge": "Charge",
+  "detailCommission": "Commission",
+  "detailRule": "Rate used: {rule}",
+  "@detailRule": {
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
+  "detailWhen": "Time",
+  "detailRecorded": "Recorded at",
+  "detailBy": "Entered by",
+  "detailAccounts": "Accounts",
+  "detailAudit": "Change history",
+  "detailReplaces": "This entry replaces an earlier one",
+  "detailReplacedBy": "Replaced by a newer entry",
+  "detailVoid": "Void entry",
+  "detailEdit": "Edit",
+  "detailVoidReason": "Reason",
+  "detailVoidConfirm": "Void",
+  "detailVoidedBecause": "Voided: {reason}",
+  "@detailVoidedBecause": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "detailLockedHint": "This day is closed, so the entry cannot be changed.",
+  "detailActionFailed": "Could not complete this action.",
+  "ledgerTitle": "{account} statement",
+  "@ledgerTitle": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "ledgerDate": "Date",
+  "ledgerIn": "In",
+  "ledgerOut": "Out",
+  "ledgerBalance": "Balance",
+  "ledgerAdjust": "Adjust balance",
+  "ledgerEmpty": "No entries in this period",
+  "adjTitle": "Adjust balance",
+  "adjIncrease": "Increase",
+  "adjDecrease": "Decrease",
+  "adjReason": "Reason (required)",
+  "adjCurrent": "Current balance: {amount}",
+  "@adjCurrent": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "adjNew": "New balance: {amount}",
+  "@adjNew": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "lowTitle": "Low balance alerts",
+  "lowSubtitle": "Warn me when an account falls to this amount. Leave empty for no alert.",
+  "lowBanner": "Low balance: {accounts}",
+  "@lowBanner": {
+    "placeholders": {
+      "accounts": {
+        "type": "String"
+      }
+    }
+  },
+  "rememberCustomers": "Remember customers",
+  "rememberCustomersHint": "Suggest numbers and names you typed before. Stored only on this phone.",
+  "entryCustomerName": "Customer name",
+  "entryOperator": "Operator",
+  "entryMargin": "Margin: {amount}",
+  "@entryMargin": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "entryPaidAmount": "Amount paid (if different)",
+  "entryEditTitle": "Edit entry",
+  "entryNoOperator": "Add a flexiload operator first"
 }

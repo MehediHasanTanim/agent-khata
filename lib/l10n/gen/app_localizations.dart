@@ -853,6 +853,354 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get catOther;
+
+  /// No description provided for @histToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get histToday;
+
+  /// No description provided for @histYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get histYesterday;
+
+  /// No description provided for @histWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get histWeek;
+
+  /// No description provided for @histMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get histMonth;
+
+  /// No description provided for @histAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get histAll;
+
+  /// No description provided for @histSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search amount, number, note, TrxID'**
+  String get histSearchHint;
+
+  /// No description provided for @histEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found'**
+  String get histEmpty;
+
+  /// No description provided for @histCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} entries'**
+  String histCount(String count);
+
+  /// No description provided for @histTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total {amount}'**
+  String histTotal(String amount);
+
+  /// No description provided for @histLoadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get histLoadMore;
+
+  /// No description provided for @histAccountFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get histAccountFilter;
+
+  /// No description provided for @histAllAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'All accounts'**
+  String get histAllAccounts;
+
+  /// No description provided for @histClearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get histClearFilters;
+
+  /// No description provided for @labelVoided.
+  ///
+  /// In en, this message translates to:
+  /// **'Voided'**
+  String get labelVoided;
+
+  /// No description provided for @labelLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed day'**
+  String get labelLocked;
+
+  /// No description provided for @detailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry details'**
+  String get detailTitle;
+
+  /// No description provided for @detailAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get detailAmount;
+
+  /// No description provided for @detailCharge.
+  ///
+  /// In en, this message translates to:
+  /// **'Charge'**
+  String get detailCharge;
+
+  /// No description provided for @detailCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission'**
+  String get detailCommission;
+
+  /// No description provided for @detailRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate used: {rule}'**
+  String detailRule(String rule);
+
+  /// No description provided for @detailWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get detailWhen;
+
+  /// No description provided for @detailRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded at'**
+  String get detailRecorded;
+
+  /// No description provided for @detailBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Entered by'**
+  String get detailBy;
+
+  /// No description provided for @detailAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get detailAccounts;
+
+  /// No description provided for @detailAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change history'**
+  String get detailAudit;
+
+  /// No description provided for @detailReplaces.
+  ///
+  /// In en, this message translates to:
+  /// **'This entry replaces an earlier one'**
+  String get detailReplaces;
+
+  /// No description provided for @detailReplacedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Replaced by a newer entry'**
+  String get detailReplacedBy;
+
+  /// No description provided for @detailVoid.
+  ///
+  /// In en, this message translates to:
+  /// **'Void entry'**
+  String get detailVoid;
+
+  /// No description provided for @detailEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get detailEdit;
+
+  /// No description provided for @detailVoidReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get detailVoidReason;
+
+  /// No description provided for @detailVoidConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Void'**
+  String get detailVoidConfirm;
+
+  /// No description provided for @detailVoidedBecause.
+  ///
+  /// In en, this message translates to:
+  /// **'Voided: {reason}'**
+  String detailVoidedBecause(String reason);
+
+  /// No description provided for @detailLockedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This day is closed, so the entry cannot be changed.'**
+  String get detailLockedHint;
+
+  /// No description provided for @detailActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not complete this action.'**
+  String get detailActionFailed;
+
+  /// No description provided for @ledgerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{account} statement'**
+  String ledgerTitle(String account);
+
+  /// No description provided for @ledgerDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get ledgerDate;
+
+  /// No description provided for @ledgerIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In'**
+  String get ledgerIn;
+
+  /// No description provided for @ledgerOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Out'**
+  String get ledgerOut;
+
+  /// No description provided for @ledgerBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get ledgerBalance;
+
+  /// No description provided for @ledgerAdjust.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust balance'**
+  String get ledgerAdjust;
+
+  /// No description provided for @ledgerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries in this period'**
+  String get ledgerEmpty;
+
+  /// No description provided for @adjTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust balance'**
+  String get adjTitle;
+
+  /// No description provided for @adjIncrease.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase'**
+  String get adjIncrease;
+
+  /// No description provided for @adjDecrease.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease'**
+  String get adjDecrease;
+
+  /// No description provided for @adjReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (required)'**
+  String get adjReason;
+
+  /// No description provided for @adjCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current balance: {amount}'**
+  String adjCurrent(String amount);
+
+  /// No description provided for @adjNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New balance: {amount}'**
+  String adjNew(String amount);
+
+  /// No description provided for @lowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Low balance alerts'**
+  String get lowTitle;
+
+  /// No description provided for @lowSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Warn me when an account falls to this amount. Leave empty for no alert.'**
+  String get lowSubtitle;
+
+  /// No description provided for @lowBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Low balance: {accounts}'**
+  String lowBanner(String accounts);
+
+  /// No description provided for @rememberCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember customers'**
+  String get rememberCustomers;
+
+  /// No description provided for @rememberCustomersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest numbers and names you typed before. Stored only on this phone.'**
+  String get rememberCustomersHint;
+
+  /// No description provided for @entryCustomerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer name'**
+  String get entryCustomerName;
+
+  /// No description provided for @entryOperator.
+  ///
+  /// In en, this message translates to:
+  /// **'Operator'**
+  String get entryOperator;
+
+  /// No description provided for @entryMargin.
+  ///
+  /// In en, this message translates to:
+  /// **'Margin: {amount}'**
+  String entryMargin(String amount);
+
+  /// No description provided for @entryPaidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount paid (if different)'**
+  String get entryPaidAmount;
+
+  /// No description provided for @entryEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit entry'**
+  String get entryEditTitle;
+
+  /// No description provided for @entryNoOperator.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a flexiload operator first'**
+  String get entryNoOperator;
 }
 
 class _AppLocalizationsDelegate

@@ -411,4 +411,199 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get catOther => 'অন্যান্য';
+
+  @override
+  String get histToday => 'আজ';
+
+  @override
+  String get histYesterday => 'গতকাল';
+
+  @override
+  String get histWeek => 'সপ্তাহ';
+
+  @override
+  String get histMonth => 'মাস';
+
+  @override
+  String get histAll => 'সব';
+
+  @override
+  String get histSearchHint => 'পরিমাণ, নম্বর, নোট, TrxID দিয়ে খুঁজুন';
+
+  @override
+  String get histEmpty => 'কিছু পাওয়া যায়নি';
+
+  @override
+  String histCount(String count) {
+    return '$countটি এন্ট্রি';
+  }
+
+  @override
+  String histTotal(String amount) {
+    return 'মোট $amount';
+  }
+
+  @override
+  String get histLoadMore => 'আরও দেখুন';
+
+  @override
+  String get histAccountFilter => 'অ্যাকাউন্ট';
+
+  @override
+  String get histAllAccounts => 'সব অ্যাকাউন্ট';
+
+  @override
+  String get histClearFilters => 'ফিল্টার মুছুন';
+
+  @override
+  String get labelVoided => 'বাতিল';
+
+  @override
+  String get labelLocked => 'দিন বন্ধ';
+
+  @override
+  String get detailTitle => 'এন্ট্রির বিবরণ';
+
+  @override
+  String get detailAmount => 'পরিমাণ';
+
+  @override
+  String get detailCharge => 'চার্জ';
+
+  @override
+  String get detailCommission => 'কমিশন';
+
+  @override
+  String detailRule(String rule) {
+    return 'ব্যবহৃত রেট: $rule';
+  }
+
+  @override
+  String get detailWhen => 'সময়';
+
+  @override
+  String get detailRecorded => 'এন্ট্রির সময়';
+
+  @override
+  String get detailBy => 'যিনি এন্ট্রি করেছেন';
+
+  @override
+  String get detailAccounts => 'অ্যাকাউন্ট';
+
+  @override
+  String get detailAudit => 'পরিবর্তনের ইতিহাস';
+
+  @override
+  String get detailReplaces => 'এই এন্ট্রি আগের একটি এন্ট্রির জায়গায় এসেছে';
+
+  @override
+  String get detailReplacedBy => 'নতুন একটি এন্ট্রি দিয়ে বদলানো হয়েছে';
+
+  @override
+  String get detailVoid => 'এন্ট্রি বাতিল করুন';
+
+  @override
+  String get detailEdit => 'সম্পাদনা';
+
+  @override
+  String get detailVoidReason => 'কারণ';
+
+  @override
+  String get detailVoidConfirm => 'বাতিল করুন';
+
+  @override
+  String detailVoidedBecause(String reason) {
+    return 'বাতিল: $reason';
+  }
+
+  @override
+  String get detailLockedHint =>
+      'এই দিনের হিসাব বন্ধ, তাই এন্ট্রি বদলানো যাবে না।';
+
+  @override
+  String get detailActionFailed => 'কাজটি সম্পন্ন করা যায়নি।';
+
+  @override
+  String ledgerTitle(String account) {
+    return '$account এর খতিয়ান';
+  }
+
+  @override
+  String get ledgerDate => 'তারিখ';
+
+  @override
+  String get ledgerIn => 'জমা';
+
+  @override
+  String get ledgerOut => 'খরচ';
+
+  @override
+  String get ledgerBalance => 'ব্যালেন্স';
+
+  @override
+  String get ledgerAdjust => 'ব্যালেন্স সমন্বয়';
+
+  @override
+  String get ledgerEmpty => 'এই সময়ে কোনো এন্ট্রি নেই';
+
+  @override
+  String get adjTitle => 'ব্যালেন্স সমন্বয়';
+
+  @override
+  String get adjIncrease => 'বাড়ান';
+
+  @override
+  String get adjDecrease => 'কমান';
+
+  @override
+  String get adjReason => 'কারণ (আবশ্যক)';
+
+  @override
+  String adjCurrent(String amount) {
+    return 'বর্তমান ব্যালেন্স: $amount';
+  }
+
+  @override
+  String adjNew(String amount) {
+    return 'নতুন ব্যালেন্স: $amount';
+  }
+
+  @override
+  String get lowTitle => 'কম ব্যালেন্সের সতর্কতা';
+
+  @override
+  String get lowSubtitle =>
+      'অ্যাকাউন্ট এই অঙ্কে নামলে সতর্ক করুন। সতর্কতা না চাইলে খালি রাখুন।';
+
+  @override
+  String lowBanner(String accounts) {
+    return 'ব্যালেন্স কম: $accounts';
+  }
+
+  @override
+  String get rememberCustomers => 'গ্রাহক মনে রাখুন';
+
+  @override
+  String get rememberCustomersHint =>
+      'আগে লেখা নম্বর ও নাম সাজেস্ট করবে। শুধু এই ফোনে থাকবে।';
+
+  @override
+  String get entryCustomerName => 'গ্রাহকের নাম';
+
+  @override
+  String get entryOperator => 'অপারেটর';
+
+  @override
+  String entryMargin(String amount) {
+    return 'লাভ: $amount';
+  }
+
+  @override
+  String get entryPaidAmount => 'যত টাকা দিয়েছেন (আলাদা হলে)';
+
+  @override
+  String get entryEditTitle => 'এন্ট্রি সম্পাদনা';
+
+  @override
+  String get entryNoOperator => 'আগে একটি ফ্লেক্সিলোড অপারেটর যোগ করুন';
 }

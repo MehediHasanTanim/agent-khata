@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/gen/app_localizations.dart';
+import '../history/history_screen.dart';
 import '../home/home_screen.dart';
 import '../settings/settings_screen.dart';
 
@@ -21,7 +22,7 @@ class _AppShellState extends State<AppShell> {
     final l10n = AppLocalizations.of(context);
     final pages = <Widget>[
       const HomeScreen(),
-      _Placeholder(title: l10n.navHistory),
+      const HistoryScreen(),
       _Placeholder(title: l10n.navCloseDay),
       _Placeholder(title: l10n.navReports),
       const SettingsScreen(),

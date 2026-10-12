@@ -6,6 +6,7 @@ import '../../core/i18n/digit_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/settings/app_preferences.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../accounts/low_alerts_screen.dart';
 import '../commission/commission_rates_screen.dart';
 import '../debug/ledger_debug_screen.dart';
 import '../diagnostics/diagnostics_screen.dart';
@@ -135,7 +136,21 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (v) =>
                 controller.update((p) => p.copyWith(maskBalances: v)),
           ),
+          SwitchListTile(
+            value: prefs.rememberCustomers,
+            title: Text(l10n.rememberCustomers),
+            subtitle: Text(l10n.rememberCustomersHint),
+            onChanged: (v) =>
+                controller.update((p) => p.copyWith(rememberCustomers: v)),
+          ),
           const Divider(),
+          ListTile(
+            leading: const Icon(Icons.notifications_active_outlined),
+            title: Text(l10n.lowTitle),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const LowAlertsScreen()),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.percent),
             title: Text(l10n.commissionRates),

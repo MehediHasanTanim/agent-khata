@@ -14,6 +14,7 @@ class TransactionDraft {
     this.fromAccountId,
     this.toAccountId,
     this.charge = Money.zero,
+    this.discount = Money.zero,
     this.commission = Money.zero,
     this.commissionRuleId,
     this.commissionOverridden = false,
@@ -23,6 +24,7 @@ class TransactionDraft {
     this.note,
     this.createdBy = 'owner',
     this.shiftId,
+    this.replacesTxnId,
   });
 
   final TransactionType type;
@@ -36,6 +38,10 @@ class TransactionDraft {
   /// Fee collected from (or paid by) the agent on top of [amount].
   final Money charge;
 
+  /// Stock bought below face value: paid `amount - discount` for `amount`.
+  /// Only valid for float purchases.
+  final Money discount;
+
   /// Provider commission or flexiload margin, as computed by the commission
   /// engine (or manually overridden).
   final Money commission;
@@ -48,4 +54,27 @@ class TransactionDraft {
   final String? note;
   final String createdBy;
   final String? shiftId;
+
+  /// Set when this transaction is an edit of an earlier one.
+  final String? replacesTxnId;
+
+  TransactionDraft withReplaces(String originalId) => TransactionDraft(
+    type: type,
+    occurredAt: occurredAt,
+    amount: amount,
+    fromAccountId: fromAccountId,
+    toAccountId: toAccountId,
+    charge: charge,
+    discount: discount,
+    commission: commission,
+    commissionRuleId: commissionRuleId,
+    commissionOverridden: commissionOverridden,
+    customerId: customerId,
+    customerNumber: customerNumber,
+    reference: reference,
+    note: note,
+    createdBy: createdBy,
+    shiftId: shiftId,
+    replacesTxnId: originalId,
+  );
 }
