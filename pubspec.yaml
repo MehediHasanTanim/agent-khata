@@ -1,0 +1,42 @@
+name: agentkhata
+description: "Cash book for MFS agents and flexiload retailers in Bangladesh."
+publish_to: 'none'
+
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  flutter_riverpod: ^3.4.3
+  drift: ^2.35.2
+  sqlite3: ^3.7.0
+  path_provider: ^2.1.6
+  path: ^1.9.1
+  flutter_secure_storage: ^11.2.0
+  shared_preferences: ^2.5.6
+  cryptography: ^2.9.0
+  intl: ^0.20.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  drift_dev: ^2.35.1
+  build_runner: ^2.16.2
+
+flutter:
+  generate: true
+  uses-material-design: true
+
+# Use SQLCipher builds of SQLite (S0-03). Switch `source` to `sqlite3` to fall
+# back to an unencrypted DB if the S0-04 feasibility check fails.
+hooks:
+  user_defines:
+    sqlite3:
+      source: sqlcipher

@@ -1,0 +1,87 @@
+{
+  "@@locale": "en",
+  "appName": "Agent Khata",
+  "homeTitle": "Home",
+  "homePlaceholder": "Your cash book will appear here.",
+  "settings": "Settings",
+  "language": "Language",
+  "languageBangla": "বাংলা",
+  "languageEnglish": "English",
+  "digitStyle": "Digit style",
+  "digitsBangla": "Bangla digits (০-৯)",
+  "digitsLatin": "English digits (0-9)",
+  "digitGrouping": "Bangladeshi digit grouping (1,00,000)",
+  "theme": "Theme",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeHighContrast": "High contrast",
+  "lockNow": "Lock now",
+  "sampleAmount": "Sample amount",
+  "pinSetupTitle": "Set a PIN",
+  "pinSetupSubtitle": "Choose a 4 to 6 digit PIN to protect your books.",
+  "pinConfirmTitle": "Confirm your PIN",
+  "pinConfirmSubtitle": "Enter the same PIN again.",
+  "pinMismatch": "PINs did not match. Try again.",
+  "pinUnlockTitle": "Enter PIN",
+  "pinUnlockSubtitle": "Enter your PIN to open the cash book.",
+  "pinWrong": "Wrong PIN. {remaining} attempts before a delay.",
+  "@pinWrong": {
+    "placeholders": {
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+  "pinLockedOut": "Too many attempts. Try again in {seconds} seconds.",
+  "@pinLockedOut": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "pinDelete": "Delete",
+  "keypadClear": "Clear",
+  "diagnostics": "Diagnostics",
+  "diagEncryption": "Database encryption",
+  "diagEncrypted": "Encrypted (SQLCipher {version})",
+  "@diagEncrypted": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "diagNotEncrypted": "NOT encrypted",
+  "diagJournal": "Journal mode",
+  "diagSchema": "Schema version",
+  "diagWriteBench": "Write speed",
+  "diagRunBench": "Run write test",
+  "diagBenchResult": "1,000 inserts in {ms} ms",
+  "@diagBenchResult": {
+    "placeholders": {
+      "ms": {
+        "type": "String"
+      }
+    }
+  },
+  "diagColdStart": "Cold start to first frame",
+  "diagMs": "{ms} ms",
+  "@diagMs": {
+    "placeholders": {
+      "ms": {
+        "type": "String"
+      }
+    }
+  },
+  "autoLock": "Auto-lock after",
+  "autoLockImmediately": "Immediately",
+  "autoLockSeconds": "{seconds} seconds",
+  "@autoLockSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  }
+}
