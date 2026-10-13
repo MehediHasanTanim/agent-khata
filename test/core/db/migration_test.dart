@@ -19,6 +19,28 @@ void main() {
 
   AppDatabase open() => AppDatabase(NativeDatabase(file));
 
+  /// Rewinds a current-schema file to what [version] looked like.
+  void rollBackTo(int version) {
+    final db = raw.sqlite3.open(file.path);
+    if (version < 6) db.execute('DROP TABLE recurring_expense');
+    if (version < 5) {
+      db
+        ..execute('DROP TABLE shift_line')
+        ..execute('DROP TABLE shift')
+        ..execute('ALTER TABLE app_user DROP COLUMN can_close_day')
+        ..execute('ALTER TABLE app_user DROP COLUMN created_at');
+    }
+    if (version < 4) {
+      db
+        ..execute('DROP TABLE due_settlement')
+        ..execute('DROP TABLE due');
+    }
+    if (version < 3) db.execute('DROP TABLE balance_snapshot');
+    db
+      ..execute('PRAGMA user_version = $version')
+      ..close();
+  }
+
   Future<Set<String>> tables(AppDatabase db) async {
     final rows = await db
         .customSelect("SELECT name FROM sqlite_master WHERE type = 'table'")
@@ -58,6 +80,11 @@ void main() {
       'audit_log',
       'setting',
       'balance_snapshot',
+      'due',
+      'due_settlement',
+      'shift',
+      'shift_line',
+      'recurring_expense',
     ]) {
       expect(names, contains(t), reason: 'table $t');
     }
@@ -76,15 +103,12 @@ void main() {
     );
     await db.close();
 
-    final legacy = raw.sqlite3.open(file.path)
-      ..execute('DROP TABLE balance_snapshot')
-      ..execute('PRAGMA user_version = 2');
-    legacy.close();
+    rollBackTo(2);
 
     db = open();
     addTearDown(db.close);
-    expect((await db.info()).userVersion, 3);
-    expect(await tables(db), contains('balance_snapshot'));
+    expect((await db.info()).userVersion, db.schemaVersion);
+    expect(await tables(db), containsAll(['balance_snapshot', 'due']));
 
     final acc = await db.select(db.accounts).getSingle();
     expect(acc.openingPaisa, 12345);
@@ -107,6 +131,66 @@ void main() {
       "max_txn_rowid, created_at) VALUES ('a1', '2026-10-20', 12345, 1, 1)",
     );
   });
+
+  test(
+    'v3 (before customer dues) gains the due tables and their guards',
+    () async {
+      var db = open();
+      await db.customStatement(
+        'INSERT INTO account (id, kind, label, created_at) '
+        "VALUES ('a1', 'cash', 'Cash', 1)",
+      );
+      await db.close();
+
+      rollBackTo(3);
+
+      db = open();
+      addTearDown(db.close);
+      expect((await db.info()).userVersion, db.schemaVersion);
+      expect(await tables(db), containsAll(['due', 'due_settlement']));
+      expect((await db.select(db.accounts).get()), hasLength(1));
+
+      final triggers = await db
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'trigger' AND name LIKE 'trg_due%'",
+          )
+          .get();
+      expect(triggers, hasLength(4));
+    },
+  );
+
+  test(
+    'v4 (before staff and shifts) keeps users and gains the new parts',
+    () async {
+      var db = open();
+      await db.customStatement(
+        "INSERT INTO app_user (id, name, role) VALUES ('owner', 'Owner', 'owner')",
+      );
+      await db.close();
+      rollBackTo(4);
+
+      db = open();
+      addTearDown(db.close);
+      expect((await db.info()).userVersion, db.schemaVersion);
+      expect(await tables(db), containsAll(['shift', 'shift_line']));
+
+      final user = await db.select(db.appUsers).getSingle();
+      expect(user.name, 'Owner');
+      expect(user.canCloseDay, isFalse);
+
+      await expectLater(
+        db.customStatement("DELETE FROM shift WHERE id = 'x'"),
+        completes,
+      ); // nothing to delete, but the trigger exists:
+      await db.customStatement(
+        "INSERT INTO shift (id, user_id, started_at) VALUES ('s', 'owner', 1)",
+      );
+      await expectLater(
+        db.customStatement("DELETE FROM shift WHERE id = 's'"),
+        throwsA(predicate((e) => e.toString().contains('cannot be deleted'))),
+      );
+    },
+  );
 
   test('reopening a current database changes nothing', () async {
     var db = open();

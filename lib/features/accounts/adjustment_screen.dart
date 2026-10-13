@@ -49,6 +49,7 @@ class _AdjustmentScreenState extends ConsumerState<AdjustmentScreen> {
               toAccountId: _increase ? id : null,
               fromAccountId: _increase ? null : id,
               note: _reason.text.trim(),
+              createdBy: currentUserId(ref),
             ),
           );
       if (mounted) Navigator.of(context).pop();

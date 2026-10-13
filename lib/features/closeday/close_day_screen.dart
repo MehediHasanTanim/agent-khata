@@ -137,6 +137,7 @@ class _CloseDayScreenState extends ConsumerState<CloseDayScreen> {
             actuals: actuals,
             resolutions: resolutions,
             toleranceTaka: prefs.varianceToleranceTaka,
+            userId: currentUserId(ref),
           );
       if (!mounted) return;
       ScaffoldMessenger.of(context)

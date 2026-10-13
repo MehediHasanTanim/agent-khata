@@ -31,5 +31,6 @@ class RateCodec {
     CommissionMode.perThousand => value <= 100000, // ৳1,000 per ৳1,000
     CommissionMode.percent => value <= 10000, // 100%
     CommissionMode.fixed => value <= 10000000, // ৳100,000
+    CommissionMode.tiered => true, // checked per tier
   };
 }

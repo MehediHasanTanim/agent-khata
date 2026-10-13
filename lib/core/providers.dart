@@ -7,7 +7,13 @@ import '../features/closeday/day_close_service.dart';
 import '../features/commission/commission_rule.dart';
 import '../features/commission/commission_rule_repository.dart';
 import '../features/customers/customer_repository.dart';
+import '../features/dues/dues_service.dart';
+import '../features/expenses/recurring_expense_service.dart';
+import '../features/insights/insights_queries.dart';
 import '../features/onboarding/onboarding_service.dart';
+import '../features/reports/report_queries.dart';
+import '../features/shifts/shift_service.dart';
+import '../features/staff/staff_service.dart';
 import '../features/transactions/history_queries.dart';
 import '../features/transactions/transaction_queries.dart';
 import '../features/transactions/transaction_repository.dart';
@@ -22,6 +28,8 @@ import 'notifications/notification_service.dart';
 import 'security/biometric_service.dart';
 import 'security/key_value_store.dart';
 import 'security/pin_service.dart';
+import 'security/roles.dart';
+import 'security/secure_key_value_store.dart';
 import 'security/secure_screen.dart';
 import 'settings/app_preferences.dart';
 import 'telemetry/analytics.dart';
@@ -85,6 +93,7 @@ final commissionRuleRepositoryProvider = Provider<CommissionRuleRepository>(
     ref.watch(databaseProvider),
     ref.watch(idGeneratorProvider),
     ref.watch(auditLoggerProvider),
+    session: () => _sessionForServices(ref),
   ),
 );
 
@@ -153,6 +162,7 @@ final transactionRepositoryProvider = Provider<TransactionRepository>(
     ids: ref.watch(idGeneratorProvider),
     audit: ref.watch(auditLoggerProvider),
     deviceId: ref.watch(deviceIdProvider),
+    session: () => _sessionForServices(ref),
   ),
 );
 
@@ -189,6 +199,7 @@ final dayCloseServiceProvider = Provider<DayCloseService>(
     txns: ref.watch(transactionRepositoryProvider),
     audit: ref.watch(auditLoggerProvider),
     ids: ref.watch(idGeneratorProvider),
+    session: () => _sessionForServices(ref),
   ),
 );
 
@@ -256,3 +267,101 @@ final shopNameProvider = FutureProvider.autoDispose<String>((ref) async {
   final v = await DbSettings(ref.watch(databaseProvider)).get('shop_name');
   return v ?? '';
 });
+
+final duesServiceProvider = Provider<DuesService>(
+  (ref) => DuesService(
+    db: ref.watch(databaseProvider),
+    txns: ref.watch(transactionRepositoryProvider),
+    customers: ref.watch(customerRepositoryProvider),
+    ids: ref.watch(idGeneratorProvider),
+  ),
+);
+
+final reportQueriesProvider = Provider<ReportQueries>(
+  (ref) => ReportQueries(ref.watch(databaseProvider)),
+);
+
+/// The signed-in user; null while the app is locked.
+final sessionProvider = NotifierProvider<SessionController, Session?>(
+  SessionController.new,
+);
+
+class SessionController extends Notifier<Session?> {
+  @override
+  Session? build() => null;
+
+  void signIn(Session session) => state = session;
+
+  void signOut() => state = null;
+}
+
+/// Read by services. While locked it grants only what any staff member has,
+/// so nothing privileged can run without a signed-in user.
+Session _sessionForServices(Ref ref) =>
+    ref.read(sessionProvider) ??
+    const Session(id: 'locked', name: '', role: UserRole.staff);
+
+/// Id recorded as the author of new entries and audit rows.
+String currentUserId(WidgetRef ref) =>
+    ref.read(sessionProvider)?.id ?? kOwnerUserId;
+
+final staffServiceProvider = Provider<StaffService>(
+  (ref) => StaffService(
+    db: ref.watch(databaseProvider),
+    pins: ref.watch(pinServiceProvider),
+    ids: ref.watch(idGeneratorProvider),
+    session: () => _sessionForServices(ref),
+  ),
+);
+
+final shiftServiceProvider = Provider<ShiftService>(
+  (ref) => ShiftService(
+    db: ref.watch(databaseProvider),
+    txns: ref.watch(transactionRepositoryProvider),
+    audit: ref.watch(auditLoggerProvider),
+  ),
+);
+
+/// Everyone in `app_user`, owner first.
+final staffListProvider = StreamProvider<List<StaffMember>>(
+  (ref) => ref.watch(staffServiceProvider).watchAll(),
+);
+
+/// Staff who can sign in (active, with a PIN).
+final activeStaffProvider = FutureProvider.autoDispose<List<StaffMember>>(
+  (ref) => ref.watch(staffServiceProvider).activeStaff(),
+);
+
+/// `userId -> display name` for shift and history labels.
+final userNamesProvider = Provider<Map<String, String>>((ref) {
+  final list = ref.watch(staffListProvider).value ?? const [];
+  return {for (final m in list) m.id: m.name};
+});
+
+final openShiftProvider = StreamProvider<ShiftInfo?>(
+  (ref) => ref.watch(shiftServiceProvider).watchOpen(),
+);
+
+final recurringExpenseServiceProvider = Provider<RecurringExpenseService>(
+  (ref) => RecurringExpenseService(
+    db: ref.watch(databaseProvider),
+    txns: ref.watch(transactionRepositoryProvider),
+    audit: ref.watch(auditLoggerProvider),
+    ids: ref.watch(idGeneratorProvider),
+    session: () => _sessionForServices(ref),
+  ),
+);
+
+/// Recurring expenses whose date has come. Owner only (others see none).
+final recurringDueProvider = FutureProvider.autoDispose<List<RecurringExpense>>(
+  (ref) async {
+    final session = ref.watch(sessionProvider);
+    if (session == null || !session.isOwner) return const [];
+    ref.watch(balancesProvider); // re-check after any ledger change
+    return ref.watch(recurringExpenseServiceProvider).due();
+  },
+);
+
+final insightsQueriesProvider = Provider<InsightsQueries>(
+  (ref) => InsightsQueries(ref.watch(databaseProvider)),
+);

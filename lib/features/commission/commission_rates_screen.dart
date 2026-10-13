@@ -16,6 +16,11 @@ String transactionTypeLabel(AppLocalizations l10n, TransactionType t) =>
       TransactionType.flexiload => l10n.txnFlexiload,
       TransactionType.floatPurchase => l10n.txnFloatPurchase,
       TransactionType.expense => l10n.txnExpense,
+      TransactionType.dueGiven => l10n.txnDueGiven,
+      TransactionType.dueSettled => l10n.txnDueSettled,
+      TransactionType.dueTaken => l10n.txnDueTaken,
+      TransactionType.duePaid => l10n.txnDuePaid,
+      TransactionType.commissionReceived => l10n.txnCommissionReceived,
       _ => l10n.txnOther,
     };
 
@@ -45,8 +50,12 @@ class _CommissionRatesScreenState extends ConsumerState<CommissionRatesScreen> {
         provider: e.key.$1,
         type: e.key.$2,
         mode: e.value.mode,
-        value: e.value.value!,
+        value: e.value.mode == CommissionMode.tiered ? 0 : e.value.value!,
+        tiers: e.value.mode == CommissionMode.tiered
+            ? e.value.tiersParsed!
+            : const [],
         at: now,
+        userId: currentUserId(ref),
       );
     }
     if (!mounted) return;
@@ -86,6 +95,7 @@ class _CommissionRatesScreenState extends ConsumerState<CommissionRatesScreen> {
           () => RateInput(
             mode: current?.mode ?? CommissionMode.perThousand,
             value: current?.value ?? 0,
+            tiers: current?.tiers ?? const [],
           ),
         );
         rows.add(

@@ -122,6 +122,92 @@ encrypted), so it is independent of the device's database key and restores on
 a new phone. Restore writes a staging database, verifies it, and the next app
 start swaps it in; the previous database is kept as `<db>.pre-restore`.
 
+### Phase 2, first slice
+
+| Backlog item | State |
+|---|---|
+| Customer dues (baki): give, settle (partial/full), due list, totals, search, call/SMS | done (schema v4; every due and payment is a real ledger transaction) |
+| Reports: weekly/monthly summaries, per-type table, net-per-day chart | done |
+| CSV export (UTF-8 + BOM, opens in Excel), account statement PDF | done (statement is drawn with the phone's own fonts so Bangla renders) |
+| Commission received vs expected (per provider) + "record commission received" | done |
+| Variance history chart | done |
+| Staff accounts with separate PINs, roles, hidden profit | done (schema v5) |
+| Shift-based reconciliation (handover counts, per-operator variance) | done |
+| Repeat-customer shortcuts (regulars on Home and in entry screens), bulk flexiload entry (rows or pasted list, all-or-nothing, one-tap undo) | done |
+| Printable paper-style daily sheet (cash ledger, wallets, summary, signature lines; print or PDF) | done |
+| Insights: average entry size, busiest and most profitable hour, best weekday | done |
+| Tiered commission (amount bands, each with per-thousand / percent / fixed) | done |
+| Recurring expenses (monthly/weekly reminders; the agent confirms each one) | done (schema v6) |
+| Cloud backup (OTP login), multi-device sync, SMS assist, iOS | not started: need decisions (see notes) |
+
+### Staff and shifts
+
+- **Users:** the owner keeps the PIN set at first run (secure storage). Staff
+  have their own PIN (salted hash in `app_user`), chosen by the owner under
+  Settings > Staff. When staff exist the lock screen asks who is signing in.
+  All users share one failed-attempt counter and lockout.
+- **Permissions** (`core/security/roles.dart`): owner can do everything. Staff
+  can add entries, and see and void/edit only their own entries. Per staff
+  member the owner can allow "see profit and reports" and "close the day".
+  Reopening a day, manual adjustments, rates, settings, backup and staff
+  management are owner-only. Checks live in the services (void/edit, day
+  close and reopen, adjustments, rates, staff) as well as the UI.
+- **Biometrics** unlock the owner only and are switched off while staff
+  accounts exist, because any enrolled fingerprint would open the owner's
+  session.
+- **Shifts:** the first entry opens a shift for its author; entries are tagged
+  with it. "Hand over" counts the drawer and wallets, posts any difference as
+  an adjustment against that shift (reason required beyond the tolerance), and
+  the next entry opens a new shift. Closing the day ends the open shift using
+  the day-close counts. Reports > "Differences by operator" totals shortages
+  per person.
+
+Regulars and bulk flexiload: "regulars" are numbers the agent typed on at
+least two active entries (cash out, cash in or flexiload), most used first,
+with the last amount and wallet/operator. They appear only when "Remember
+customers" is on, and staff see only the numbers they served. Bulk flexiload
+posts one ordinary flexiload entry per row inside a single database
+transaction, so either every load is saved or none; the undo snackbar voids the
+whole batch.
+
+Tiered commission: a rule can be "By amount (tiers)". Each tier has an upper
+bound (inclusive) and its own per-thousand, percent or fixed rate; the last
+tier is open-ended. The tier that contains the transaction amount applies to
+the whole amount (bands, not marginal slices). Tiers are stored in
+`commission_rule.tiers_json`, effective-dated like any rate, and validated
+(ascending, last open).
+
+Recurring expenses: monthly (day 1-31, clamped to the month's last day) or
+weekly (a weekday). Nothing is posted automatically. When a date arrives the
+owner sees a banner (and a 09:00 notification) and taps Record, which creates
+an ordinary expense entry and moves to the next date, or Skip. Several missed
+periods are cleared one confirmation at a time. A closed business day refuses
+the record and leaves the schedule unchanged.
+
+Variance patterns (Reports tab): the day-close difference chart can be
+filtered to one account and carries date labels; below it, a per-account
+list (shortage, excess, days with a difference over the last 30 closed
+days) and a "differences by weekday" chart over the last 90 closed days with
+a one-line "short most often on ..." finding.
+
+Daily sheet and insights: from a day's summary, "Print sheet" renders the
+cash drawer as a ruled ledger (time, particulars, in, out, balance, with
+opening and closing rows and voided lines struck through), then the wallet
+and operator balances, the day summary and Prepared by / Checked by lines.
+Pages are drawn with the phone's own fonts (so Bangla prints) and sent to
+the system print dialog or shared as a PDF. Commission and profit rows
+appear only for users allowed to see profit. Insights (Reports tab) use
+customer entries only (cash in/out, flexiload, send money, bill pay), hours
+in Dhaka clock time and weekdays by business day.
+
+How dues are modelled: two hidden accounts, receivable (positive) and
+payable (negative, a liability). Credit given moves value from cash/wallet/load
+into receivable; a payment moves it back. Money held for a customer moves
+into payable. Because these are ordinary postings, day close, backups and the
+integrity check cover them automatically. Commission received posts
+wallet +X against the external account, so credits no longer show up as an
+unexplained wallet surplus at day close.
+
 ## Develop
 
 ```bash

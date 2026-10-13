@@ -79,6 +79,41 @@ class NotificationService {
     }
   }
 
+  /// One-off notification at [at] (an instant), for due-date reminders.
+  Future<void> scheduleOnce({
+    required int id,
+    required DateTime at,
+    required String title,
+    required String body,
+  }) async {
+    try {
+      await _ensureInit();
+      final when = tz.TZDateTime.from(at.toUtc(), tz.getLocation('Asia/Dhaka'));
+      if (!when.isAfter(tz.TZDateTime.now(tz.getLocation('Asia/Dhaka')))) {
+        return;
+      }
+      await _plugin.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: when,
+        notificationDetails: const NotificationDetails(android: _closeChannel),
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      );
+    } on Object {
+      // best effort
+    }
+  }
+
+  Future<void> cancel(int id) async {
+    try {
+      await _ensureInit();
+      await _plugin.cancel(id: id);
+    } on Object {
+      // ignore
+    }
+  }
+
   Future<void> cancelCloseReminder() async {
     try {
       await _ensureInit();

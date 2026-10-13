@@ -13,6 +13,7 @@ class HistoryFilter {
     this.accountId,
     this.query = '',
     this.includeVoid = true,
+    this.createdBy,
   });
 
   /// UTC, inclusive.
@@ -27,6 +28,9 @@ class HistoryFilter {
   final String query;
   final bool includeVoid;
 
+  /// Only entries made by this user (staff see only their own).
+  final String? createdBy;
+
   HistoryFilter copyWith({
     DateTime? from,
     DateTime? to,
@@ -36,6 +40,7 @@ class HistoryFilter {
     bool clearAccount = false,
     String? query,
     bool? includeVoid,
+    String? createdBy,
   }) => HistoryFilter(
     from: clearRange ? null : (from ?? this.from),
     to: clearRange ? null : (to ?? this.to),
@@ -43,6 +48,7 @@ class HistoryFilter {
     accountId: clearAccount ? null : (accountId ?? this.accountId),
     query: query ?? this.query,
     includeVoid: includeVoid ?? this.includeVoid,
+    createdBy: createdBy ?? this.createdBy,
   );
 }
 
@@ -71,6 +77,10 @@ BuiltQuery buildHistoryWhere(HistoryFilter f, {HistoryCursor? cursor}) {
   final vars = <Variable<Object>>[];
 
   if (!f.includeVoid) clauses.add("t.status = 'active'");
+  if (f.createdBy != null) {
+    clauses.add('t.created_by = ?');
+    vars.add(Variable.withString(f.createdBy!));
+  }
   if (f.from != null) {
     clauses.add('t.occurred_at >= ?');
     vars.add(Variable.withInt(f.from!.toUtc().millisecondsSinceEpoch));

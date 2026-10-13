@@ -179,6 +179,10 @@ class AppUsers extends Table {
   BoolColumn get canSeeProfit => boolean().withDefault(const Constant(false))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
 
+  /// Staff may close the business day (v5).
+  BoolColumn get canCloseDay => boolean().withDefault(const Constant(false))();
+  IntColumn get createdAt => integer().withDefault(const Constant(0))();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -233,4 +237,104 @@ class BalanceSnapshots extends Table {
 
   @override
   Set<Column> get primaryKey => {accountId, businessDate};
+}
+
+/// A customer debt (baki). `direction` is `they_owe` or `i_owe`. The ledger
+/// effect lives in the linked transaction; the open amount is the original
+/// amount minus its active settlements.
+@DataClassName('DueRow')
+@TableIndex(name: 'idx_due_customer', columns: {#customerId})
+class Dues extends Table {
+  @override
+  String get tableName => 'due';
+
+  TextColumn get id => text()();
+  TextColumn get customerId => text().references(Customers, #id)();
+  TextColumn get direction => text()();
+  IntColumn get amountPaisa => integer()();
+  TextColumn get createdTxnId => text().references(Txns, #id)();
+  TextColumn get note => text().nullable()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('DueSettlementRow')
+@TableIndex(name: 'idx_due_settlement_due', columns: {#dueId})
+class DueSettlements extends Table {
+  @override
+  String get tableName => 'due_settlement';
+
+  TextColumn get id => text()();
+  TextColumn get dueId => text().references(Dues, #id)();
+  TextColumn get txnId => text().references(Txns, #id)();
+  IntColumn get amountPaisa => integer()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// A stretch of work at the counter by one operator. Opened automatically
+/// by the first entry; closed by a handover count or the day close.
+@DataClassName('ShiftRow')
+@TableIndex(name: 'idx_shift_user', columns: {#userId})
+@TableIndex(name: 'idx_shift_started', columns: {#startedAt})
+class Shifts extends Table {
+  @override
+  String get tableName => 'shift';
+
+  TextColumn get id => text()();
+  TextColumn get userId => text()();
+  IntColumn get startedAt => integer()();
+  IntColumn get endedAt => integer().nullable()();
+  // open | closed
+  TextColumn get status => text().withDefault(const Constant('open'))();
+  TextColumn get note => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('ShiftLineRow')
+class ShiftLines extends Table {
+  @override
+  String get tableName => 'shift_line';
+
+  TextColumn get shiftId => text().references(Shifts, #id)();
+  TextColumn get accountId => text().references(Accounts, #id)();
+  IntColumn get expectedPaisa => integer()();
+  IntColumn get actualPaisa => integer()();
+  IntColumn get variancePaisa => integer()();
+  TextColumn get adjustmentTxnId => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {shiftId, accountId};
+}
+
+/// A repeating expense (rent, internet...). It reminds; the agent confirms
+/// each occurrence, which records a normal expense entry.
+@DataClassName('RecurringExpenseRow')
+class RecurringExpenses extends Table {
+  @override
+  String get tableName => 'recurring_expense';
+
+  TextColumn get id => text()();
+  TextColumn get categoryAccountId => text().references(Accounts, #id)();
+  TextColumn get sourceAccountId => text().references(Accounts, #id)();
+  IntColumn get amountPaisa => integer()();
+  // monthly | weekly
+  TextColumn get frequency => text()();
+  IntColumn get dayOfMonth => integer().nullable()();
+  // 1 = Monday ... 7 = Sunday
+  IntColumn get weekday => integer().nullable()();
+  // Business date 'YYYY-MM-DD' of the next occurrence to record.
+  TextColumn get nextDueDate => text()();
+  TextColumn get note => text().nullable()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }

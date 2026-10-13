@@ -26,19 +26,27 @@ class AccountRepository {
     sortOrder: r.sortOrder,
   );
 
-  /// Creates the hidden external counter-account if missing. Idempotent.
+  /// Creates the hidden counter-accounts (external, receivable, payable) if
+  /// missing. Idempotent.
   Future<void> ensureSystemAccounts() async {
-    await _db
-        .into(_db.accounts)
-        .insert(
-          AccountsCompanion.insert(
-            id: kExternalAccountId,
-            kind: AccountKind.external.dbName,
-            label: 'External',
-            createdAt: _clock().toUtc().millisecondsSinceEpoch,
-          ),
-          mode: InsertMode.insertOrIgnore,
-        );
+    final now = _clock().toUtc().millisecondsSinceEpoch;
+    for (final (id, kind, label) in [
+      (kExternalAccountId, AccountKind.external, 'External'),
+      (kReceivableAccountId, AccountKind.receivable, 'Receivable'),
+      (kPayableAccountId, AccountKind.payable, 'Payable'),
+    ]) {
+      await _db
+          .into(_db.accounts)
+          .insert(
+            AccountsCompanion.insert(
+              id: id,
+              kind: kind.dbName,
+              label: label,
+              createdAt: now,
+            ),
+            mode: InsertMode.insertOrIgnore,
+          );
+    }
   }
 
   Future<String> create({
@@ -50,7 +58,9 @@ class AccountRepository {
     Money? lowAlert,
     int sortOrder = 0,
   }) async {
-    if (kind == AccountKind.external) {
+    if (kind == AccountKind.external ||
+        kind == AccountKind.receivable ||
+        kind == AccountKind.payable) {
       throw ArgumentError.value(kind, 'kind', 'system account');
     }
     final id = _ids.next();

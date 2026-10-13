@@ -73,6 +73,16 @@ TransactionDraft _randomDraft(LedgerFixture f, Random r, TransactionType t) {
       return r.nextBool()
           ? make(to: f.cash, note: 'excess')
           : make(from: wallet, note: 'shortage');
+    case TransactionType.dueGiven:
+      return make(from: f.cash, to: kReceivableAccountId);
+    case TransactionType.dueSettled:
+      return make(from: kReceivableAccountId, to: f.cash);
+    case TransactionType.dueTaken:
+      return make(from: kPayableAccountId, to: f.cash);
+    case TransactionType.duePaid:
+      return make(from: f.cash, to: kPayableAccountId);
+    case TransactionType.commissionReceived:
+      return make(to: wallet);
   }
 }
 
@@ -86,6 +96,16 @@ void main() {
       const Account(id: 'l', kind: AccountKind.load, label: 'l'),
       const Account(id: 'b', kind: AccountKind.bank, label: 'b'),
       const Account(id: 'e', kind: AccountKind.expense, label: 'e'),
+      const Account(
+        id: kReceivableAccountId,
+        kind: AccountKind.receivable,
+        label: 'r',
+      ),
+      const Account(
+        id: kPayableAccountId,
+        kind: AccountKind.payable,
+        label: 'p',
+      ),
       const Account(
         id: kExternalAccountId,
         kind: AccountKind.external,
@@ -116,6 +136,16 @@ void main() {
         TransactionType.floatTransfer => _d(t, amount, 'w', 'w2', charge),
         TransactionType.bankDeposit => _d(t, amount, 'c', 'b'),
         TransactionType.expense => _d(t, amount, 'c', 'e'),
+        TransactionType.dueGiven => _d(t, amount, 'c', kReceivableAccountId),
+        TransactionType.dueSettled => _d(t, amount, kReceivableAccountId, 'w'),
+        TransactionType.dueTaken => _d(t, amount, kPayableAccountId, 'c'),
+        TransactionType.duePaid => _d(t, amount, 'w', kPayableAccountId),
+        TransactionType.commissionReceived => TransactionDraft(
+          type: t,
+          occurredAt: DateTime.utc(2026),
+          amount: amount,
+          toAccountId: 'w',
+        ),
         TransactionType.adjustment =>
           r.nextBool()
               ? TransactionDraft(

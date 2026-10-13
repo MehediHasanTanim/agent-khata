@@ -5,6 +5,7 @@ import '../../core/i18n/date_labels.dart';
 import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/security/roles.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../entry/entry_screen.dart';
 import '../transactions/history_queries.dart';
@@ -53,6 +54,7 @@ class _TransactionDetailScreenState
     TransactionType.floatPurchase => EntryKind.floatPurchase,
     TransactionType.expense => EntryKind.expense,
     TransactionType.flexiload => EntryKind.flexiload,
+    TransactionType.commissionReceived => EntryKind.commissionReceived,
     _ => null,
   };
 
@@ -90,11 +92,17 @@ class _TransactionDetailScreenState
     try {
       await ref
           .read(transactionRepositoryProvider)
-          .voidTransaction(widget.txnId, reason: reason, userId: 'owner');
+          .voidTransaction(
+            widget.txnId,
+            reason: reason,
+            userId: currentUserId(ref),
+          );
       _changed = true;
       await _load();
     } on DayLockedException {
       _toast(l10n.detailLockedHint);
+    } on PermissionDenied {
+      _toast(l10n.permDenied);
     } on Object {
       _toast(l10n.detailActionFailed);
     }
@@ -139,6 +147,14 @@ class _TransactionDetailScreenState
       digits: prefs.digits,
     );
     final d = _detail;
+    final session = ref.watch(sessionProvider);
+    final showProfit =
+        session != null && Permissions.can(session, Permission.viewProfit);
+    final canModify =
+        session != null &&
+        d != null &&
+        (d.createdBy == session.id ||
+            Permissions.can(session, Permission.modifyOthersEntries));
 
     Widget row(String label, String value) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -192,9 +208,9 @@ class _TransactionDetailScreenState
                   row(l10n.detailBy, d.createdBy),
                   if (!d.item.charge.isZero)
                     row(l10n.detailCharge, money.format(d.item.charge)),
-                  if (!d.item.commission.isZero)
+                  if (showProfit && !d.item.commission.isZero)
                     row(l10n.detailCommission, money.format(d.item.commission)),
-                  if (d.ruleSummary != null)
+                  if (showProfit && d.ruleSummary != null)
                     row('', l10n.detailRule(d.ruleSummary!)),
                   if (d.item.customerName != null)
                     row(l10n.entryCustomerName, d.item.customerName!),
@@ -244,7 +260,7 @@ class _TransactionDetailScreenState
                   const SizedBox(height: 16),
                   if (d.item.isLocked)
                     Text(l10n.detailLockedHint)
-                  else if (!d.item.isVoid) ...[
+                  else if (!d.item.isVoid && canModify) ...[
                     if (_editKind(d.item.type) case final kind?)
                       OutlinedButton.icon(
                         icon: const Icon(Icons.edit_outlined),

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/security/roles.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../closeday/close_day_tab.dart';
 import '../history/history_screen.dart';
 import '../home/home_screen.dart';
+import '../reports/reports_screen.dart';
 import '../settings/settings_screen.dart';
 
 /// Bottom navigation: Home, History, Close day, Reports, Settings. Reports
@@ -41,6 +44,36 @@ class _AppShellState extends ConsumerState<AppShell> {
       title: l10n.notifCloseTitle,
       body: l10n.notifCloseBody,
     );
+    await _syncRecurring();
+  }
+
+  /// Notifies at 9:00 Dhaka time on the day each recurring expense is due.
+  Future<void> _syncRecurring() async {
+    final session = ref.read(sessionProvider);
+    if (session == null || !session.isOwner) return;
+    final prefs = ref.read(preferencesProvider);
+    final service = ref.read(notificationServiceProvider);
+    final l10n = lookupAppLocalizations(prefs.locale);
+    final money = MoneyFormatter(digits: prefs.digits);
+    final items =
+        (await ref.read(recurringExpenseServiceProvider).watchAll().first)
+            .where((r) => r.isActive)
+            .take(20)
+            .toList();
+    for (var i = 0; i < 20; i++) {
+      await service.cancel(3000 + i);
+    }
+    for (var i = 0; i < items.length; i++) {
+      final r = items[i];
+      final p = r.nextDueDate.split('-').map(int.parse).toList();
+      // 09:00 in Dhaka (UTC+6) = 03:00 UTC on that date.
+      await service.scheduleOnce(
+        id: 3000 + i,
+        at: DateTime.utc(p[0], p[1], p[2], 3),
+        title: l10n.recNotifTitle,
+        body: l10n.recNotifBody(r.categoryLabel ?? '', money.format(r.amount)),
+      );
+    }
   }
 
   @override
@@ -54,57 +87,62 @@ class _AppShellState extends ConsumerState<AppShell> {
       }
     });
     final l10n = AppLocalizations.of(context);
-    final pages = <Widget>[
-      const HomeScreen(),
-      const HistoryScreen(),
-      const CloseDayTab(),
-      _Placeholder(title: l10n.navReports),
-      const SettingsScreen(),
-    ];
-    return Scaffold(
-      body: IndexedStack(index: _index, children: pages),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.home_outlined),
-            selectedIcon: const Icon(Icons.home),
-            label: l10n.navHome,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.history),
-            label: l10n.navHistory,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.fact_check_outlined),
-            selectedIcon: const Icon(Icons.fact_check),
-            label: l10n.navCloseDay,
-          ),
+    final session = ref.watch(sessionProvider);
+    final showReports =
+        session != null && Permissions.can(session, Permission.viewProfit);
+
+    // (page, destination) pairs; Reports only for those who may see profit.
+    final tabs = <(Widget, NavigationDestination)>[
+      (
+        const HomeScreen(),
+        NavigationDestination(
+          icon: const Icon(Icons.home_outlined),
+          selectedIcon: const Icon(Icons.home),
+          label: l10n.navHome,
+        ),
+      ),
+      (
+        const HistoryScreen(),
+        NavigationDestination(
+          icon: const Icon(Icons.history),
+          label: l10n.navHistory,
+        ),
+      ),
+      (
+        const CloseDayTab(),
+        NavigationDestination(
+          icon: const Icon(Icons.fact_check_outlined),
+          selectedIcon: const Icon(Icons.fact_check),
+          label: l10n.navCloseDay,
+        ),
+      ),
+      if (showReports)
+        (
+          const ReportsScreen(),
           NavigationDestination(
             icon: const Icon(Icons.bar_chart_outlined),
             selectedIcon: const Icon(Icons.bar_chart),
             label: l10n.navReports,
           ),
-          NavigationDestination(
-            icon: const Icon(Icons.settings_outlined),
-            selectedIcon: const Icon(Icons.settings),
-            label: l10n.navSettings,
-          ),
-        ],
+        ),
+      (
+        const SettingsScreen(),
+        NavigationDestination(
+          icon: const Icon(Icons.settings_outlined),
+          selectedIcon: const Icon(Icons.settings),
+          label: l10n.navSettings,
+        ),
+      ),
+    ];
+    final index = _index.clamp(0, tabs.length - 1);
+
+    return Scaffold(
+      body: IndexedStack(index: index, children: [for (final t in tabs) t.$1]),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: index,
+        onDestinationSelected: (i) => setState(() => _index = i),
+        destinations: [for (final t in tabs) t.$2],
       ),
     );
   }
-}
-
-class _Placeholder extends StatelessWidget {
-  const _Placeholder({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(title)),
-    body: Center(child: Text(AppLocalizations.of(context).comingSoon)),
-  );
 }

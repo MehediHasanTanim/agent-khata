@@ -6,14 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/i18n/date_labels.dart';
+import '../../core/money/money_formatter.dart' show MoneyFormatter;
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/security/roles.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/utils/business_calendar.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
+import '../sheet/daily_sheet_model.dart';
+import '../sheet/daily_sheet_queries.dart';
+import '../sheet/daily_sheet_renderer.dart';
 import 'day_close_service.dart';
 
 /// The day's numbers, shareable as an image or PDF (for WhatsApp etc.).
@@ -41,6 +50,104 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
     ref.read(dayCloseServiceProvider).summary(widget.businessDate).then((d) {
       if (mounted) setState(() => _data = d);
     });
+  }
+
+  /// The paper-style sheet: cash ledger, wallets, summary, signatures.
+  Future<void> _sheet({required bool print, required bool showProfit}) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final d = _data;
+    if (d == null) return;
+    setState(() => _sharing = true);
+    try {
+      final prefs = ref.read(preferencesProvider);
+      final hour = await ref.read(dayRolloverHourProvider.future);
+      final range = BusinessCalendar(rolloverHour: hour)
+          .rangeOfDate(widget.businessDate);
+      final cash = await DailySheetQueries(ref.read(databaseProvider))
+          .cash(range.start, range.end);
+      final shop = await ref.read(shopNameProvider.future);
+      final dl = DateLabels(
+        languageCode: prefs.languageCode,
+        digits: prefs.digits,
+      );
+      final p = widget.businessDate.split('-').map(int.parse).toList();
+      final dateText = dl.day(DateTime.utc(p[0], p[1], p[2], 6));
+
+      final labels = SheetLabels(
+        title: l10n.sheetTitle,
+        status: d.status == 'closed' ? l10n.cdStatusClosed : l10n.sumNotClosed,
+        time: l10n.sheetTime,
+        particulars: l10n.sheetParticulars,
+        moneyIn: l10n.ledgerIn,
+        moneyOut: l10n.ledgerOut,
+        balance: l10n.ledgerBalance,
+        opening: l10n.sumOpening,
+        closing: l10n.ledgerBalance,
+        walletsHeading: l10n.sheetAccounts,
+        expected: l10n.cdExpected,
+        actual: l10n.cdActual,
+        difference: l10n.sumVariance,
+        summaryHeading: l10n.sheetSummary,
+        entries: l10n.sumEntries,
+        cashInTotal: l10n.sumCashInVolume,
+        cashOutTotal: l10n.sumCashOutVolume,
+        commission: l10n.sumCommission,
+        margin: l10n.sumMargin,
+        expenses: l10n.sumExpenses,
+        netProfit: l10n.sumNet,
+        preparedBy: l10n.sheetPreparedBy,
+        checkedBy: l10n.sheetCheckedBy,
+        voided: l10n.labelVoided,
+        typeLabel: (t) => transactionTypeLabel(l10n, t),
+        pageOf: (n, total) => l10n.repPage(
+          prefs.digits.localize('$n'),
+          prefs.digits.localize('$total'),
+        ),
+        numberText: (n) => prefs.digits.localize('$n'),
+      );
+      final pages = const DailySheetBuilder().build(
+        summary: d,
+        cash: cash,
+        money: MoneyFormatter(digits: prefs.digits, showSymbol: false),
+        timeText: dl.time,
+        dateText: dateText,
+        shopName: shop,
+        labels: labels,
+        showProfit: showProfit,
+      );
+      final images = await const DailySheetRenderer().render(pages);
+
+      final doc = pw.Document();
+      for (final png in images) {
+        final image = pw.MemoryImage(png);
+        doc.addPage(
+          pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            margin: pw.EdgeInsets.zero,
+            build: (_) => pw.FullPage(
+              ignoreMargins: true,
+              child: pw.Image(image, fit: pw.BoxFit.fill),
+            ),
+          ),
+        );
+      }
+      final bytes = await doc.save();
+      final name = 'khata-sheet-${widget.businessDate}.pdf';
+      if (print) {
+        await Printing.layoutPdf(onLayout: (_) async => bytes, name: name);
+      } else {
+        final dir = await getTemporaryDirectory();
+        final file = File('${dir.path}/$name')..writeAsBytesSync(bytes);
+        await SharePlus.instance.share(
+          ShareParams(files: [XFile(file.path)], text: l10n.sheetTitle),
+        );
+      }
+    } on Object {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.sheetFailed)));
+    } finally {
+      if (mounted) setState(() => _sharing = false);
+    }
   }
 
   Future<Uint8List> _capture() async {
@@ -99,6 +206,9 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
     );
     final tokens = context.tokens;
     final d = _data;
+    final session = ref.watch(sessionProvider);
+    final showProfit =
+        session != null && Permissions.can(session, Permission.viewProfit);
     final parts = widget.businessDate.split('-').map(int.parse).toList();
     final dateText = labels.day(DateTime.utc(parts[0], parts[1], parts[2], 6));
 
@@ -173,24 +283,28 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
                                 l10n.sumCashOutVolume,
                                 money.format(d.cashOutVolume),
                               ),
-                              kv(
-                                l10n.sumCommission,
-                                money.format(d.commission),
-                              ),
-                              kv(
-                                l10n.sumMargin,
-                                money.format(d.flexiloadMargin),
-                              ),
+                              if (showProfit) ...[
+                                kv(
+                                  l10n.sumCommission,
+                                  money.format(d.commission),
+                                ),
+                                kv(
+                                  l10n.sumMargin,
+                                  money.format(d.flexiloadMargin),
+                                ),
+                              ],
                               kv(l10n.sumExpenses, money.format(d.expenses)),
-                              const Divider(height: 24),
-                              kv(
-                                l10n.sumNet,
-                                money.format(d.netProfit),
-                                bold: true,
-                                color: d.netProfit.isNegative
-                                    ? tokens.cashOut
-                                    : tokens.cashIn,
-                              ),
+                              if (showProfit) ...[
+                                const Divider(height: 24),
+                                kv(
+                                  l10n.sumNet,
+                                  money.format(d.netProfit),
+                                  bold: true,
+                                  color: d.netProfit.isNegative
+                                      ? tokens.cashOut
+                                      : tokens.cashIn,
+                                ),
+                              ],
                               if (d.totalVariance != null)
                                 kv(
                                   l10n.sumVariance,
@@ -263,6 +377,40 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
                             onPressed: _sharing
                                 ? null
                                 : () => _share(pdf: true),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: FilledButton.tonalIcon(
+                            key: const ValueKey('print-sheet'),
+                            icon: const Icon(Icons.print_outlined),
+                            label: Text(l10n.sheetPrint),
+                            onPressed: _sharing
+                                ? null
+                                : () => _sheet(
+                                    print: true,
+                                    showProfit: showProfit,
+                                  ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            key: const ValueKey('share-sheet'),
+                            icon: const Icon(Icons.ios_share),
+                            label: Text(l10n.sheetShare),
+                            onPressed: _sharing
+                                ? null
+                                : () => _sheet(
+                                    print: false,
+                                    showProfit: showProfit,
+                                  ),
                           ),
                         ),
                       ],

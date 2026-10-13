@@ -14,7 +14,7 @@ import '../../core/db/database_key_store.dart';
 import '../../core/db/database_opener.dart';
 import '../../core/i18n/date_labels.dart';
 import '../../core/providers.dart';
-import '../../core/security/key_value_store.dart';
+import '../../core/security/secure_key_value_store.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'backup_codec.dart';
 import 'backup_service.dart';

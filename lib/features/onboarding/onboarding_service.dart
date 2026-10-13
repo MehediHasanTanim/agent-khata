@@ -21,12 +21,19 @@ class AccountSetup {
 }
 
 class RateSetup {
-  const RateSetup(this.providerId, this.type, this.mode, this.value);
+  const RateSetup(
+    this.providerId,
+    this.type,
+    this.mode,
+    this.value, {
+    this.tiers = const [],
+  });
 
   final String providerId;
   final TransactionType type;
   final CommissionMode mode;
   final int value;
+  final List<CommissionTier> tiers;
 }
 
 /// Everything onboarding collects, applied in one DB transaction.
@@ -94,6 +101,7 @@ class OnboardingService {
           type: r.type,
           mode: r.mode,
           value: r.value,
+          tiers: r.tiers,
           at: ratesEffectiveFrom,
         );
       }

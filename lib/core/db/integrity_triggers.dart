@@ -55,3 +55,38 @@ WHEN (SELECT day_close_id FROM txn WHERE id = NEW.txn_id) IS NOT NULL
        WHERE t.id = NEW.txn_id) <> 'reopened'
 BEGIN SELECT RAISE(ABORT, 'transaction belongs to a closed day'); END''',
 ];
+
+/// Added in schema v4 (customer dues).
+const dueTriggerStatements = <String>[
+  '''
+CREATE TRIGGER trg_due_no_delete BEFORE DELETE ON due
+BEGIN SELECT RAISE(ABORT, 'due rows cannot be deleted'); END''',
+  '''
+CREATE TRIGGER trg_due_no_update BEFORE UPDATE ON due
+BEGIN SELECT RAISE(ABORT, 'due rows are immutable'); END''',
+  '''
+CREATE TRIGGER trg_due_settlement_no_delete BEFORE DELETE ON due_settlement
+BEGIN SELECT RAISE(ABORT, 'due_settlement rows cannot be deleted'); END''',
+  '''
+CREATE TRIGGER trg_due_settlement_no_update BEFORE UPDATE ON due_settlement
+BEGIN SELECT RAISE(ABORT, 'due_settlement rows are immutable'); END''',
+];
+
+/// Added in schema v5 (staff and shifts).
+const shiftTriggerStatements = <String>[
+  '''
+CREATE TRIGGER trg_shift_no_delete BEFORE DELETE ON shift
+BEGIN SELECT RAISE(ABORT, 'shift rows cannot be deleted'); END''',
+  '''
+CREATE TRIGGER trg_shift_immutable BEFORE UPDATE ON shift
+WHEN NEW.id IS NOT OLD.id OR NEW.user_id IS NOT OLD.user_id
+  OR NEW.started_at IS NOT OLD.started_at
+  OR (OLD.status = 'closed')
+BEGIN SELECT RAISE(ABORT, 'shift is immutable'); END''',
+  '''
+CREATE TRIGGER trg_shift_line_no_delete BEFORE DELETE ON shift_line
+BEGIN SELECT RAISE(ABORT, 'shift_line rows cannot be deleted'); END''',
+  '''
+CREATE TRIGGER trg_shift_line_no_update BEFORE UPDATE ON shift_line
+BEGIN SELECT RAISE(ABORT, 'shift_line rows are immutable'); END''',
+];

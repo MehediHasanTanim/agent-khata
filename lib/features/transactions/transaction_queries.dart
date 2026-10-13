@@ -27,6 +27,31 @@ class RecentTxn {
   final String? customerNumber;
 }
 
+/// A number the agent serves repeatedly, with how they were last served.
+class RegularCustomer {
+  const RegularCustomer({
+    required this.number,
+    required this.type,
+    required this.lastAmount,
+    required this.uses,
+    required this.lastAt,
+    this.accountId,
+    this.name,
+  });
+
+  final String number;
+  final TransactionType type;
+  final Money lastAmount;
+
+  /// Wallet or operator account used last time.
+  final String? accountId;
+  final int uses;
+  final DateTime lastAt;
+  final String? name;
+
+  String get displayName => (name != null && name!.isNotEmpty) ? name! : number;
+}
+
 /// Totals for one business day.
 class DaySummary {
   const DaySummary({
@@ -54,7 +79,7 @@ class TransactionQueries {
     _db.accounts,
   };
 
-  Stream<List<RecentTxn>> watchRecent({int limit = 5}) => _db
+  Stream<List<RecentTxn>> watchRecent({int limit = 5, String? createdBy}) => _db
       .customSelect(
         '''
 SELECT t.id, t.type, t.amount_paisa, t.commission_paisa, t.occurred_at,
@@ -65,9 +90,14 @@ SELECT t.id, t.type, t.amount_paisa, t.commission_paisa, t.occurred_at,
          ORDER BY le.line_no LIMIT 1) AS account_label
 FROM txn t
 WHERE t.status = 'active'
+  AND (? IS NULL OR t.created_by = ?)
 ORDER BY t.occurred_at DESC, t.recorded_at DESC
 LIMIT ?''',
-        variables: [Variable.withInt(limit)],
+        variables: [
+          Variable<String>(createdBy),
+          Variable<String>(createdBy),
+          Variable.withInt(limit),
+        ],
         readsFrom: _reads,
       )
       .watch()
@@ -86,17 +116,24 @@ LIMIT ?''',
     customerNumber: r.readNullable<String>('customer_number'),
   );
 
-  Stream<DaySummary> watchSummary(DateTime startUtc, DateTime endUtc) => _db
+  Stream<DaySummary> watchSummary(
+    DateTime startUtc,
+    DateTime endUtc, {
+    String? createdBy,
+  }) => _db
       .customSelect(
         '''
 SELECT type, COUNT(*) AS c, SUM(amount_paisa) AS vol,
        SUM(commission_paisa) AS comm
 FROM txn
 WHERE status = 'active' AND occurred_at >= ? AND occurred_at < ?
+  AND (? IS NULL OR created_by = ?)
 GROUP BY type''',
         variables: [
           Variable.withInt(startUtc.millisecondsSinceEpoch),
           Variable.withInt(endUtc.millisecondsSinceEpoch),
+          Variable<String>(createdBy),
+          Variable<String>(createdBy),
         ],
         readsFrom: {_db.txns},
       )
@@ -195,5 +232,78 @@ LIMIT 1''',
         )
         .get();
     return rows.isNotEmpty;
+  }
+
+  /// Numbers served at least [minUses] times (most often first, ties by
+  /// recency), with the amount and account of their latest entry. [type]
+  /// null covers cash out, cash in and flexiload. [createdBy] limits the
+  /// history to one user's entries (staff see only their own).
+  Future<List<RegularCustomer>> regulars({
+    TransactionType? type,
+    String? createdBy,
+    int minUses = 2,
+    int limit = 8,
+  }) async {
+    final types = type == null
+        ? const [
+            TransactionType.cashOut,
+            TransactionType.cashIn,
+            TransactionType.flexiload,
+          ]
+        : [type];
+    final marks = List.filled(types.length, '?').join(',');
+    final rows = await _db
+        .customSelect(
+          '''
+SELECT t.customer_number AS number, t.type AS type,
+       t.amount_paisa AS last_amount, g.c AS uses, g.last AS last_at,
+       (SELECT le.account_id FROM ledger_entry le
+          JOIN account a ON a.id = le.account_id
+         WHERE le.txn_id = t.id AND a.kind IN ('wallet', 'load')
+         ORDER BY le.line_no LIMIT 1) AS account_id,
+       (SELECT c.name FROM customer c WHERE c.phone = t.customer_number
+         LIMIT 1) AS customer_name
+FROM txn t
+JOIN (
+  SELECT customer_number, type, COUNT(*) AS c, MAX(occurred_at) AS last
+  FROM txn
+  WHERE status = 'active' AND customer_number IS NOT NULL
+    AND customer_number <> '' AND type IN ($marks)
+    AND (? IS NULL OR created_by = ?)
+  GROUP BY customer_number, type
+  HAVING COUNT(*) >= ?
+) g ON g.customer_number = t.customer_number AND g.type = t.type
+   AND g.last = t.occurred_at
+WHERE t.status = 'active' AND (? IS NULL OR t.created_by = ?)
+GROUP BY t.customer_number, t.type
+ORDER BY g.c DESC, g.last DESC
+LIMIT ?''',
+          variables: [
+            ...types.map((t) => Variable.withString(t.dbName)),
+            Variable<String>(createdBy),
+            Variable<String>(createdBy),
+            Variable.withInt(minUses),
+            Variable<String>(createdBy),
+            Variable<String>(createdBy),
+            Variable.withInt(limit),
+          ],
+          readsFrom: _reads,
+        )
+        .get();
+    return [
+      for (final r in rows)
+        RegularCustomer(
+          number: r.read<String>('number'),
+          type: TransactionType.fromDb(r.read<String>('type')),
+          lastAmount: Money.paisa(r.read<int>('last_amount')),
+          uses: r.read<int>('uses'),
+          lastAt: DateTime.fromMillisecondsSinceEpoch(
+            r.read<int>('last_at'),
+            isUtc: true,
+          ),
+          accountId: r.readNullable<String>('account_id'),
+          name: r.readNullable<String>('customer_name'),
+        ),
+    ];
   }
 }

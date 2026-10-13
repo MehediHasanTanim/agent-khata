@@ -30,6 +30,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
   bool _busy = false;
 
   bool _bioAvailable = false;
+  String? _userId; // null = owner
 
   @override
   void initState() {
@@ -42,6 +43,9 @@ class _PinScreenState extends ConsumerState<PinScreen> {
 
   Future<void> _initBiometric() async {
     if (!ref.read(preferencesProvider).biometricEnabled) return;
+    // Biometrics open the owner's session, so they are off once staff exist.
+    final staff = await ref.read(staffServiceProvider).activeStaff();
+    if (staff.isNotEmpty || !mounted) return;
     final service = ref.read(biometricServiceProvider);
     if (!await service.isAvailable() || !mounted) return;
     setState(() => _bioAvailable = true);
@@ -126,7 +130,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
         }
         return;
       }
-      final result = await controller.unlock(_entered);
+      final result = await controller.unlock(_entered, userId: _userId);
       if (!mounted) return;
       switch (result) {
         case PinVerified():
@@ -169,6 +173,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
         ? l10n.pinUnlockSubtitle
         : (confirming ? l10n.pinConfirmSubtitle : l10n.pinSetupSubtitle);
 
+    final staff = ref.watch(activeStaffProvider).value;
     final lockedFor = _lockedFor;
     final message = lockedFor != null
         ? l10n.pinLockedOut(digits.localize('${lockedFor.inSeconds + 1}'))
@@ -198,6 +203,39 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                     style: theme.textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 24),
+                  if (!isSetup && (staff?.isNotEmpty ?? false)) ...[
+                    Text(l10n.whoAreYou, style: theme.textTheme.titleMedium),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        ChoiceChip(
+                          key: const ValueKey('user-owner'),
+                          label: Text(l10n.roleOwner),
+                          selected: _userId == null,
+                          onSelected: (_) => setState(() {
+                            _userId = null;
+                            _entered = '';
+                            _error = null;
+                          }),
+                        ),
+                        for (final m in staff!)
+                          ChoiceChip(
+                            key: ValueKey('user-${m.id}'),
+                            label: Text(m.name),
+                            selected: _userId == m.id,
+                            onSelected: (_) => setState(() {
+                              _userId = m.id;
+                              _entered = '';
+                              _error = null;
+                            }),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   PinDots(length: _entered.length),
                   const SizedBox(height: 12),
                   SizedBox(

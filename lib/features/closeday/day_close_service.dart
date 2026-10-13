@@ -8,6 +8,7 @@ import '../../core/ledger/account_kind.dart';
 import '../../core/ledger/transaction_draft.dart';
 import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money.dart';
+import '../../core/security/roles.dart';
 import '../../core/utils/business_calendar.dart';
 import '../../core/utils/uuid_v7.dart';
 import '../accounts/account_repository.dart';
@@ -168,6 +169,7 @@ class DayCloseService {
     required this._audit,
     required this._ids,
     DateTime Function()? clock,
+    this._session,
   }) : _clock = clock ?? DateTime.now;
 
   final AppDatabase _db;
@@ -175,6 +177,7 @@ class DayCloseService {
   final AuditLogger _audit;
   final IdGenerator _ids;
   final DateTime Function() _clock;
+  final SessionReader? _session;
 
   Future<BusinessCalendar> _calendar() async =>
       BusinessCalendar(rolloverHour: await DbSettings(_db).dayRolloverHour());
@@ -273,7 +276,8 @@ ORDER BY t.occurred_at, t.id''',
     int toleranceTaka = 0,
     String userId = 'owner',
     String? note,
-  }) {
+  }) async {
+    requirePermission(_session, Permission.closeDay);
     return _db.transaction(() async {
       final existing = await (_db.select(
         _db.dayCloses,
@@ -313,6 +317,7 @@ ORDER BY t.occurred_at, t.id''',
                   : '${r.reason.code}: ${r.text!.trim()}',
               createdBy: userId,
             ),
+            internal: true,
           );
         }
         lines.add(
@@ -366,6 +371,9 @@ ORDER BY t.occurred_at, t.id''',
 
       await _writeSnapshots(businessDate, nowMs);
 
+      // The last operator's shift ends with the day, carrying its variance.
+      await _closeOpenShift(lines, now);
+
       await _audit.log(
         userId: userId,
         action: 'day_close',
@@ -381,6 +389,35 @@ ORDER BY t.occurred_at, t.id''',
       );
       return id;
     });
+  }
+
+  Future<void> _closeOpenShift(List<_Line> lines, DateTime at) async {
+    final open =
+        await (_db.select(_db.shifts)
+              ..where((t) => t.status.equals('open'))
+              ..limit(1))
+            .getSingleOrNull();
+    if (open == null) return;
+    for (final l in lines) {
+      await _db
+          .into(_db.shiftLines)
+          .insert(
+            ShiftLinesCompanion.insert(
+              shiftId: open.id,
+              accountId: l.accountId,
+              expectedPaisa: l.expected.paisa,
+              actualPaisa: l.actual.paisa,
+              variancePaisa: l.variance.paisa,
+              adjustmentTxnId: Value(l.adjustmentTxnId),
+            ),
+          );
+    }
+    await (_db.update(_db.shifts)..where((t) => t.id.equals(open.id))).write(
+      ShiftsCompanion(
+        status: const Value('closed'),
+        endedAt: Value(at.millisecondsSinceEpoch),
+      ),
+    );
   }
 
   Future<void> _writeSnapshots(String businessDate, int nowMs) async {
@@ -422,7 +459,8 @@ FROM account a''',
     String businessDate, {
     required String reason,
     String userId = 'owner',
-  }) {
+  }) async {
+    requirePermission(_session, Permission.reopenDay);
     if (reason.trim().isEmpty) {
       throw ArgumentError.value(reason, 'reason', 'a reason is required');
     }

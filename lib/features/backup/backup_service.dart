@@ -25,6 +25,7 @@ class BackupInfo {
 /// Tables in dependency order (parents first) for restore.
 const backupTableOrder = <String>[
   'account',
+  'recurring_expense',
   'customer',
   'app_user',
   'expense_category',
@@ -33,6 +34,10 @@ const backupTableOrder = <String>[
   'day_close',
   'txn',
   'ledger_entry',
+  'due',
+  'due_settlement',
+  'shift',
+  'shift_line',
   'day_close_line',
   'audit_log',
   'balance_snapshot',

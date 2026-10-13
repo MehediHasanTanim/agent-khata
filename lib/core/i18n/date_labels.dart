@@ -25,6 +25,10 @@ class DateLabels {
   String shortDay(DateTime instant) =>
       _fmt(DateFormat('d MMM', languageCode), instant);
 
+  /// `October 2026` / `অক্টোবর ২০২৬`.
+  String month(DateTime instant) =>
+      _fmt(DateFormat('MMMM y', languageCode), instant);
+
   /// `2:14 PM`.
   String time(DateTime instant) =>
       _fmt(DateFormat('h:mm a', languageCode), instant);

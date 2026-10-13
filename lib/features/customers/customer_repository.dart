@@ -51,6 +51,34 @@ class CustomerRepository {
     return id;
   }
 
+  /// Finds or creates a customer for a due. With a [phone] it matches by
+  /// phone; otherwise by exact (case-insensitive) [name].
+  Future<String> findOrCreate({String? phone, String? name}) async {
+    final p = phone?.trim() ?? '';
+    final n = name?.trim() ?? '';
+    if (p.isNotEmpty) return upsert(phone: p, name: n);
+    if (n.isEmpty) {
+      throw ArgumentError('A customer needs a name or a phone number');
+    }
+    final existing =
+        await (_db.select(_db.customers)..where(
+              (t) => t.phone.isNull() & t.name.lower().equals(n.toLowerCase()),
+            ))
+            .getSingleOrNull();
+    if (existing != null) return existing.id;
+    final id = _ids.next();
+    await _db
+        .into(_db.customers)
+        .insert(
+          CustomersCompanion.insert(
+            id: id,
+            name: Value(n),
+            createdAt: _clock().toUtc().millisecondsSinceEpoch,
+          ),
+        );
+    return id;
+  }
+
   /// Customers whose phone or name contains [text], most recently used
   /// first.
   Future<List<CustomerSuggestion>> suggest(String text, {int limit = 5}) async {

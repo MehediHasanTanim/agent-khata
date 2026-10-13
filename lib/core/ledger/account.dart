@@ -40,6 +40,10 @@ abstract class AccountResolver {
 /// Fixed id of the system external account.
 const kExternalAccountId = 'sys-external';
 
+/// Hidden accounts for customer dues (baki).
+const kReceivableAccountId = 'sys-receivable';
+const kPayableAccountId = 'sys-payable';
+
 class MapAccountResolver implements AccountResolver {
   MapAccountResolver(Iterable<Account> accounts)
     : _byId = {for (final a in accounts) a.id: a};

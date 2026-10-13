@@ -11,7 +11,7 @@ import '../features/backup/backup_service.dart';
 import 'db/database_key_store.dart';
 import 'db/database_opener.dart';
 import 'providers.dart';
-import 'security/key_value_store.dart';
+import 'security/secure_key_value_store.dart';
 import 'telemetry/analytics.dart';
 import 'telemetry/crash_log.dart';
 

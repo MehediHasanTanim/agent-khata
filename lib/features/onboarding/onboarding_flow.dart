@@ -122,8 +122,17 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
               if (quick)
                 for (final s in p.sampleRates.where((s) => s.type == type))
                   RateSetup(p.id, type, s.mode, s.value)
-              else if (_rates[(p.id, type)]?.value case final v?)
-                if (v > 0) RateSetup(p.id, type, _rates[(p.id, type)]!.mode, v),
+              else if (_rates[(p.id, type)] case final input?)
+                if (input.mode == CommissionMode.tiered)
+                  RateSetup(
+                    p.id,
+                    type,
+                    input.mode,
+                    0,
+                    tiers: input.tiersParsed ?? const [],
+                  )
+                else if ((input.value ?? 0) > 0)
+                  RateSetup(p.id, type, input.mode, input.value!),
         ],
         expenseCategories: [
           l10n.catRent,

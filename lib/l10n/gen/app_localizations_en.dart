@@ -1050,4 +1050,616 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diagEntries => 'Entries';
+
+  @override
+  String get txnDueGiven => 'Credit given';
+
+  @override
+  String get txnDueSettled => 'Due received';
+
+  @override
+  String get txnDueTaken => 'Money held';
+
+  @override
+  String get txnDuePaid => 'Money returned';
+
+  @override
+  String get txnCommissionReceived => 'Commission received';
+
+  @override
+  String get duesTitle => 'Baki (dues)';
+
+  @override
+  String get duesTheyOwe => 'They owe me';
+
+  @override
+  String get duesIOwe => 'I owe them';
+
+  @override
+  String get duesTotalTheyOwe => 'Total to collect';
+
+  @override
+  String get duesTotalIOwe => 'Total I owe';
+
+  @override
+  String get duesEmpty => 'No open dues';
+
+  @override
+  String get duesSearch => 'Search name or number';
+
+  @override
+  String get duesAdd => 'Add baki';
+
+  @override
+  String get duesNewTitle => 'New baki';
+
+  @override
+  String get duesDirection => 'Type';
+
+  @override
+  String get duesName => 'Customer name';
+
+  @override
+  String get duesPhone => 'Phone number';
+
+  @override
+  String get duesNeedNameOrPhone => 'Enter a name or a phone number';
+
+  @override
+  String get duesGaveFrom => 'Given from';
+
+  @override
+  String get duesReceivedIn => 'Kept in';
+
+  @override
+  String get duesNote => 'What for (optional)';
+
+  @override
+  String get duesSaved => 'Baki saved';
+
+  @override
+  String duesRemaining(String amount) {
+    return 'Remaining $amount';
+  }
+
+  @override
+  String duesOriginal(String amount) {
+    return 'Original $amount';
+  }
+
+  @override
+  String get duesSettle => 'Record payment';
+
+  @override
+  String get duesSettleReturn => 'Return money';
+
+  @override
+  String get duesSettleAll => 'Full amount';
+
+  @override
+  String get duesSettleTo => 'Received in';
+
+  @override
+  String get duesSettleFrom => 'Paid from';
+
+  @override
+  String get duesOverSettle => 'More than the amount due';
+
+  @override
+  String get duesPayments => 'Payments';
+
+  @override
+  String get duesNoPayments => 'No payments yet';
+
+  @override
+  String get duesCall => 'Call';
+
+  @override
+  String get duesSms => 'SMS';
+
+  @override
+  String get duesSettled => 'Payment recorded';
+
+  @override
+  String get duesFailed => 'Could not save. Please try again.';
+
+  @override
+  String get repTitle => 'Reports';
+
+  @override
+  String get repWeek => 'This week';
+
+  @override
+  String get repMonth => 'This month';
+
+  @override
+  String get repPrev => 'Previous';
+
+  @override
+  String get repNext => 'Next';
+
+  @override
+  String get repNetPerDay => 'Net profit per day';
+
+  @override
+  String get repByType => 'By type';
+
+  @override
+  String get repNoData => 'No entries in this period';
+
+  @override
+  String get repVarianceTitle => 'Day-close differences';
+
+  @override
+  String get repVarianceNone => 'No closed days yet';
+
+  @override
+  String get repVarianceHint =>
+      'Bars show how far the count was from the books each day';
+
+  @override
+  String get repCommissionTitle => 'Commission: expected vs received';
+
+  @override
+  String get repExpected => 'Expected';
+
+  @override
+  String get repReceived => 'Received';
+
+  @override
+  String get repPending => 'Pending';
+
+  @override
+  String get repRecordCommission => 'Record commission received';
+
+  @override
+  String get repExportCsv => 'Export CSV';
+
+  @override
+  String get repExporting => 'Preparing…';
+
+  @override
+  String get repExportFailed => 'Could not export';
+
+  @override
+  String get repStatementPdf => 'Statement PDF';
+
+  @override
+  String repStatementTitle(String account) {
+    return '$account statement';
+  }
+
+  @override
+  String repStatementPeriod(String from, String to) {
+    return '$from to $to';
+  }
+
+  @override
+  String repPage(String n, String total) {
+    return 'Page $n of $total';
+  }
+
+  @override
+  String get ledgerDescription => 'Description';
+
+  @override
+  String get staffTitle => 'Staff';
+
+  @override
+  String get staffAdd => 'Add staff';
+
+  @override
+  String get staffName => 'Name';
+
+  @override
+  String get staffPin => 'PIN (4 to 6 digits)';
+
+  @override
+  String get staffCanSeeProfit => 'Can see profit and reports';
+
+  @override
+  String get staffCanCloseDay => 'Can close the day';
+
+  @override
+  String get roleOwner => 'Owner';
+
+  @override
+  String get roleStaff => 'Staff';
+
+  @override
+  String get staffInactive => 'Inactive';
+
+  @override
+  String get staffResetPin => 'Reset PIN';
+
+  @override
+  String get staffDeactivate => 'Deactivate';
+
+  @override
+  String get staffActivate => 'Activate';
+
+  @override
+  String get staffSaved => 'Saved';
+
+  @override
+  String get staffPinInUse => 'This PIN is already used. Choose another.';
+
+  @override
+  String get staffBadPin => 'The PIN must be 4 to 6 digits';
+
+  @override
+  String get staffNameRequired => 'Enter a name';
+
+  @override
+  String get staffEmpty =>
+      'No staff yet. Add the people who work at your counter.';
+
+  @override
+  String get staffInfo =>
+      'Each staff member signs in with their own PIN. They can add entries and see only their own entries.';
+
+  @override
+  String get whoAreYou => 'Who is using the app?';
+
+  @override
+  String signedInAs(String name) {
+    return 'Signed in as $name';
+  }
+
+  @override
+  String get switchUser => 'Switch user';
+
+  @override
+  String get permDenied => 'You do not have permission to do this';
+
+  @override
+  String shiftCurrent(String name) {
+    return 'Shift: $name';
+  }
+
+  @override
+  String shiftSince(String time) {
+    return 'since $time';
+  }
+
+  @override
+  String get shiftHandover => 'Hand over';
+
+  @override
+  String get shiftHandoverTitle => 'Shift handover';
+
+  @override
+  String get shiftHandoverIntro =>
+      'Count the cash and wallets before handing over. Any difference is recorded against this shift.';
+
+  @override
+  String get shiftDone => 'Handover recorded';
+
+  @override
+  String get shiftNoOpen => 'No shift is open';
+
+  @override
+  String get shiftRecent => 'Recent shifts';
+
+  @override
+  String get shiftNone => 'No shifts yet';
+
+  @override
+  String get shiftOpenNow => 'Open';
+
+  @override
+  String get shiftOperatorVariance => 'Differences by operator';
+
+  @override
+  String shiftShortage(String amount) {
+    return 'Short $amount';
+  }
+
+  @override
+  String get shiftSummaryTitle => 'Shift summary';
+
+  @override
+  String shiftDifference(String amount) {
+    return 'Difference $amount';
+  }
+
+  @override
+  String get closeDayNoPermission =>
+      'Day close is done by the owner or by staff the owner allowed.';
+
+  @override
+  String get reasonRequiredHere => 'Choose a reason for each difference';
+
+  @override
+  String get bulkTitle => 'Bulk flexiload';
+
+  @override
+  String get bulkNumber => 'Number (optional)';
+
+  @override
+  String get bulkAmount => 'Price';
+
+  @override
+  String get bulkAddRow => 'Add row';
+
+  @override
+  String get bulkPaste => 'Paste list';
+
+  @override
+  String get bulkPasteHint =>
+      'One load per line: number and amount, like 01712345678 100';
+
+  @override
+  String get bulkPasteApply => 'Add to list';
+
+  @override
+  String bulkRejected(String count) {
+    return '$count lines skipped';
+  }
+
+  @override
+  String bulkTotal(String count, String price) {
+    return '$count loads · $price';
+  }
+
+  @override
+  String bulkMargin(String amount) {
+    return 'Margin $amount';
+  }
+
+  @override
+  String bulkSaveAll(String count) {
+    return 'Save all ($count)';
+  }
+
+  @override
+  String bulkSaved(String count) {
+    return '$count loads saved';
+  }
+
+  @override
+  String get bulkDuplicate => 'Same number and amount twice';
+
+  @override
+  String get bulkBadNumber => 'Check the number';
+
+  @override
+  String bulkLowBalance(String account) {
+    return '$account balance is not enough for these loads';
+  }
+
+  @override
+  String get bulkEmpty => 'Add at least one load';
+
+  @override
+  String get regularsTitle => 'Regulars';
+
+  @override
+  String regularsUses(String count) {
+    return '$count times';
+  }
+
+  @override
+  String get rateModeTiered => 'By amount (tiers)';
+
+  @override
+  String get tierUpTo => 'Up to';
+
+  @override
+  String get tierAbove => 'Above';
+
+  @override
+  String get tierAdd => 'Add tier';
+
+  @override
+  String get tierOrderProblem =>
+      'Amounts must increase from one tier to the next';
+
+  @override
+  String get recTitle => 'Recurring expenses';
+
+  @override
+  String get recAdd => 'Add recurring expense';
+
+  @override
+  String get recAmount => 'Amount';
+
+  @override
+  String get recFrequency => 'Repeats';
+
+  @override
+  String get recMonthly => 'Every month';
+
+  @override
+  String get recWeekly => 'Every week';
+
+  @override
+  String get recDayOfMonth => 'Day of the month';
+
+  @override
+  String get recWeekday => 'Day of the week';
+
+  @override
+  String recNextDue(String date) {
+    return 'Next: $date';
+  }
+
+  @override
+  String recDueBanner(String count) {
+    return '$count recurring expenses are due';
+  }
+
+  @override
+  String get recRecord => 'Record';
+
+  @override
+  String get recSkip => 'Skip';
+
+  @override
+  String get recRecorded => 'Expense recorded';
+
+  @override
+  String get recEmpty =>
+      'No recurring expenses yet. Add rent, internet and other regular costs.';
+
+  @override
+  String get recNotifTitle => 'Expense due';
+
+  @override
+  String recNotifBody(String label, String amount) {
+    return '$label: $amount is due today';
+  }
+
+  @override
+  String get recPaused => 'Paused';
+
+  @override
+  String get recDueNow => 'Due';
+
+  @override
+  String get recNeedCategory => 'Add an expense category first';
+
+  @override
+  String get recEvery31 => 'Months with fewer days use the last day';
+
+  @override
+  String get wdMon => 'Monday';
+
+  @override
+  String get wdTue => 'Tuesday';
+
+  @override
+  String get wdWed => 'Wednesday';
+
+  @override
+  String get wdThu => 'Thursday';
+
+  @override
+  String get wdFri => 'Friday';
+
+  @override
+  String get wdSat => 'Saturday';
+
+  @override
+  String get wdSun => 'Sunday';
+
+  @override
+  String get sheetTitle => 'Daily sheet';
+
+  @override
+  String get sheetPrint => 'Print sheet';
+
+  @override
+  String get sheetShare => 'Share sheet as PDF';
+
+  @override
+  String get sheetPreparedBy => 'Prepared by';
+
+  @override
+  String get sheetCheckedBy => 'Checked by';
+
+  @override
+  String get sheetParticulars => 'Particulars';
+
+  @override
+  String get sheetTime => 'Time';
+
+  @override
+  String get sheetAccounts => 'Accounts';
+
+  @override
+  String get sheetSummary => 'Summary';
+
+  @override
+  String get sheetFailed => 'Could not prepare the sheet';
+
+  @override
+  String get insTitle => 'Insights';
+
+  @override
+  String get insNotEnough =>
+      'Not enough entries yet to show patterns (at least 10 needed).';
+
+  @override
+  String get insAvgSize => 'Average entry';
+
+  @override
+  String insEntries(String count) {
+    return '$count entries';
+  }
+
+  @override
+  String get insBusiestHour => 'Busiest hour';
+
+  @override
+  String get insBestHour => 'Most profitable hour';
+
+  @override
+  String get insBestWeekday => 'Best weekday';
+
+  @override
+  String insPerDay(String amount) {
+    return '$amount per day';
+  }
+
+  @override
+  String get insHourChart => 'Entries by hour of day';
+
+  @override
+  String get insWeekdayChart => 'Average profit by weekday';
+
+  @override
+  String get insByType => 'Average size by type';
+
+  @override
+  String get wdMonShort => 'Mon';
+
+  @override
+  String get wdTueShort => 'Tue';
+
+  @override
+  String get wdWedShort => 'Wed';
+
+  @override
+  String get wdThuShort => 'Thu';
+
+  @override
+  String get wdFriShort => 'Fri';
+
+  @override
+  String get wdSatShort => 'Sat';
+
+  @override
+  String get wdSunShort => 'Sun';
+
+  @override
+  String get repVarianceByAccount => 'By account (last 30 closed days)';
+
+  @override
+  String get repVarianceByWeekday => 'Differences by weekday';
+
+  @override
+  String get repVarianceWeekdayHint =>
+      'Average difference per closed day, last 90 closed days';
+
+  @override
+  String repVarianceWorst(String day, String short, String total) {
+    return 'Short most often on $day: $short of $total closed days';
+  }
+
+  @override
+  String get repVarianceNoPattern => 'No weekday stands out yet';
+
+  @override
+  String repVarianceShortOver(String amount, String days) {
+    return 'Short $amount on $days days';
+  }
+
+  @override
+  String repVarianceExcessOver(String amount) {
+    return 'Excess $amount';
+  }
+
+  @override
+  String get repVarianceAllGood => 'No differences';
 }

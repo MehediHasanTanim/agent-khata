@@ -1999,6 +1999,1110 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Entries'**
   String get diagEntries;
+
+  /// No description provided for @txnDueGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit given'**
+  String get txnDueGiven;
+
+  /// No description provided for @txnDueSettled.
+  ///
+  /// In en, this message translates to:
+  /// **'Due received'**
+  String get txnDueSettled;
+
+  /// No description provided for @txnDueTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Money held'**
+  String get txnDueTaken;
+
+  /// No description provided for @txnDuePaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Money returned'**
+  String get txnDuePaid;
+
+  /// No description provided for @txnCommissionReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission received'**
+  String get txnCommissionReceived;
+
+  /// No description provided for @duesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Baki (dues)'**
+  String get duesTitle;
+
+  /// No description provided for @duesTheyOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'They owe me'**
+  String get duesTheyOwe;
+
+  /// No description provided for @duesIOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'I owe them'**
+  String get duesIOwe;
+
+  /// No description provided for @duesTotalTheyOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'Total to collect'**
+  String get duesTotalTheyOwe;
+
+  /// No description provided for @duesTotalIOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'Total I owe'**
+  String get duesTotalIOwe;
+
+  /// No description provided for @duesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No open dues'**
+  String get duesEmpty;
+
+  /// No description provided for @duesSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name or number'**
+  String get duesSearch;
+
+  /// No description provided for @duesAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add baki'**
+  String get duesAdd;
+
+  /// No description provided for @duesNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New baki'**
+  String get duesNewTitle;
+
+  /// No description provided for @duesDirection.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get duesDirection;
+
+  /// No description provided for @duesName.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer name'**
+  String get duesName;
+
+  /// No description provided for @duesPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get duesPhone;
+
+  /// No description provided for @duesNeedNameOrPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name or a phone number'**
+  String get duesNeedNameOrPhone;
+
+  /// No description provided for @duesGaveFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Given from'**
+  String get duesGaveFrom;
+
+  /// No description provided for @duesReceivedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept in'**
+  String get duesReceivedIn;
+
+  /// No description provided for @duesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'What for (optional)'**
+  String get duesNote;
+
+  /// No description provided for @duesSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Baki saved'**
+  String get duesSaved;
+
+  /// No description provided for @duesRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining {amount}'**
+  String duesRemaining(String amount);
+
+  /// No description provided for @duesOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Original {amount}'**
+  String duesOriginal(String amount);
+
+  /// No description provided for @duesSettle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record payment'**
+  String get duesSettle;
+
+  /// No description provided for @duesSettleReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return money'**
+  String get duesSettleReturn;
+
+  /// No description provided for @duesSettleAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Full amount'**
+  String get duesSettleAll;
+
+  /// No description provided for @duesSettleTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Received in'**
+  String get duesSettleTo;
+
+  /// No description provided for @duesSettleFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid from'**
+  String get duesSettleFrom;
+
+  /// No description provided for @duesOverSettle.
+  ///
+  /// In en, this message translates to:
+  /// **'More than the amount due'**
+  String get duesOverSettle;
+
+  /// No description provided for @duesPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get duesPayments;
+
+  /// No description provided for @duesNoPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'No payments yet'**
+  String get duesNoPayments;
+
+  /// No description provided for @duesCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get duesCall;
+
+  /// No description provided for @duesSms.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS'**
+  String get duesSms;
+
+  /// No description provided for @duesSettled.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment recorded'**
+  String get duesSettled;
+
+  /// No description provided for @duesFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save. Please try again.'**
+  String get duesFailed;
+
+  /// No description provided for @repTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get repTitle;
+
+  /// No description provided for @repWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get repWeek;
+
+  /// No description provided for @repMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get repMonth;
+
+  /// No description provided for @repPrev.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get repPrev;
+
+  /// No description provided for @repNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get repNext;
+
+  /// No description provided for @repNetPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Net profit per day'**
+  String get repNetPerDay;
+
+  /// No description provided for @repByType.
+  ///
+  /// In en, this message translates to:
+  /// **'By type'**
+  String get repByType;
+
+  /// No description provided for @repNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries in this period'**
+  String get repNoData;
+
+  /// No description provided for @repVarianceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Day-close differences'**
+  String get repVarianceTitle;
+
+  /// No description provided for @repVarianceNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No closed days yet'**
+  String get repVarianceNone;
+
+  /// No description provided for @repVarianceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Bars show how far the count was from the books each day'**
+  String get repVarianceHint;
+
+  /// No description provided for @repCommissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission: expected vs received'**
+  String get repCommissionTitle;
+
+  /// No description provided for @repExpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected'**
+  String get repExpected;
+
+  /// No description provided for @repReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get repReceived;
+
+  /// No description provided for @repPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get repPending;
+
+  /// No description provided for @repRecordCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'Record commission received'**
+  String get repRecordCommission;
+
+  /// No description provided for @repExportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get repExportCsv;
+
+  /// No description provided for @repExporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing…'**
+  String get repExporting;
+
+  /// No description provided for @repExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export'**
+  String get repExportFailed;
+
+  /// No description provided for @repStatementPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Statement PDF'**
+  String get repStatementPdf;
+
+  /// No description provided for @repStatementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{account} statement'**
+  String repStatementTitle(String account);
+
+  /// No description provided for @repStatementPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'{from} to {to}'**
+  String repStatementPeriod(String from, String to);
+
+  /// No description provided for @repPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {n} of {total}'**
+  String repPage(String n, String total);
+
+  /// No description provided for @ledgerDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get ledgerDescription;
+
+  /// No description provided for @staffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get staffTitle;
+
+  /// No description provided for @staffAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add staff'**
+  String get staffAdd;
+
+  /// No description provided for @staffName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get staffName;
+
+  /// No description provided for @staffPin.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN (4 to 6 digits)'**
+  String get staffPin;
+
+  /// No description provided for @staffCanSeeProfit.
+  ///
+  /// In en, this message translates to:
+  /// **'Can see profit and reports'**
+  String get staffCanSeeProfit;
+
+  /// No description provided for @staffCanCloseDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Can close the day'**
+  String get staffCanCloseDay;
+
+  /// No description provided for @roleOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get roleOwner;
+
+  /// No description provided for @roleStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get roleStaff;
+
+  /// No description provided for @staffInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get staffInactive;
+
+  /// No description provided for @staffResetPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset PIN'**
+  String get staffResetPin;
+
+  /// No description provided for @staffDeactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get staffDeactivate;
+
+  /// No description provided for @staffActivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate'**
+  String get staffActivate;
+
+  /// No description provided for @staffSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get staffSaved;
+
+  /// No description provided for @staffPinInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This PIN is already used. Choose another.'**
+  String get staffPinInUse;
+
+  /// No description provided for @staffBadPin.
+  ///
+  /// In en, this message translates to:
+  /// **'The PIN must be 4 to 6 digits'**
+  String get staffBadPin;
+
+  /// No description provided for @staffNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name'**
+  String get staffNameRequired;
+
+  /// No description provided for @staffEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff yet. Add the people who work at your counter.'**
+  String get staffEmpty;
+
+  /// No description provided for @staffInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Each staff member signs in with their own PIN. They can add entries and see only their own entries.'**
+  String get staffInfo;
+
+  /// No description provided for @whoAreYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Who is using the app?'**
+  String get whoAreYou;
+
+  /// No description provided for @signedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as {name}'**
+  String signedInAs(String name);
+
+  /// No description provided for @switchUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch user'**
+  String get switchUser;
+
+  /// No description provided for @permDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to do this'**
+  String get permDenied;
+
+  /// No description provided for @shiftCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift: {name}'**
+  String shiftCurrent(String name);
+
+  /// No description provided for @shiftSince.
+  ///
+  /// In en, this message translates to:
+  /// **'since {time}'**
+  String shiftSince(String time);
+
+  /// No description provided for @shiftHandover.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over'**
+  String get shiftHandover;
+
+  /// No description provided for @shiftHandoverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift handover'**
+  String get shiftHandoverTitle;
+
+  /// No description provided for @shiftHandoverIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Count the cash and wallets before handing over. Any difference is recorded against this shift.'**
+  String get shiftHandoverIntro;
+
+  /// No description provided for @shiftDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Handover recorded'**
+  String get shiftDone;
+
+  /// No description provided for @shiftNoOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'No shift is open'**
+  String get shiftNoOpen;
+
+  /// No description provided for @shiftRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent shifts'**
+  String get shiftRecent;
+
+  /// No description provided for @shiftNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No shifts yet'**
+  String get shiftNone;
+
+  /// No description provided for @shiftOpenNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get shiftOpenNow;
+
+  /// No description provided for @shiftOperatorVariance.
+  ///
+  /// In en, this message translates to:
+  /// **'Differences by operator'**
+  String get shiftOperatorVariance;
+
+  /// No description provided for @shiftShortage.
+  ///
+  /// In en, this message translates to:
+  /// **'Short {amount}'**
+  String shiftShortage(String amount);
+
+  /// No description provided for @shiftSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift summary'**
+  String get shiftSummaryTitle;
+
+  /// No description provided for @shiftDifference.
+  ///
+  /// In en, this message translates to:
+  /// **'Difference {amount}'**
+  String shiftDifference(String amount);
+
+  /// No description provided for @closeDayNoPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Day close is done by the owner or by staff the owner allowed.'**
+  String get closeDayNoPermission;
+
+  /// No description provided for @reasonRequiredHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a reason for each difference'**
+  String get reasonRequiredHere;
+
+  /// No description provided for @bulkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk flexiload'**
+  String get bulkTitle;
+
+  /// No description provided for @bulkNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Number (optional)'**
+  String get bulkNumber;
+
+  /// No description provided for @bulkAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get bulkAmount;
+
+  /// No description provided for @bulkAddRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Add row'**
+  String get bulkAddRow;
+
+  /// No description provided for @bulkPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste list'**
+  String get bulkPaste;
+
+  /// No description provided for @bulkPasteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One load per line: number and amount, like 01712345678 100'**
+  String get bulkPasteHint;
+
+  /// No description provided for @bulkPasteApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to list'**
+  String get bulkPasteApply;
+
+  /// No description provided for @bulkRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} lines skipped'**
+  String bulkRejected(String count);
+
+  /// No description provided for @bulkTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} loads · {price}'**
+  String bulkTotal(String count, String price);
+
+  /// No description provided for @bulkMargin.
+  ///
+  /// In en, this message translates to:
+  /// **'Margin {amount}'**
+  String bulkMargin(String amount);
+
+  /// No description provided for @bulkSaveAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Save all ({count})'**
+  String bulkSaveAll(String count);
+
+  /// No description provided for @bulkSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} loads saved'**
+  String bulkSaved(String count);
+
+  /// No description provided for @bulkDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Same number and amount twice'**
+  String get bulkDuplicate;
+
+  /// No description provided for @bulkBadNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the number'**
+  String get bulkBadNumber;
+
+  /// No description provided for @bulkLowBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'{account} balance is not enough for these loads'**
+  String bulkLowBalance(String account);
+
+  /// No description provided for @bulkEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one load'**
+  String get bulkEmpty;
+
+  /// No description provided for @regularsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Regulars'**
+  String get regularsTitle;
+
+  /// No description provided for @regularsUses.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} times'**
+  String regularsUses(String count);
+
+  /// No description provided for @rateModeTiered.
+  ///
+  /// In en, this message translates to:
+  /// **'By amount (tiers)'**
+  String get rateModeTiered;
+
+  /// No description provided for @tierUpTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to'**
+  String get tierUpTo;
+
+  /// No description provided for @tierAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'Above'**
+  String get tierAbove;
+
+  /// No description provided for @tierAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add tier'**
+  String get tierAdd;
+
+  /// No description provided for @tierOrderProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Amounts must increase from one tier to the next'**
+  String get tierOrderProblem;
+
+  /// No description provided for @recTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring expenses'**
+  String get recTitle;
+
+  /// No description provided for @recAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add recurring expense'**
+  String get recAdd;
+
+  /// No description provided for @recAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get recAmount;
+
+  /// No description provided for @recFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats'**
+  String get recFrequency;
+
+  /// No description provided for @recMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every month'**
+  String get recMonthly;
+
+  /// No description provided for @recWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every week'**
+  String get recWeekly;
+
+  /// No description provided for @recDayOfMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Day of the month'**
+  String get recDayOfMonth;
+
+  /// No description provided for @recWeekday.
+  ///
+  /// In en, this message translates to:
+  /// **'Day of the week'**
+  String get recWeekday;
+
+  /// No description provided for @recNextDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {date}'**
+  String recNextDue(String date);
+
+  /// No description provided for @recDueBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} recurring expenses are due'**
+  String recDueBanner(String count);
+
+  /// No description provided for @recRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get recRecord;
+
+  /// No description provided for @recSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get recSkip;
+
+  /// No description provided for @recRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense recorded'**
+  String get recRecorded;
+
+  /// No description provided for @recEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring expenses yet. Add rent, internet and other regular costs.'**
+  String get recEmpty;
+
+  /// No description provided for @recNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense due'**
+  String get recNotifTitle;
+
+  /// No description provided for @recNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {amount} is due today'**
+  String recNotifBody(String label, String amount);
+
+  /// No description provided for @recPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get recPaused;
+
+  /// No description provided for @recDueNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Due'**
+  String get recDueNow;
+
+  /// No description provided for @recNeedCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an expense category first'**
+  String get recNeedCategory;
+
+  /// No description provided for @recEvery31.
+  ///
+  /// In en, this message translates to:
+  /// **'Months with fewer days use the last day'**
+  String get recEvery31;
+
+  /// No description provided for @wdMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get wdMon;
+
+  /// No description provided for @wdTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get wdTue;
+
+  /// No description provided for @wdWed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get wdWed;
+
+  /// No description provided for @wdThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get wdThu;
+
+  /// No description provided for @wdFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get wdFri;
+
+  /// No description provided for @wdSat.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get wdSat;
+
+  /// No description provided for @wdSun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get wdSun;
+
+  /// No description provided for @sheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily sheet'**
+  String get sheetTitle;
+
+  /// No description provided for @sheetPrint.
+  ///
+  /// In en, this message translates to:
+  /// **'Print sheet'**
+  String get sheetPrint;
+
+  /// No description provided for @sheetShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share sheet as PDF'**
+  String get sheetShare;
+
+  /// No description provided for @sheetPreparedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepared by'**
+  String get sheetPreparedBy;
+
+  /// No description provided for @sheetCheckedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked by'**
+  String get sheetCheckedBy;
+
+  /// No description provided for @sheetParticulars.
+  ///
+  /// In en, this message translates to:
+  /// **'Particulars'**
+  String get sheetParticulars;
+
+  /// No description provided for @sheetTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get sheetTime;
+
+  /// No description provided for @sheetAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get sheetAccounts;
+
+  /// No description provided for @sheetSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get sheetSummary;
+
+  /// No description provided for @sheetFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not prepare the sheet'**
+  String get sheetFailed;
+
+  /// No description provided for @insTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get insTitle;
+
+  /// No description provided for @insNotEnough.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough entries yet to show patterns (at least 10 needed).'**
+  String get insNotEnough;
+
+  /// No description provided for @insAvgSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Average entry'**
+  String get insAvgSize;
+
+  /// No description provided for @insEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} entries'**
+  String insEntries(String count);
+
+  /// No description provided for @insBusiestHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Busiest hour'**
+  String get insBusiestHour;
+
+  /// No description provided for @insBestHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Most profitable hour'**
+  String get insBestHour;
+
+  /// No description provided for @insBestWeekday.
+  ///
+  /// In en, this message translates to:
+  /// **'Best weekday'**
+  String get insBestWeekday;
+
+  /// No description provided for @insPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} per day'**
+  String insPerDay(String amount);
+
+  /// No description provided for @insHourChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries by hour of day'**
+  String get insHourChart;
+
+  /// No description provided for @insWeekdayChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Average profit by weekday'**
+  String get insWeekdayChart;
+
+  /// No description provided for @insByType.
+  ///
+  /// In en, this message translates to:
+  /// **'Average size by type'**
+  String get insByType;
+
+  /// No description provided for @wdMonShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get wdMonShort;
+
+  /// No description provided for @wdTueShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get wdTueShort;
+
+  /// No description provided for @wdWedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get wdWedShort;
+
+  /// No description provided for @wdThuShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get wdThuShort;
+
+  /// No description provided for @wdFriShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get wdFriShort;
+
+  /// No description provided for @wdSatShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get wdSatShort;
+
+  /// No description provided for @wdSunShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get wdSunShort;
+
+  /// No description provided for @repVarianceByAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'By account (last 30 closed days)'**
+  String get repVarianceByAccount;
+
+  /// No description provided for @repVarianceByWeekday.
+  ///
+  /// In en, this message translates to:
+  /// **'Differences by weekday'**
+  String get repVarianceByWeekday;
+
+  /// No description provided for @repVarianceWeekdayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Average difference per closed day, last 90 closed days'**
+  String get repVarianceWeekdayHint;
+
+  /// No description provided for @repVarianceWorst.
+  ///
+  /// In en, this message translates to:
+  /// **'Short most often on {day}: {short} of {total} closed days'**
+  String repVarianceWorst(String day, String short, String total);
+
+  /// No description provided for @repVarianceNoPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'No weekday stands out yet'**
+  String get repVarianceNoPattern;
+
+  /// No description provided for @repVarianceShortOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Short {amount} on {days} days'**
+  String repVarianceShortOver(String amount, String days);
+
+  /// No description provided for @repVarianceExcessOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Excess {amount}'**
+  String repVarianceExcessOver(String amount);
+
+  /// No description provided for @repVarianceAllGood.
+  ///
+  /// In en, this message translates to:
+  /// **'No differences'**
+  String get repVarianceAllGood;
 }
 
 class _AppLocalizationsDelegate

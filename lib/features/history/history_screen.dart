@@ -6,6 +6,7 @@ import '../../core/ledger/account_kind.dart';
 import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/security/roles.dart';
 import '../../core/utils/business_calendar.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../transactions/history_filter.dart';
@@ -85,7 +86,17 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       types: _type == null ? const {} : {_type!},
       accountId: _accountId,
       query: _query,
+      createdBy: _ownOnlyUserId(),
     );
+  }
+
+  /// Staff see only their own entries.
+  String? _ownOnlyUserId() {
+    final s = ref.read(sessionProvider);
+    if (s == null || Permissions.can(s, Permission.viewAllHistory)) {
+      return null;
+    }
+    return s.id;
   }
 
   Future<void> _reload() async {

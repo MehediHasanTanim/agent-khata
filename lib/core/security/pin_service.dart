@@ -70,11 +70,30 @@ class PinService {
     return remaining > Duration.zero ? remaining : null;
   }
 
-  Future<PinVerifyResult> verify(String pin) async {
+  Future<PinVerifyResult> verify(String pin) async =>
+      verifyAgainst(pin, await _store.read(_hashKey));
+
+  /// True if [pin] is the owner's PIN. Does not touch the failure counter
+  /// (used to keep staff PINs distinct from the owner's).
+  Future<bool> matchesOwnerPin(String pin) async {
+    final stored = await _store.read(_hashKey);
+    return stored != null && await _hasher.verify(pin, stored);
+  }
+
+  /// Compares [pin] with an encoded hash made by [hashPin].
+  Future<bool> verifyHash(String pin, String encoded) =>
+      _hasher.verify(pin, encoded);
+
+  /// Hashes a PIN for storage elsewhere (staff accounts).
+  Future<String> hashPin(String pin) => _hasher.hash(pin);
+
+  /// Checks [pin] against any stored hash (a staff member's, say) while
+  /// sharing the owner's lockout and failure counter, so guessing across
+  /// accounts gains nothing.
+  Future<PinVerifyResult> verifyAgainst(String pin, String? stored) async {
     final remaining = await lockoutRemaining();
     if (remaining != null) return PinLockedOut(remaining);
 
-    final stored = await _store.read(_hashKey);
     if (stored != null && await _hasher.verify(pin, stored)) {
       await _clearFailures();
       return const PinVerified();

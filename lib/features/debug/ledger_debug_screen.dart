@@ -182,6 +182,12 @@ class _LedgerDebugScreenState extends ConsumerState<LedgerDebugScreen> {
       case TransactionType.adjustment:
         to = cash.id;
         note = 'debug adjustment';
+      case TransactionType.dueGiven:
+      case TransactionType.dueSettled:
+      case TransactionType.dueTaken:
+      case TransactionType.duePaid:
+      case TransactionType.commissionReceived:
+        break; // exercised through the Dues and Reports screens
     }
 
     try {
@@ -275,7 +281,9 @@ class _LedgerDebugScreenState extends ConsumerState<LedgerDebugScreen> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (final t in TransactionType.values)
+              for (final t in TransactionType.values.where(
+                (t) => t.index <= TransactionType.adjustment.index,
+              ))
                 FilledButton.tonal(
                   onPressed: () => _post(t),
                   child: Text(t.dbName),

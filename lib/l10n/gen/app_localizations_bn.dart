@@ -1049,4 +1049,615 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get diagEntries => 'এন্ট্রি';
+
+  @override
+  String get txnDueGiven => 'বাকি দেওয়া';
+
+  @override
+  String get txnDueSettled => 'বাকি আদায়';
+
+  @override
+  String get txnDueTaken => 'জমা রাখা';
+
+  @override
+  String get txnDuePaid => 'জমা ফেরত';
+
+  @override
+  String get txnCommissionReceived => 'কমিশন পেয়েছি';
+
+  @override
+  String get duesTitle => 'বাকি খাতা';
+
+  @override
+  String get duesTheyOwe => 'আমার পাওনা';
+
+  @override
+  String get duesIOwe => 'আমার দেনা';
+
+  @override
+  String get duesTotalTheyOwe => 'মোট পাওনা';
+
+  @override
+  String get duesTotalIOwe => 'মোট দেনা';
+
+  @override
+  String get duesEmpty => 'কোনো বাকি নেই';
+
+  @override
+  String get duesSearch => 'নাম বা নম্বর দিয়ে খুঁজুন';
+
+  @override
+  String get duesAdd => 'বাকি যোগ করুন';
+
+  @override
+  String get duesNewTitle => 'নতুন বাকি';
+
+  @override
+  String get duesDirection => 'ধরন';
+
+  @override
+  String get duesName => 'গ্রাহকের নাম';
+
+  @override
+  String get duesPhone => 'ফোন নম্বর';
+
+  @override
+  String get duesNeedNameOrPhone => 'নাম বা ফোন নম্বর দিন';
+
+  @override
+  String get duesGaveFrom => 'কোথা থেকে দিলেন';
+
+  @override
+  String get duesReceivedIn => 'কোথায় রাখলেন';
+
+  @override
+  String get duesNote => 'কী বাবদ (ঐচ্ছিক)';
+
+  @override
+  String get duesSaved => 'বাকি সেভ হয়েছে';
+
+  @override
+  String duesRemaining(String amount) {
+    return 'বাকি $amount';
+  }
+
+  @override
+  String duesOriginal(String amount) {
+    return 'মূল $amount';
+  }
+
+  @override
+  String get duesSettle => 'পেমেন্ট নিন';
+
+  @override
+  String get duesSettleReturn => 'টাকা ফেরত দিন';
+
+  @override
+  String get duesSettleAll => 'পুরো টাকা';
+
+  @override
+  String get duesSettleTo => 'কোথায় পেলেন';
+
+  @override
+  String get duesSettleFrom => 'কোথা থেকে দিলেন';
+
+  @override
+  String get duesOverSettle => 'বাকির চেয়ে বেশি';
+
+  @override
+  String get duesPayments => 'পেমেন্টের তালিকা';
+
+  @override
+  String get duesNoPayments => 'এখনও কোনো পেমেন্ট নেই';
+
+  @override
+  String get duesCall => 'কল';
+
+  @override
+  String get duesSms => 'এসএমএস';
+
+  @override
+  String get duesSettled => 'পেমেন্ট সেভ হয়েছে';
+
+  @override
+  String get duesFailed => 'সেভ করা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get repTitle => 'রিপোর্ট';
+
+  @override
+  String get repWeek => 'এই সপ্তাহ';
+
+  @override
+  String get repMonth => 'এই মাস';
+
+  @override
+  String get repPrev => 'আগের';
+
+  @override
+  String get repNext => 'পরের';
+
+  @override
+  String get repNetPerDay => 'দিনভিত্তিক নিট লাভ';
+
+  @override
+  String get repByType => 'ধরন অনুযায়ী';
+
+  @override
+  String get repNoData => 'এই সময়ে কোনো এন্ট্রি নেই';
+
+  @override
+  String get repVarianceTitle => 'দিনের হিসাবের গরমিল';
+
+  @override
+  String get repVarianceNone => 'এখনও কোনো দিন বন্ধ হয়নি';
+
+  @override
+  String get repVarianceHint =>
+      'প্রতিদিন গুনে পাওয়া টাকা খাতা থেকে কত আলাদা ছিল';
+
+  @override
+  String get repCommissionTitle => 'কমিশন: পাওনা বনাম পাওয়া';
+
+  @override
+  String get repExpected => 'পাওনা';
+
+  @override
+  String get repReceived => 'পেয়েছি';
+
+  @override
+  String get repPending => 'বাকি';
+
+  @override
+  String get repRecordCommission => 'কমিশন পাওয়া লিখুন';
+
+  @override
+  String get repExportCsv => 'CSV এক্সপোর্ট';
+
+  @override
+  String get repExporting => 'তৈরি হচ্ছে…';
+
+  @override
+  String get repExportFailed => 'এক্সপোর্ট করা যায়নি';
+
+  @override
+  String get repStatementPdf => 'খতিয়ান PDF';
+
+  @override
+  String repStatementTitle(String account) {
+    return '$account এর খতিয়ান';
+  }
+
+  @override
+  String repStatementPeriod(String from, String to) {
+    return '$from থেকে $to';
+  }
+
+  @override
+  String repPage(String n, String total) {
+    return 'পৃষ্ঠা $n / $total';
+  }
+
+  @override
+  String get ledgerDescription => 'বিবরণ';
+
+  @override
+  String get staffTitle => 'কর্মচারী';
+
+  @override
+  String get staffAdd => 'কর্মচারী যোগ করুন';
+
+  @override
+  String get staffName => 'নাম';
+
+  @override
+  String get staffPin => 'পিন (৪ থেকে ৬ অঙ্ক)';
+
+  @override
+  String get staffCanSeeProfit => 'লাভ ও রিপোর্ট দেখতে পারবে';
+
+  @override
+  String get staffCanCloseDay => 'দিনের হিসাব মেলাতে পারবে';
+
+  @override
+  String get roleOwner => 'মালিক';
+
+  @override
+  String get roleStaff => 'কর্মচারী';
+
+  @override
+  String get staffInactive => 'বন্ধ';
+
+  @override
+  String get staffResetPin => 'পিন বদলান';
+
+  @override
+  String get staffDeactivate => 'বন্ধ করুন';
+
+  @override
+  String get staffActivate => 'চালু করুন';
+
+  @override
+  String get staffSaved => 'সেভ হয়েছে';
+
+  @override
+  String get staffPinInUse => 'এই পিন আগে থেকেই আছে। অন্য পিন দিন।';
+
+  @override
+  String get staffBadPin => 'পিন ৪ থেকে ৬ অঙ্কের হতে হবে';
+
+  @override
+  String get staffNameRequired => 'নাম লিখুন';
+
+  @override
+  String get staffEmpty =>
+      'এখনও কোনো কর্মচারী নেই। কাউন্টারে যারা কাজ করেন তাদের যোগ করুন।';
+
+  @override
+  String get staffInfo =>
+      'প্রত্যেক কর্মচারী নিজের পিন দিয়ে ঢোকেন। তারা এন্ট্রি দিতে পারেন এবং শুধু নিজের এন্ট্রি দেখতে পান।';
+
+  @override
+  String get whoAreYou => 'কে অ্যাপ ব্যবহার করছেন?';
+
+  @override
+  String signedInAs(String name) {
+    return '$name হিসেবে ঢুকেছেন';
+  }
+
+  @override
+  String get switchUser => 'ব্যবহারকারী বদলান';
+
+  @override
+  String get permDenied => 'আপনার এই কাজের অনুমতি নেই';
+
+  @override
+  String shiftCurrent(String name) {
+    return 'শিফট: $name';
+  }
+
+  @override
+  String shiftSince(String time) {
+    return '$time থেকে';
+  }
+
+  @override
+  String get shiftHandover => 'হস্তান্তর';
+
+  @override
+  String get shiftHandoverTitle => 'শিফট হস্তান্তর';
+
+  @override
+  String get shiftHandoverIntro =>
+      'হস্তান্তরের আগে নগদ ও ওয়ালেট গুনে নিন। কোনো পার্থক্য থাকলে এই শিফটের নামে লেখা হবে।';
+
+  @override
+  String get shiftDone => 'হস্তান্তর লেখা হয়েছে';
+
+  @override
+  String get shiftNoOpen => 'কোনো শিফট চলছে না';
+
+  @override
+  String get shiftRecent => 'সাম্প্রতিক শিফট';
+
+  @override
+  String get shiftNone => 'এখনও কোনো শিফট নেই';
+
+  @override
+  String get shiftOpenNow => 'চলমান';
+
+  @override
+  String get shiftOperatorVariance => 'অপারেটর অনুযায়ী পার্থক্য';
+
+  @override
+  String shiftShortage(String amount) {
+    return 'ঘাটতি $amount';
+  }
+
+  @override
+  String get shiftSummaryTitle => 'শিফটের সারাংশ';
+
+  @override
+  String shiftDifference(String amount) {
+    return 'পার্থক্য $amount';
+  }
+
+  @override
+  String get closeDayNoPermission =>
+      'দিনের হিসাব মেলান মালিক বা তার অনুমতি পাওয়া কর্মচারী।';
+
+  @override
+  String get reasonRequiredHere => 'প্রতিটি পার্থক্যের জন্য কারণ বেছে নিন';
+
+  @override
+  String get bulkTitle => 'একসাথে ফ্লেক্সিলোড';
+
+  @override
+  String get bulkNumber => 'নম্বর (ঐচ্ছিক)';
+
+  @override
+  String get bulkAmount => 'টাকা';
+
+  @override
+  String get bulkAddRow => 'সারি যোগ করুন';
+
+  @override
+  String get bulkPaste => 'তালিকা পেস্ট করুন';
+
+  @override
+  String get bulkPasteHint =>
+      'প্রতি লাইনে একটি: নম্বর ও টাকা, যেমন 01712345678 100';
+
+  @override
+  String get bulkPasteApply => 'তালিকায় যোগ করুন';
+
+  @override
+  String bulkRejected(String count) {
+    return '$countটি লাইন বাদ গেছে';
+  }
+
+  @override
+  String bulkTotal(String count, String price) {
+    return '$countটি লোড · $price';
+  }
+
+  @override
+  String bulkMargin(String amount) {
+    return 'লাভ $amount';
+  }
+
+  @override
+  String bulkSaveAll(String count) {
+    return 'সব সেভ করুন ($count)';
+  }
+
+  @override
+  String bulkSaved(String count) {
+    return '$countটি লোড সেভ হয়েছে';
+  }
+
+  @override
+  String get bulkDuplicate => 'একই নম্বর ও টাকা দুইবার';
+
+  @override
+  String get bulkBadNumber => 'নম্বরটি দেখুন';
+
+  @override
+  String bulkLowBalance(String account) {
+    return 'এই লোডগুলোর জন্য $account-এর ব্যালেন্স যথেষ্ট নয়';
+  }
+
+  @override
+  String get bulkEmpty => 'কমপক্ষে একটি লোড যোগ করুন';
+
+  @override
+  String get regularsTitle => 'নিয়মিত গ্রাহক';
+
+  @override
+  String regularsUses(String count) {
+    return '$count বার';
+  }
+
+  @override
+  String get rateModeTiered => 'টাকার অঙ্ক অনুযায়ী (ধাপ)';
+
+  @override
+  String get tierUpTo => 'পর্যন্ত';
+
+  @override
+  String get tierAbove => 'এর বেশি';
+
+  @override
+  String get tierAdd => 'ধাপ যোগ করুন';
+
+  @override
+  String get tierOrderProblem => 'এক ধাপ থেকে পরের ধাপে টাকার অঙ্ক বাড়তে হবে';
+
+  @override
+  String get recTitle => 'নিয়মিত খরচ';
+
+  @override
+  String get recAdd => 'নিয়মিত খরচ যোগ করুন';
+
+  @override
+  String get recAmount => 'পরিমাণ';
+
+  @override
+  String get recFrequency => 'কত দিন পরপর';
+
+  @override
+  String get recMonthly => 'প্রতি মাসে';
+
+  @override
+  String get recWeekly => 'প্রতি সপ্তাহে';
+
+  @override
+  String get recDayOfMonth => 'মাসের তারিখ';
+
+  @override
+  String get recWeekday => 'সপ্তাহের দিন';
+
+  @override
+  String recNextDue(String date) {
+    return 'পরবর্তী: $date';
+  }
+
+  @override
+  String recDueBanner(String count) {
+    return '$countটি নিয়মিত খরচের সময় হয়েছে';
+  }
+
+  @override
+  String get recRecord => 'লিখুন';
+
+  @override
+  String get recSkip => 'বাদ দিন';
+
+  @override
+  String get recRecorded => 'খরচ লেখা হয়েছে';
+
+  @override
+  String get recEmpty =>
+      'এখনও কোনো নিয়মিত খরচ নেই। ভাড়া, ইন্টারনেটের মতো খরচ যোগ করুন।';
+
+  @override
+  String get recNotifTitle => 'খরচের সময় হয়েছে';
+
+  @override
+  String recNotifBody(String label, String amount) {
+    return 'আজ $label: $amount';
+  }
+
+  @override
+  String get recPaused => 'বন্ধ';
+
+  @override
+  String get recDueNow => 'সময় হয়েছে';
+
+  @override
+  String get recNeedCategory => 'আগে একটি খরচের খাত যোগ করুন';
+
+  @override
+  String get recEvery31 => 'কম দিনের মাসে শেষ দিনে ধরা হবে';
+
+  @override
+  String get wdMon => 'সোমবার';
+
+  @override
+  String get wdTue => 'মঙ্গলবার';
+
+  @override
+  String get wdWed => 'বুধবার';
+
+  @override
+  String get wdThu => 'বৃহস্পতিবার';
+
+  @override
+  String get wdFri => 'শুক্রবার';
+
+  @override
+  String get wdSat => 'শনিবার';
+
+  @override
+  String get wdSun => 'রবিবার';
+
+  @override
+  String get sheetTitle => 'দৈনিক শিট';
+
+  @override
+  String get sheetPrint => 'শিট প্রিন্ট করুন';
+
+  @override
+  String get sheetShare => 'শিট PDF শেয়ার করুন';
+
+  @override
+  String get sheetPreparedBy => 'প্রস্তুতকারী';
+
+  @override
+  String get sheetCheckedBy => 'যাচাইকারী';
+
+  @override
+  String get sheetParticulars => 'বিবরণ';
+
+  @override
+  String get sheetTime => 'সময়';
+
+  @override
+  String get sheetAccounts => 'অ্যাকাউন্ট';
+
+  @override
+  String get sheetSummary => 'সারাংশ';
+
+  @override
+  String get sheetFailed => 'শিট তৈরি করা যায়নি';
+
+  @override
+  String get insTitle => 'বিশ্লেষণ';
+
+  @override
+  String get insNotEnough =>
+      'ধরন দেখানোর মতো এন্ট্রি এখনও নেই (কমপক্ষে ১০টি লাগবে)।';
+
+  @override
+  String get insAvgSize => 'গড় এন্ট্রি';
+
+  @override
+  String insEntries(String count) {
+    return '$countটি এন্ট্রি';
+  }
+
+  @override
+  String get insBusiestHour => 'সবচেয়ে ব্যস্ত সময়';
+
+  @override
+  String get insBestHour => 'সবচেয়ে লাভের সময়';
+
+  @override
+  String get insBestWeekday => 'সবচেয়ে ভালো বার';
+
+  @override
+  String insPerDay(String amount) {
+    return 'দিনে গড়ে $amount';
+  }
+
+  @override
+  String get insHourChart => 'দিনের ঘণ্টা অনুযায়ী এন্ট্রি';
+
+  @override
+  String get insWeekdayChart => 'বার অনুযায়ী গড় লাভ';
+
+  @override
+  String get insByType => 'ধরন অনুযায়ী গড় অঙ্ক';
+
+  @override
+  String get wdMonShort => 'সোম';
+
+  @override
+  String get wdTueShort => 'মঙ্গল';
+
+  @override
+  String get wdWedShort => 'বুধ';
+
+  @override
+  String get wdThuShort => 'বৃহ';
+
+  @override
+  String get wdFriShort => 'শুক্র';
+
+  @override
+  String get wdSatShort => 'শনি';
+
+  @override
+  String get wdSunShort => 'রবি';
+
+  @override
+  String get repVarianceByAccount => 'অ্যাকাউন্ট অনুযায়ী (শেষ ৩০টি বন্ধ দিন)';
+
+  @override
+  String get repVarianceByWeekday => 'বার অনুযায়ী গরমিল';
+
+  @override
+  String get repVarianceWeekdayHint =>
+      'প্রতিটি বন্ধ দিনে গড় গরমিল, শেষ ৯০টি বন্ধ দিন';
+
+  @override
+  String repVarianceWorst(String day, String short, String total) {
+    return '$day সবচেয়ে বেশি ঘাটতি: $totalটি বন্ধ দিনের মধ্যে $shortটিতে';
+  }
+
+  @override
+  String get repVarianceNoPattern => 'এখনও কোনো বার আলাদা করে চোখে পড়ছে না';
+
+  @override
+  String repVarianceShortOver(String amount, String days) {
+    return '$days দিনে $amount ঘাটতি';
+  }
+
+  @override
+  String repVarianceExcessOver(String amount) {
+    return '$amount বেশি';
+  }
+
+  @override
+  String get repVarianceAllGood => 'কোনো গরমিল নেই';
 }

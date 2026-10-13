@@ -290,6 +290,84 @@ class AdjustmentStrategy extends PostingStrategy with PostingChecks {
   }
 }
 
+const _payable = {AccountKind.payable};
+const _receivable = {AccountKind.receivable};
+const _moneyPlaces = {AccountKind.cash, AccountKind.wallet, AccountKind.bank};
+
+/// Credit given to a customer: cash, e-money or load goes out, and the
+/// receivable account takes the claim.
+class DueGivenStrategy extends _MoveStrategy {
+  const DueGivenStrategy();
+  @override
+  TransactionType get type => TransactionType.dueGiven;
+  @override
+  Set<AccountKind> get fromKinds => {..._moneyPlaces, AccountKind.load};
+  @override
+  Set<AccountKind> get toKinds => _receivable;
+}
+
+/// A customer pays back: the claim shrinks, money arrives.
+class DueSettledStrategy extends _MoveStrategy {
+  const DueSettledStrategy();
+  @override
+  TransactionType get type => TransactionType.dueSettled;
+  @override
+  Set<AccountKind> get fromKinds => _receivable;
+  @override
+  Set<AccountKind> get toKinds => _moneyPlaces;
+}
+
+/// A customer leaves money with the agent: money arrives, liability grows.
+class DueTakenStrategy extends _MoveStrategy {
+  const DueTakenStrategy();
+  @override
+  TransactionType get type => TransactionType.dueTaken;
+  @override
+  Set<AccountKind> get fromKinds => _payable;
+  @override
+  Set<AccountKind> get toKinds => _moneyPlaces;
+}
+
+/// The agent returns held money: money goes out, liability shrinks.
+class DuePaidStrategy extends _MoveStrategy {
+  const DuePaidStrategy();
+  @override
+  TransactionType get type => TransactionType.duePaid;
+  @override
+  Set<AccountKind> get fromKinds => _moneyPlaces;
+  @override
+  Set<AccountKind> get toKinds => _payable;
+}
+
+/// Provider commission credited to a wallet. The counter-entry is the
+/// external account (income), so wallet float rises by the amount.
+class CommissionReceivedStrategy extends PostingStrategy with PostingChecks {
+  const CommissionReceivedStrategy();
+
+  @override
+  TransactionType get type => TransactionType.commissionReceived;
+
+  @override
+  void validate(TransactionDraft d, AccountResolver accounts) {
+    requireBasics(d);
+    requireAccount(d.toAccountId, accounts, _walletOnly, 'to');
+  }
+
+  @override
+  List<LedgerEntryDraft> post(TransactionDraft d, AccountResolver accounts) {
+    validate(d, accounts);
+    final entries = [
+      LedgerEntryDraft(accountId: d.toAccountId!, deltaPaisa: d.amount.paisa),
+      LedgerEntryDraft(
+        accountId: accounts.externalAccountId,
+        deltaPaisa: -d.amount.paisa,
+      ),
+    ];
+    assertBalanced(entries);
+    return entries;
+  }
+}
+
 /// Maps each [TransactionType] to its strategy.
 class PostingRegistry {
   PostingRegistry(Iterable<PostingStrategy> strategies)
@@ -306,6 +384,11 @@ class PostingRegistry {
     BankDepositStrategy(),
     ExpenseStrategy(),
     AdjustmentStrategy(),
+    DueGivenStrategy(),
+    DueSettledStrategy(),
+    DueTakenStrategy(),
+    DuePaidStrategy(),
+    CommissionReceivedStrategy(),
   ]);
 
   final Map<TransactionType, PostingStrategy> _byType;

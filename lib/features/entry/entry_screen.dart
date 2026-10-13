@@ -11,6 +11,7 @@ import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/security/roles.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../commission/commission_engine.dart';
@@ -19,6 +20,7 @@ import '../transactions/entry_guards.dart';
 import '../transactions/transaction_repository.dart';
 import 'amount_entry.dart';
 import 'amount_keypad.dart';
+import 'bulk_flexiload_screen.dart';
 import 'entry_providers.dart';
 
 enum EntryKind {
@@ -26,7 +28,8 @@ enum EntryKind {
   cashIn(TransactionType.cashIn),
   flexiload(TransactionType.flexiload),
   floatPurchase(TransactionType.floatPurchase),
-  expense(TransactionType.expense);
+  expense(TransactionType.expense),
+  commissionReceived(TransactionType.commissionReceived);
 
   const EntryKind(this.type);
   final TransactionType type;
@@ -59,15 +62,27 @@ class EditSeed {
   final int paidPaisa;
 }
 
+/// Values to start a new entry with (from a "regular" shortcut).
+class EntryPrefill {
+  const EntryPrefill({this.amount, this.walletId, this.customerNumber});
+
+  final Money? amount;
+  final String? walletId;
+  final String? customerNumber;
+}
+
 /// Single-screen entry: pick account, type amount, save. Pops with the new
 /// transaction id so the caller can offer "Undo".
 class EntryScreen extends ConsumerStatefulWidget {
-  const EntryScreen({super.key, required this.kind, this.edit});
+  const EntryScreen({super.key, required this.kind, this.edit, this.prefill});
 
   final EntryKind kind;
 
   /// When set, saving replaces this entry instead of creating a new one.
   final EditSeed? edit;
+
+  /// Starting values for a new entry.
+  final EntryPrefill? prefill;
 
   @override
   ConsumerState<EntryScreen> createState() => _EntryScreenState();
@@ -93,6 +108,12 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
   @override
   void initState() {
     super.initState();
+    final p = widget.prefill;
+    if (p != null && widget.edit == null) {
+      if (p.amount != null) _entry = const AmountEntry().set(p.amount!);
+      _walletId = p.walletId;
+      _customer.text = p.customerNumber ?? '';
+    }
     final e = widget.edit;
     if (e == null) return;
     _entry = const AmountEntry().set(e.amount);
@@ -101,6 +122,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
     _note.text = e.note ?? '';
     switch (widget.kind) {
       case EntryKind.cashOut:
+      case EntryKind.commissionReceived:
         _walletId = e.toAccountId;
       case EntryKind.cashIn:
       case EntryKind.flexiload:
@@ -137,6 +159,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
           EntryKind.flexiload => l10n.txnFlexiload,
           EntryKind.floatPurchase => l10n.txnFloatPurchase,
           EntryKind.expense => l10n.txnExpense,
+          EntryKind.commissionReceived => l10n.txnCommissionReceived,
         };
 
   List<Account> _wallets(List<Account> all) => [
@@ -188,6 +211,14 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
       EntryKind.flexiload => (from: wallet, to: cash),
       EntryKind.floatPurchase => (from: source ?? cash, to: wallet),
       EntryKind.expense => (from: cash, to: category),
+      EntryKind.commissionReceived => (
+        from: const Account(
+          id: kExternalAccountId,
+          kind: AccountKind.external,
+          label: '',
+        ),
+        to: wallet,
+      ),
     };
   }
 
@@ -279,11 +310,12 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
         customerNumber: customer,
         reference: _trxId.text.trim().isEmpty ? null : _trxId.text.trim(),
         note: _note.text.trim().isEmpty ? null : _note.text.trim(),
+        createdBy: currentUserId(ref),
       );
       final repo = ref.read(transactionRepositoryProvider);
       final id = edit == null
           ? await repo.post(draft)
-          : await repo.edit(edit.txnId, draft, userId: 'owner');
+          : await repo.edit(edit.txnId, draft, userId: currentUserId(ref));
       if (wallet != null) {
         await ref
             .read(sharedPreferencesProvider)
@@ -317,6 +349,8 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
       _failed(l10n.entrySaveFailed);
     } on DayLockedException {
       _failed(l10n.entryDayClosed);
+    } on PermissionDenied {
+      _failed(l10n.permDenied);
     }
   }
 
@@ -420,6 +454,11 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
     final categories = ref.watch(expenseAccountsProvider).value ?? const [];
     final quick = ref.watch(quickAmountsProvider(widget.kind.type)).value;
     final lastAmount = widget.edit == null ? quick?.last : null;
+    final regulars =
+        ref.watch(regularsProvider(widget.kind.type)).value ?? const [];
+    final session = ref.watch(sessionProvider);
+    final showProfit =
+        session != null && Permissions.can(session, Permission.viewProfit);
 
     final wallets = _wallets(accounts);
     final wallet = _selectedWallet(wallets);
@@ -488,13 +527,16 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
     final to = legs.to;
     final negative =
         from != null &&
+        from.kind != AccountKind.external &&
         _entry.amount.isPositive &&
         (balances[from.id] ?? Money.zero) - sourceOutflow < Money.zero;
     final canSave =
         _entry.amount.isPositive && from != null && to != null && !_saving;
 
     final direction = switch (widget.kind) {
-      EntryKind.cashIn || EntryKind.flexiload => tokens.cashIn,
+      EntryKind.cashIn ||
+      EntryKind.flexiload ||
+      EntryKind.commissionReceived => tokens.cashIn,
       EntryKind.cashOut || EntryKind.expense => tokens.cashOut,
       EntryKind.floatPurchase => theme.colorScheme.primary,
     };
@@ -502,7 +544,27 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
     final emptyWalletText = isFlexi ? l10n.entryNoOperator : l10n.entryNoWallet;
 
     return Scaffold(
-      appBar: AppBar(title: Text(_title(l10n))),
+      appBar: AppBar(
+        title: Text(_title(l10n)),
+        actions: [
+          if (isFlexi && widget.edit == null)
+            IconButton(
+              key: const ValueKey('open-bulk'),
+              tooltip: l10n.bulkTitle,
+              icon: const Icon(Icons.playlist_add),
+              onPressed: () async {
+                final saved = await Navigator.of(context).push<bool>(
+                  MaterialPageRoute(
+                    builder: (_) => const BulkFlexiloadScreen(),
+                  ),
+                );
+                if (saved == true && context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -573,6 +635,38 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                       ],
                     ),
                   ],
+                  if (regulars.isNotEmpty && widget.edit == null) ...[
+                    const SizedBox(height: 8),
+                    Text(l10n.regularsTitle, style: theme.textTheme.labelLarge),
+                    SizedBox(
+                      height: 48,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          for (final r in regulars)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: ActionChip(
+                                key: ValueKey('regular-${r.number}'),
+                                avatar: const Icon(Icons.history, size: 18),
+                                label: Text(
+                                  '${r.displayName} · '
+                                  '${money.format(r.lastAmount)}',
+                                ),
+                                onPressed: () => setState(() {
+                                  _entry = _entry.set(r.lastAmount);
+                                  _customer.text = r.number;
+                                  if (r.accountId != null &&
+                                      wallets.any((w) => w.id == r.accountId)) {
+                                    _walletId = r.accountId;
+                                  }
+                                }),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 16),
                   Center(
                     child: Semantics(
@@ -589,7 +683,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                   ),
                   Center(
                     child: Text(
-                      earnsCommission && _entry.amount.isPositive
+                      earnsCommission && showProfit && _entry.amount.isPositive
                           ? (isFlexi
                                 ? l10n.entryMargin(money.format(commission))
                                 : l10n.entryCommission(

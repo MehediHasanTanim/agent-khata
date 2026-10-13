@@ -12,7 +12,10 @@ FlowDirection directionOf(TransactionType t) => switch (t) {
   TransactionType.cashIn ||
   TransactionType.sendMoney ||
   TransactionType.billPay ||
-  TransactionType.flexiload => FlowDirection.moneyIn,
+  TransactionType.flexiload ||
+  TransactionType.dueSettled ||
+  TransactionType.dueTaken ||
+  TransactionType.commissionReceived => FlowDirection.moneyIn,
   TransactionType.cashOut || TransactionType.expense => FlowDirection.moneyOut,
   _ => FlowDirection.neutral,
 };

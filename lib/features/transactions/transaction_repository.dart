@@ -7,6 +7,8 @@ import '../../core/ledger/account.dart';
 import '../../core/ledger/posting_strategy.dart';
 import '../../core/ledger/strategies.dart';
 import '../../core/ledger/transaction_draft.dart';
+import '../../core/ledger/transaction_type.dart';
+import '../../core/security/roles.dart';
 import '../../core/utils/business_calendar.dart';
 import '../../core/utils/uuid_v7.dart';
 import '../accounts/account_repository.dart';
@@ -31,6 +33,7 @@ class TransactionRepository {
     required this._audit,
     required this._deviceId,
     DateTime Function()? clock,
+    this._session,
   }) : _clock = clock ?? DateTime.now;
 
   final AppDatabase _db;
@@ -39,12 +42,20 @@ class TransactionRepository {
   final AuditLogger _audit;
   final String _deviceId;
   final DateTime Function() _clock;
+  final SessionReader? _session;
 
   /// Validates and records [draft]. Returns the new transaction id.
   ///
   /// Throws [PostingException] for invalid drafts and [DayLockedException]
   /// when the draft's business day is closed.
-  Future<String> post(TransactionDraft draft) {
+  ///
+  /// [internal] marks system-generated postings (day-close and handover
+  /// adjustments) that bypass the manual-adjustment permission.
+  Future<String> post(TransactionDraft draft, {bool internal = false}) async {
+    requirePermission(_session, Permission.addEntry);
+    if (draft.type == TransactionType.adjustment && !internal) {
+      requirePermission(_session, Permission.adjustBalance);
+    }
     return _db.transaction(() async {
       final accounts = await _loadResolver(draft);
       final strategy = _registry.strategyFor(draft.type);
@@ -54,6 +65,11 @@ class TransactionRepository {
 
       final id = _ids.next();
       final now = _clock().toUtc().millisecondsSinceEpoch;
+      final shiftId =
+          draft.shiftId ??
+          (draft.type == TransactionType.adjustment
+              ? null
+              : await _openShiftFor(draft.createdBy, now));
       await _db
           .into(_db.txns)
           .insert(
@@ -73,7 +89,7 @@ class TransactionRepository {
               note: Value(draft.note),
               replacesTxnId: Value(draft.replacesTxnId),
               createdBy: draft.createdBy,
-              shiftId: Value(draft.shiftId),
+              shiftId: Value(shiftId),
               deviceId: _deviceId,
             ),
           );
@@ -115,7 +131,7 @@ class TransactionRepository {
     String txnId, {
     required String reason,
     required String userId,
-  }) {
+  }) async {
     _requireReason(reason);
     return _db.transaction(
       () => _voidRow(txnId, reason: reason, userId: userId, action: 'txn_void'),
@@ -131,7 +147,7 @@ class TransactionRepository {
     TransactionDraft replacement, {
     required String userId,
     String reason = 'edited',
-  }) {
+  }) async {
     _requireReason(reason);
     return _db.transaction(() async {
       final newId = await post(
@@ -169,6 +185,11 @@ class TransactionRepository {
     if (row.status == 'void') {
       throw StateError('Transaction $txnId is already void');
     }
+    final actor = currentSession(_session);
+    if (row.createdBy != actor.id &&
+        !Permissions.can(actor, Permission.modifyOthersEntries)) {
+      throw const PermissionDenied(Permission.modifyOthersEntries);
+    }
     if (row.dayCloseId != null) {
       final dc = await (_db.select(
         _db.dayCloses,
@@ -192,6 +213,23 @@ class TransactionRepository {
       after: {'status': 'void', ...?extra},
       reason: reason,
     );
+  }
+
+  /// Id of the open shift, starting one for [userId] when none is open.
+  Future<String> _openShiftFor(String userId, int nowMs) async {
+    final open =
+        await (_db.select(_db.shifts)
+              ..where((t) => t.status.equals('open'))
+              ..limit(1))
+            .getSingleOrNull();
+    if (open != null) return open.id;
+    final id = _ids.next();
+    await _db
+        .into(_db.shifts)
+        .insert(
+          ShiftsCompanion.insert(id: id, userId: userId, startedAt: nowMs),
+        );
+    return id;
   }
 
   Future<AccountResolver> _loadResolver(TransactionDraft draft) async {

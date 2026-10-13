@@ -10,7 +10,13 @@ enum AccountKind {
 
   /// Hidden counter-account for money entering or leaving the agent's world
   /// (customer fees, flexiload margin, adjustments).
-  external;
+  external,
+
+  /// Hidden: what customers owe the agent (baki). Balance is positive.
+  receivable,
+
+  /// Hidden: what the agent owes customers. Balance is negative (a liability).
+  payable;
 
   String get dbName => name;
 

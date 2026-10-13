@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/i18n/date_labels.dart';
+import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/security/roles.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/business_calendar.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../shifts/shift_service.dart';
 import 'close_day_screen.dart';
 import 'daily_summary_screen.dart';
 import 'day_close_service.dart';
@@ -22,6 +25,7 @@ class CloseDayTab extends ConsumerStatefulWidget {
 
 class _CloseDayTabState extends ConsumerState<CloseDayTab> {
   List<ClosedDay> _days = const [];
+  List<ShiftInfo> _shifts = const [];
   bool _loaded = false;
 
   @override
@@ -32,9 +36,16 @@ class _CloseDayTabState extends ConsumerState<CloseDayTab> {
 
   Future<void> _refresh() async {
     final days = await ref.read(dayCloseServiceProvider).recent();
+    final session = ref.read(sessionProvider);
+    final ownOnly =
+        session != null && !Permissions.can(session, Permission.viewAllHistory);
+    final shifts = await ref
+        .read(shiftServiceProvider)
+        .recent(userId: ownOnly ? session.id : null);
     if (mounted) {
       setState(() {
         _days = days;
+        _shifts = shifts;
         _loaded = true;
       });
     }
@@ -87,7 +98,7 @@ class _CloseDayTabState extends ConsumerState<CloseDayTab> {
     try {
       await ref
           .read(dayCloseServiceProvider)
-          .reopen(day.businessDate, reason: reason);
+          .reopen(day.businessDate, reason: reason, userId: currentUserId(ref));
       if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.cdReopened)));
@@ -115,7 +126,15 @@ class _CloseDayTabState extends ConsumerState<CloseDayTab> {
     final rollover = ref.watch(dayRolloverHourProvider).value ?? 4;
     final cal = BusinessCalendar(rolloverHour: rollover);
     final today = cal.businessDateOf(DateTime.now().toUtc());
-    final unclosedYesterday = ref.watch(unclosedYesterdayProvider).value;
+    final session = ref.watch(sessionProvider);
+    final canClose =
+        session != null && Permissions.can(session, Permission.closeDay);
+    final canReopen =
+        session != null && Permissions.can(session, Permission.reopenDay);
+    final names = ref.watch(userNamesProvider);
+    final unclosedYesterday = canClose
+        ? ref.watch(unclosedYesterdayProvider).value
+        : null;
 
     // Refresh the list whenever the ledger changes (close/reopen/entries).
     ref.listen(balancesProvider, (_, _) => _refresh());
@@ -155,57 +174,105 @@ class _CloseDayTabState extends ConsumerState<CloseDayTab> {
                 ),
               ),
             ),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.fact_check_outlined),
-              title: Text(l10n.homeToday),
-              subtitle: Text(dateText(today)),
-              trailing: todayClosed
-                  ? Text(l10n.cdStatusClosed)
-                  : FilledButton(
-                      key: const ValueKey('close-today'),
-                      onPressed: () => _open(today),
-                      child: Text(l10n.cdClose),
-                    ),
+          if (canClose)
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.fact_check_outlined),
+                title: Text(l10n.homeToday),
+                subtitle: Text(dateText(today)),
+                trailing: todayClosed
+                    ? Text(l10n.cdStatusClosed)
+                    : FilledButton(
+                        key: const ValueKey('close-today'),
+                        onPressed: () => _open(today),
+                        child: Text(l10n.cdClose),
+                      ),
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Text(l10n.cdRecentDays, style: theme.textTheme.titleMedium),
-          if (_loaded && _days.isEmpty)
+          if (!canClose)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Text(l10n.cdNoDays),
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(l10n.closeDayNoPermission),
             ),
-          for (final day in _days)
+          const SizedBox(height: 16),
+          Text(l10n.shiftRecent, style: theme.textTheme.titleMedium),
+          if (_loaded && _shifts.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Text(l10n.shiftNone),
+            ),
+          for (final sh in _shifts.take(8))
             ListTile(
+              key: ValueKey('shift-${sh.id}'),
               contentPadding: EdgeInsets.zero,
               leading: Icon(
-                day.status == 'closed' ? Icons.lock_outline : Icons.lock_open,
+                sh.isOpen ? Icons.play_circle_outline : Icons.check,
               ),
-              title: Text(dateText(day.businessDate)),
+              title: Text(
+                sh.userId == kOwnerUserId
+                    ? l10n.roleOwner
+                    : (names[sh.userId] ?? sh.userName ?? ''),
+              ),
               subtitle: Text(
-                '${statusText(day.status)} · '
-                '${day.totalVariance.isZero ? l10n.cdMatches : l10n.cdDifference(money.format(day.totalVariance))}',
+                '${labels.dateTime(sh.startedAt)}'
+                '${sh.endedAt == null ? '' : ' → ${labels.time(sh.endedAt!)}'}',
               ),
-              onTap: () => Navigator.of(context).push<void>(
-                MaterialPageRoute(
-                  builder: (_) =>
-                      DailySummaryScreen(businessDate: day.businessDate),
-                ),
-              ),
-              trailing:
-                  day.status == 'closed' && day.businessDate == latestClosedId
-                  ? TextButton(
-                      onPressed: () => _reopen(day),
-                      child: Text(l10n.cdReopen),
-                    )
-                  : day.status == 'reopened'
-                  ? TextButton(
-                      onPressed: () => _open(day.businessDate),
-                      child: Text(l10n.cdClose),
-                    )
-                  : null,
+              trailing: sh.isOpen
+                  ? Text(l10n.shiftOpenNow)
+                  : Text(
+                      (sh.totalVariance ?? Money.zero).isZero
+                          ? l10n.cdMatches
+                          : l10n.shiftDifference(
+                              money.format(sh.totalVariance!),
+                            ),
+                      style: TextStyle(
+                        color: (sh.totalVariance ?? Money.zero).isZero
+                            ? null
+                            : tokens.warning,
+                      ),
+                    ),
             ),
+          if (canClose) ...[
+            const Divider(height: 32),
+            Text(l10n.cdRecentDays, style: theme.textTheme.titleMedium),
+            if (_loaded && _days.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(l10n.cdNoDays),
+              ),
+            for (final day in _days)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  day.status == 'closed' ? Icons.lock_outline : Icons.lock_open,
+                ),
+                title: Text(dateText(day.businessDate)),
+                subtitle: Text(
+                  '${statusText(day.status)} · '
+                  '${day.totalVariance.isZero ? l10n.cdMatches : l10n.cdDifference(money.format(day.totalVariance))}',
+                ),
+                onTap: () => Navigator.of(context).push<void>(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        DailySummaryScreen(businessDate: day.businessDate),
+                  ),
+                ),
+                trailing:
+                    day.status == 'closed' &&
+                        canReopen &&
+                        day.businessDate == latestClosedId
+                    ? TextButton(
+                        onPressed: () => _reopen(day),
+                        child: Text(l10n.cdReopen),
+                      )
+                    : day.status == 'reopened'
+                    ? TextButton(
+                        onPressed: () => _open(day.businessDate),
+                        child: Text(l10n.cdClose),
+                      )
+                    : null,
+              ),
+          ],
         ],
       ),
     );

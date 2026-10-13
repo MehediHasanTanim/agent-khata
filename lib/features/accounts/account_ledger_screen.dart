@@ -1,15 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/i18n/date_labels.dart';
 import '../../core/ledger/account.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/security/roles.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
 import '../history/transaction_detail_screen.dart';
+import '../reports/statement_renderer.dart';
 import '../transactions/history_queries.dart';
 import 'adjustment_screen.dart';
 
@@ -80,6 +87,97 @@ class _AccountLedgerScreenState extends ConsumerState<AccountLedgerScreen> {
         );
   }
 
+  /// Renders the visible period as a paper-style statement PDF and shares it.
+  Future<void> _shareStatement() async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final prefs = ref.read(preferencesProvider);
+    final plain = MoneyFormatter(digits: prefs.digits, showSymbol: false);
+    final labels = DateLabels(
+      languageCode: prefs.languageCode,
+      digits: prefs.digits,
+    );
+    try {
+      final b = _bounds;
+      final queries = ref.read(accountLedgerQueriesProvider);
+      final all = <LedgerLine>[];
+      var offset = 0;
+      while (true) {
+        final page = await queries.page(
+          widget.account.id,
+          from: b.from,
+          to: b.to,
+          limit: 500,
+          offset: offset,
+        );
+        all.addAll(page);
+        if (page.length < 500) break;
+        offset += 500;
+      }
+      final chronological = all.reversed.toList();
+      final rows = [
+        for (final line in chronological)
+          StatementRow(
+            date:
+                '${labels.shortDay(line.occurredAt)} '
+                '${labels.time(line.occurredAt)}',
+            description: [
+              transactionTypeLabel(l10n, line.type),
+              if (line.customerNumber != null) line.customerNumber!,
+              if (line.note != null) line.note!,
+            ].join(' · '),
+            moneyIn: line.delta.isPositive ? plain.format(line.delta) : '',
+            moneyOut: line.delta.isNegative
+                ? plain.format(line.delta.abs())
+                : '',
+            balance: line.isVoid ? '' : plain.format(line.balance),
+            isVoid: line.isVoid,
+          ),
+      ];
+      final from = chronological.isEmpty
+          ? DateTime.now()
+          : chronological.first.occurredAt;
+      final to = chronological.isEmpty
+          ? DateTime.now()
+          : chronological.last.occurredAt;
+      final pngs = await const StatementRenderer().render(
+        title: l10n.repStatementTitle(widget.account.label),
+        subtitle: l10n.repStatementPeriod(labels.day(from), labels.day(to)),
+        headers: [
+          l10n.ledgerDate,
+          l10n.ledgerDescription,
+          l10n.ledgerIn,
+          l10n.ledgerOut,
+          l10n.ledgerBalance,
+        ],
+        rows: rows,
+        footer: (n, total) => l10n.repPage(
+          prefs.digits.localize('$n'),
+          prefs.digits.localize('$total'),
+        ),
+      );
+      final doc = pw.Document();
+      for (final png in pngs) {
+        final image = pw.MemoryImage(png);
+        doc.addPage(
+          pw.Page(
+            margin: pw.EdgeInsets.zero,
+            build: (_) => pw.FullPage(
+              ignoreMargins: true,
+              child: pw.Image(image, fit: pw.BoxFit.fill),
+            ),
+          ),
+        );
+      }
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/statement-${widget.account.id}.pdf')
+        ..writeAsBytesSync(await doc.save());
+      await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
+    } on Object {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.sumShareFailed)));
+    }
+  }
+
   Future<void> _more() async {
     if (_loading || !_hasMore) return;
     final gen = _generation;
@@ -123,17 +221,24 @@ class _AccountLedgerScreenState extends ConsumerState<AccountLedgerScreen> {
         title: Text(l10n.ledgerTitle(widget.account.label)),
         actions: [
           IconButton(
-            tooltip: l10n.ledgerAdjust,
-            icon: const Icon(Icons.tune),
-            onPressed: () async {
-              await Navigator.of(context).push<void>(
-                MaterialPageRoute(
-                  builder: (_) => AdjustmentScreen(account: widget.account),
-                ),
-              );
-              if (mounted) await _reload();
-            },
+            tooltip: l10n.repStatementPdf,
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            onPressed: _shareStatement,
           ),
+          if (ref.watch(sessionProvider) case final u?
+              when Permissions.can(u, Permission.adjustBalance))
+            IconButton(
+              tooltip: l10n.ledgerAdjust,
+              icon: const Icon(Icons.tune),
+              onPressed: () async {
+                await Navigator.of(context).push<void>(
+                  MaterialPageRoute(
+                    builder: (_) => AdjustmentScreen(account: widget.account),
+                  ),
+                );
+                if (mounted) await _reload();
+              },
+            ),
         ],
       ),
       body: Column(

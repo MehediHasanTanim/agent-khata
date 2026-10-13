@@ -3,15 +3,17 @@ import 'package:drift/drift.dart';
 import '../../core/audit/audit_logger.dart';
 import '../../core/db/app_database.dart';
 import '../../core/ledger/transaction_type.dart';
+import '../../core/security/roles.dart';
 import '../../core/utils/uuid_v7.dart';
 import 'commission_rule.dart';
 
 class CommissionRuleRepository {
-  CommissionRuleRepository(this._db, this._ids, this._audit);
+  CommissionRuleRepository(this._db, this._ids, this._audit, {this._session});
 
   final AppDatabase _db;
   final IdGenerator _ids;
   final AuditLogger _audit;
+  final SessionReader? _session;
 
   static CommissionRule fromRow(CommissionRuleRow r) => CommissionRule(
     id: r.id,
@@ -26,6 +28,7 @@ class CommissionRuleRepository {
     effectiveTo: r.effectiveTo == null
         ? null
         : DateTime.fromMillisecondsSinceEpoch(r.effectiveTo!, isUtc: true),
+    tiers: decodeTiers(r.tiersJson),
   );
 
   Future<void> insert(CommissionRule rule) => _db
@@ -37,6 +40,7 @@ class CommissionRuleRepository {
           txnType: rule.txnType.dbName,
           mode: rule.mode.dbName,
           value: rule.value,
+          tiersJson: Value(rule.tiers.isEmpty ? null : encodeTiers(rule.tiers)),
           effectiveFrom: rule.effectiveFrom.toUtc().millisecondsSinceEpoch,
           effectiveTo: Value(rule.effectiveTo?.toUtc().millisecondsSinceEpoch),
         ),
@@ -61,8 +65,15 @@ class CommissionRuleRepository {
     required CommissionMode mode,
     required int value,
     required DateTime at,
+    List<CommissionTier> tiers = const [],
     String userId = 'owner',
-  }) {
+  }) async {
+    requirePermission(_session, Permission.manageSettings);
+    if (mode == CommissionMode.tiered) {
+      final problem = validateTiers(tiers);
+      if (problem != null) throw ArgumentError.value(tiers, 'tiers', problem);
+    }
+    final tiersJson = mode == CommissionMode.tiered ? encodeTiers(tiers) : null;
     return _db.transaction(() async {
       final atMs = at.toUtc().millisecondsSinceEpoch;
       final current =
@@ -81,7 +92,8 @@ class CommissionRuleRepository {
 
       if (current != null &&
           current.mode == mode.dbName &&
-          current.value == value) {
+          current.value == value &&
+          current.tiersJson == tiersJson) {
         return;
       }
       if (current != null) {
@@ -111,6 +123,7 @@ class CommissionRuleRepository {
               txnType: type.dbName,
               mode: mode.dbName,
               value: value,
+              tiersJson: Value(tiersJson),
               effectiveFrom: atMs,
             ),
           );
@@ -121,12 +134,17 @@ class CommissionRuleRepository {
         entityId: id,
         before: current == null
             ? null
-            : {'mode': current.mode, 'value': current.value},
+            : {
+                'mode': current.mode,
+                'value': current.value,
+                'tiers': ?current.tiersJson,
+              },
         after: {
           'provider': provider,
           'txn_type': type.dbName,
           'mode': mode.dbName,
           'value': value,
+          'tiers': ?tiersJson,
         },
       );
     });

@@ -564,5 +564,385 @@
   "diagProblem": "A problem was found in the books. Please back up and contact support.",
   "diagShareReport": "Share diagnostics report",
   "diagDbSize": "Database size",
-  "diagEntries": "Entries"
+  "diagEntries": "Entries",
+  "txnDueGiven": "Credit given",
+  "txnDueSettled": "Due received",
+  "txnDueTaken": "Money held",
+  "txnDuePaid": "Money returned",
+  "txnCommissionReceived": "Commission received",
+  "duesTitle": "Baki (dues)",
+  "duesTheyOwe": "They owe me",
+  "duesIOwe": "I owe them",
+  "duesTotalTheyOwe": "Total to collect",
+  "duesTotalIOwe": "Total I owe",
+  "duesEmpty": "No open dues",
+  "duesSearch": "Search name or number",
+  "duesAdd": "Add baki",
+  "duesNewTitle": "New baki",
+  "duesDirection": "Type",
+  "duesName": "Customer name",
+  "duesPhone": "Phone number",
+  "duesNeedNameOrPhone": "Enter a name or a phone number",
+  "duesGaveFrom": "Given from",
+  "duesReceivedIn": "Kept in",
+  "duesNote": "What for (optional)",
+  "duesSaved": "Baki saved",
+  "duesRemaining": "Remaining {amount}",
+  "@duesRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "duesOriginal": "Original {amount}",
+  "@duesOriginal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "duesSettle": "Record payment",
+  "duesSettleReturn": "Return money",
+  "duesSettleAll": "Full amount",
+  "duesSettleTo": "Received in",
+  "duesSettleFrom": "Paid from",
+  "duesOverSettle": "More than the amount due",
+  "duesPayments": "Payments",
+  "duesNoPayments": "No payments yet",
+  "duesCall": "Call",
+  "duesSms": "SMS",
+  "duesSettled": "Payment recorded",
+  "duesFailed": "Could not save. Please try again.",
+  "repTitle": "Reports",
+  "repWeek": "This week",
+  "repMonth": "This month",
+  "repPrev": "Previous",
+  "repNext": "Next",
+  "repNetPerDay": "Net profit per day",
+  "repByType": "By type",
+  "repNoData": "No entries in this period",
+  "repVarianceTitle": "Day-close differences",
+  "repVarianceNone": "No closed days yet",
+  "repVarianceHint": "Bars show how far the count was from the books each day",
+  "repCommissionTitle": "Commission: expected vs received",
+  "repExpected": "Expected",
+  "repReceived": "Received",
+  "repPending": "Pending",
+  "repRecordCommission": "Record commission received",
+  "repExportCsv": "Export CSV",
+  "repExporting": "Preparing…",
+  "repExportFailed": "Could not export",
+  "repStatementPdf": "Statement PDF",
+  "repStatementTitle": "{account} statement",
+  "@repStatementTitle": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "repStatementPeriod": "{from} to {to}",
+  "@repStatementPeriod": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "repPage": "Page {n} of {total}",
+  "@repPage": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "ledgerDescription": "Description",
+  "staffTitle": "Staff",
+  "staffAdd": "Add staff",
+  "staffName": "Name",
+  "staffPin": "PIN (4 to 6 digits)",
+  "staffCanSeeProfit": "Can see profit and reports",
+  "staffCanCloseDay": "Can close the day",
+  "roleOwner": "Owner",
+  "roleStaff": "Staff",
+  "staffInactive": "Inactive",
+  "staffResetPin": "Reset PIN",
+  "staffDeactivate": "Deactivate",
+  "staffActivate": "Activate",
+  "staffSaved": "Saved",
+  "staffPinInUse": "This PIN is already used. Choose another.",
+  "staffBadPin": "The PIN must be 4 to 6 digits",
+  "staffNameRequired": "Enter a name",
+  "staffEmpty": "No staff yet. Add the people who work at your counter.",
+  "staffInfo": "Each staff member signs in with their own PIN. They can add entries and see only their own entries.",
+  "whoAreYou": "Who is using the app?",
+  "signedInAs": "Signed in as {name}",
+  "@signedInAs": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "switchUser": "Switch user",
+  "permDenied": "You do not have permission to do this",
+  "shiftCurrent": "Shift: {name}",
+  "@shiftCurrent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftSince": "since {time}",
+  "@shiftSince": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftHandover": "Hand over",
+  "shiftHandoverTitle": "Shift handover",
+  "shiftHandoverIntro": "Count the cash and wallets before handing over. Any difference is recorded against this shift.",
+  "shiftDone": "Handover recorded",
+  "shiftNoOpen": "No shift is open",
+  "shiftRecent": "Recent shifts",
+  "shiftNone": "No shifts yet",
+  "shiftOpenNow": "Open",
+  "shiftOperatorVariance": "Differences by operator",
+  "shiftShortage": "Short {amount}",
+  "@shiftShortage": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftSummaryTitle": "Shift summary",
+  "shiftDifference": "Difference {amount}",
+  "@shiftDifference": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "closeDayNoPermission": "Day close is done by the owner or by staff the owner allowed.",
+  "reasonRequiredHere": "Choose a reason for each difference",
+  "bulkTitle": "Bulk flexiload",
+  "bulkNumber": "Number (optional)",
+  "bulkAmount": "Price",
+  "bulkAddRow": "Add row",
+  "bulkPaste": "Paste list",
+  "bulkPasteHint": "One load per line: number and amount, like 01712345678 100",
+  "bulkPasteApply": "Add to list",
+  "bulkRejected": "{count} lines skipped",
+  "@bulkRejected": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "bulkTotal": "{count} loads · {price}",
+  "@bulkTotal": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "bulkMargin": "Margin {amount}",
+  "@bulkMargin": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "bulkSaveAll": "Save all ({count})",
+  "@bulkSaveAll": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "bulkSaved": "{count} loads saved",
+  "@bulkSaved": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "bulkDuplicate": "Same number and amount twice",
+  "bulkBadNumber": "Check the number",
+  "bulkLowBalance": "{account} balance is not enough for these loads",
+  "@bulkLowBalance": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "bulkEmpty": "Add at least one load",
+  "regularsTitle": "Regulars",
+  "regularsUses": "{count} times",
+  "@regularsUses": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "rateModeTiered": "By amount (tiers)",
+  "tierUpTo": "Up to",
+  "tierAbove": "Above",
+  "tierAdd": "Add tier",
+  "tierOrderProblem": "Amounts must increase from one tier to the next",
+  "recTitle": "Recurring expenses",
+  "recAdd": "Add recurring expense",
+  "recAmount": "Amount",
+  "recFrequency": "Repeats",
+  "recMonthly": "Every month",
+  "recWeekly": "Every week",
+  "recDayOfMonth": "Day of the month",
+  "recWeekday": "Day of the week",
+  "recNextDue": "Next: {date}",
+  "@recNextDue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "recDueBanner": "{count} recurring expenses are due",
+  "@recDueBanner": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "recRecord": "Record",
+  "recSkip": "Skip",
+  "recRecorded": "Expense recorded",
+  "recEmpty": "No recurring expenses yet. Add rent, internet and other regular costs.",
+  "recNotifTitle": "Expense due",
+  "recNotifBody": "{label}: {amount} is due today",
+  "@recNotifBody": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "recPaused": "Paused",
+  "recDueNow": "Due",
+  "recNeedCategory": "Add an expense category first",
+  "recEvery31": "Months with fewer days use the last day",
+  "wdMon": "Monday",
+  "wdTue": "Tuesday",
+  "wdWed": "Wednesday",
+  "wdThu": "Thursday",
+  "wdFri": "Friday",
+  "wdSat": "Saturday",
+  "wdSun": "Sunday",
+  "sheetTitle": "Daily sheet",
+  "sheetPrint": "Print sheet",
+  "sheetShare": "Share sheet as PDF",
+  "sheetPreparedBy": "Prepared by",
+  "sheetCheckedBy": "Checked by",
+  "sheetParticulars": "Particulars",
+  "sheetTime": "Time",
+  "sheetAccounts": "Accounts",
+  "sheetSummary": "Summary",
+  "sheetFailed": "Could not prepare the sheet",
+  "insTitle": "Insights",
+  "insNotEnough": "Not enough entries yet to show patterns (at least 10 needed).",
+  "insAvgSize": "Average entry",
+  "insEntries": "{count} entries",
+  "@insEntries": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "insBusiestHour": "Busiest hour",
+  "insBestHour": "Most profitable hour",
+  "insBestWeekday": "Best weekday",
+  "insPerDay": "{amount} per day",
+  "@insPerDay": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "insHourChart": "Entries by hour of day",
+  "insWeekdayChart": "Average profit by weekday",
+  "insByType": "Average size by type",
+  "wdMonShort": "Mon",
+  "wdTueShort": "Tue",
+  "wdWedShort": "Wed",
+  "wdThuShort": "Thu",
+  "wdFriShort": "Fri",
+  "wdSatShort": "Sat",
+  "wdSunShort": "Sun",
+  "repVarianceByAccount": "By account (last 30 closed days)",
+  "repVarianceByWeekday": "Differences by weekday",
+  "repVarianceWeekdayHint": "Average difference per closed day, last 90 closed days",
+  "repVarianceWorst": "Short most often on {day}: {short} of {total} closed days",
+  "@repVarianceWorst": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "short": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "repVarianceNoPattern": "No weekday stands out yet",
+  "repVarianceShortOver": "Short {amount} on {days} days",
+  "@repVarianceShortOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "repVarianceExcessOver": "Excess {amount}",
+  "@repVarianceExcessOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "repVarianceAllGood": "No differences"
 }
