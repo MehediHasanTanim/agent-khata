@@ -76,6 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         SnackBar(
           content: Text(l10n.entrySaved),
           duration: const Duration(seconds: 5),
+          persist: false,
           action: SnackBarAction(
             label: l10n.undo,
             onPressed: () async {

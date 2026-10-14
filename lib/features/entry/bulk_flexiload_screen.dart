@@ -158,6 +158,7 @@ class _BulkFlexiloadScreenState extends ConsumerState<BulkFlexiloadScreen> {
           SnackBar(
             content: Text(l10n.bulkSaved(digits.localize('${ids.length}'))),
             duration: const Duration(seconds: 6),
+            persist: false,
             action: SnackBarAction(
               label: l10n.undo,
               onPressed: () => service.voidAll(ids, userId: userId),

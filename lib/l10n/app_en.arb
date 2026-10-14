@@ -957,5 +957,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "setAppearance": "Appearance",
+  "setSecurity": "Security",
+  "setShop": "Shop and day",
+  "setPrivacy": "Privacy",
+  "setManage": "Manage",
+  "auditTxnCreate": "Entry created",
+  "auditTxnEdit": "Entry edited",
+  "auditTxnVoid": "Entry voided",
+  "auditDayClose": "Day closed",
+  "auditDayReopen": "Day reopened",
+  "auditRateChange": "Rate changed",
+  "auditRecurringRecord": "Recurring expense recorded",
+  "auditRecurringSkip": "Recurring expense skipped",
+  "auditShiftHandover": "Shift handed over"
 }

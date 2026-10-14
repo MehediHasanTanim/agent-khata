@@ -283,7 +283,13 @@ class _TransactionDetailScreenState
                   card([
                     row(l10n.detailWhen, labels.dateTime(d.item.occurredAt)),
                     row(l10n.detailRecorded, labels.dateTime(d.recordedAt)),
-                    row(l10n.detailBy, d.createdBy),
+                    row(
+                      l10n.detailBy,
+                      d.createdBy == kOwnerUserId
+                          ? l10n.roleOwner
+                          : (ref.watch(userNamesProvider)[d.createdBy] ??
+                                d.createdBy),
+                    ),
                     if (!d.item.charge.isZero)
                       row(l10n.detailCharge, money.format(d.item.charge)),
                     if (showProfit && !d.item.commission.isZero)
@@ -361,7 +367,7 @@ class _TransactionDetailScreenState
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      a.action,
+                                      _auditLabel(l10n, a.action),
                                       style: theme.textTheme.bodyLarge
                                           ?.copyWith(
                                             fontWeight: FontWeight.w700,
@@ -430,3 +436,16 @@ class _TransactionDetailScreenState
     );
   }
 }
+
+String _auditLabel(AppLocalizations l10n, String code) => switch (code) {
+  'txn_create' => l10n.auditTxnCreate,
+  'txn_edit' => l10n.auditTxnEdit,
+  'txn_void' || 'void' => l10n.auditTxnVoid,
+  'day_close' => l10n.auditDayClose,
+  'day_reopen' => l10n.auditDayReopen,
+  'rate_change' => l10n.auditRateChange,
+  'recurring_record' => l10n.auditRecurringRecord,
+  'recurring_skip' => l10n.auditRecurringSkip,
+  'shift_handover' => l10n.auditShiftHandover,
+  _ => code,
+};

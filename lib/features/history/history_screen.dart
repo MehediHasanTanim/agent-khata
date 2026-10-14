@@ -274,11 +274,12 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 for (final t in typeFilters)
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
-                    child: FilterChip(
+                    child: ChoiceChip(
                       key: ValueKey('type-${t?.name ?? 'all'}'),
                       label: Text(
                         t == null ? l10n.histAll : _typeText(l10n, t),
                       ),
+                      showCheckmark: false,
                       selected: _type == t,
                       onSelected: (_) {
                         _type = t;

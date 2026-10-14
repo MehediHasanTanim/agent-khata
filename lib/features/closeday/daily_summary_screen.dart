@@ -270,128 +270,116 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
       body: d == null
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
-              child: Column(
+              child: ListView(
                 children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: RepaintBoundary(
-                        key: _sheetKey,
-                        child: Container(
-                          color: theme.colorScheme.surface,
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  RepaintBoundary(
+                    key: _sheetKey,
+                    child: Container(
+                      color: theme.colorScheme.surface,
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.appName,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Text(
+                            dateText,
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontFamily: 'Caprasimo',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            d.status == 'closed'
+                                ? l10n.cdStatusClosed
+                                : l10n.sumNotClosed,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          const Divider(height: 24),
+                          kv(
+                            l10n.sumEntries,
+                            prefs.digits.localize('${d.count}'),
+                          ),
+                          kv(
+                            l10n.sumCashInVolume,
+                            money.format(d.cashInVolume),
+                          ),
+                          kv(
+                            l10n.sumCashOutVolume,
+                            money.format(d.cashOutVolume),
+                          ),
+                          if (showProfit) ...[
+                            kv(l10n.sumCommission, money.format(d.commission)),
+                            kv(l10n.sumMargin, money.format(d.flexiloadMargin)),
+                          ],
+                          kv(l10n.sumExpenses, money.format(d.expenses)),
+                          if (showProfit) ...[
+                            const Divider(height: 24),
+                            kv(
+                              l10n.sumNet,
+                              money.format(d.netProfit),
+                              bold: true,
+                              color: d.netProfit.isNegative
+                                  ? tokens.cashOut
+                                  : tokens.cashIn,
+                            ),
+                          ],
+                          if (d.totalVariance != null)
+                            kv(
+                              l10n.sumVariance,
+                              money.format(d.totalVariance!),
+                              color: d.totalVariance!.isZero
+                                  ? null
+                                  : tokens.warning,
+                            ),
+                          const Divider(height: 24),
+                          Row(
                             children: [
-                              Text(
-                                l10n.appName,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  color: theme.colorScheme.primary,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              Text(
-                                dateText,
-                                style: theme.textTheme.headlineMedium?.copyWith(
-                                  fontFamily: 'Caprasimo',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                d.status == 'closed'
-                                    ? l10n.cdStatusClosed
-                                    : l10n.sumNotClosed,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                              const Divider(height: 24),
-                              kv(
-                                l10n.sumEntries,
-                                prefs.digits.localize('${d.count}'),
-                              ),
-                              kv(
-                                l10n.sumCashInVolume,
-                                money.format(d.cashInVolume),
-                              ),
-                              kv(
-                                l10n.sumCashOutVolume,
-                                money.format(d.cashOutVolume),
-                              ),
-                              if (showProfit) ...[
-                                kv(
-                                  l10n.sumCommission,
-                                  money.format(d.commission),
-                                ),
-                                kv(
-                                  l10n.sumMargin,
-                                  money.format(d.flexiloadMargin),
-                                ),
-                              ],
-                              kv(l10n.sumExpenses, money.format(d.expenses)),
-                              if (showProfit) ...[
-                                const Divider(height: 24),
-                                kv(
-                                  l10n.sumNet,
-                                  money.format(d.netProfit),
-                                  bold: true,
-                                  color: d.netProfit.isNegative
-                                      ? tokens.cashOut
-                                      : tokens.cashIn,
-                                ),
-                              ],
-                              if (d.totalVariance != null)
-                                kv(
-                                  l10n.sumVariance,
-                                  money.format(d.totalVariance!),
-                                  color: d.totalVariance!.isZero
-                                      ? null
-                                      : tokens.warning,
-                                ),
-                              const Divider(height: 24),
-                              Row(
-                                children: [
-                                  const Expanded(flex: 2, child: SizedBox()),
-                                  cell(l10n.sumOpening, head: true),
-                                  cell(l10n.sumIn, head: true),
-                                  cell(l10n.sumOut, head: true),
-                                  cell(l10n.cdExpected, head: true),
-                                  cell(l10n.cdActual, head: true),
-                                ],
-                              ),
-                              for (final a in d.accounts)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 4,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          a.label,
-                                          style: theme.textTheme.bodyMedium,
-                                        ),
-                                      ),
-                                      cell(plain.format(a.opening)),
-                                      cell(
-                                        plain.format(a.moneyIn),
-                                        color: tokens.cashIn,
-                                      ),
-                                      cell(
-                                        plain.format(a.moneyOut),
-                                        color: tokens.cashOut,
-                                      ),
-                                      cell(plain.format(a.expected)),
-                                      cell(
-                                        a.actual == null
-                                            ? '-'
-                                            : plain.format(a.actual!),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              const Expanded(flex: 2, child: SizedBox()),
+                              cell(l10n.sumOpening, head: true),
+                              cell(l10n.sumIn, head: true),
+                              cell(l10n.sumOut, head: true),
+                              cell(l10n.cdExpected, head: true),
+                              cell(l10n.cdActual, head: true),
                             ],
                           ),
-                        ),
+                          for (final a in d.accounts)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      a.label,
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                  cell(plain.format(a.opening)),
+                                  cell(
+                                    plain.format(a.moneyIn),
+                                    color: tokens.cashIn,
+                                  ),
+                                  cell(
+                                    plain.format(a.moneyOut),
+                                    color: tokens.cashOut,
+                                  ),
+                                  cell(plain.format(a.expected)),
+                                  cell(
+                                    a.actual == null
+                                        ? '-'
+                                        : plain.format(a.actual!),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ),

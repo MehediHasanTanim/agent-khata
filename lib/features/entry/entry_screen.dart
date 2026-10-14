@@ -552,12 +552,11 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
           if (isFlexi && widget.edit == null)
             Padding(
               padding: const EdgeInsets.only(right: 12),
-              child: FilledButton.tonalIcon(
+              child: IconButton.filledTonal(
                 key: const ValueKey('open-bulk'),
+                tooltip: l10n.bulkTitle,
                 icon: const Icon(LucideIcons.listPlus),
-                label: Text(l10n.bulkTitle),
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(0, 44),
+                style: IconButton.styleFrom(
                   backgroundColor: theme.colorScheme.secondaryContainer,
                   foregroundColor: theme.colorScheme.onSecondaryContainer,
                 ),

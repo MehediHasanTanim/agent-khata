@@ -355,7 +355,7 @@ class AppLocalizationsBn extends AppLocalizations {
       'এইমাত্র একই রকম এন্ট্রি সেভ হয়েছে। আবার সেভ করবেন?';
 
   @override
-  String get homeCash => 'নগদ';
+  String get homeCash => 'ক্যাশ';
 
   @override
   String get homeFlexiloadTotal => 'ফ্লেক্সিলোড';
@@ -1681,4 +1681,46 @@ class AppLocalizationsBn extends AppLocalizations {
   String repInsightBestDay(String day) {
     return '$day আপনার সবচেয়ে বেশি আয় হয়।';
   }
+
+  @override
+  String get setAppearance => 'চেহারা';
+
+  @override
+  String get setSecurity => 'নিরাপত্তা';
+
+  @override
+  String get setShop => 'দোকান ও দিন';
+
+  @override
+  String get setPrivacy => 'গোপনীয়তা';
+
+  @override
+  String get setManage => 'পরিচালনা';
+
+  @override
+  String get auditTxnCreate => 'এন্ট্রি তৈরি হয়েছে';
+
+  @override
+  String get auditTxnEdit => 'এন্ট্রি সম্পাদনা হয়েছে';
+
+  @override
+  String get auditTxnVoid => 'এন্ট্রি বাতিল হয়েছে';
+
+  @override
+  String get auditDayClose => 'দিন বন্ধ করা হয়েছে';
+
+  @override
+  String get auditDayReopen => 'দিন আবার খোলা হয়েছে';
+
+  @override
+  String get auditRateChange => 'রেট পরিবর্তন হয়েছে';
+
+  @override
+  String get auditRecurringRecord => 'নিয়মিত খরচ লেখা হয়েছে';
+
+  @override
+  String get auditRecurringSkip => 'নিয়মিত খরচ বাদ দেওয়া হয়েছে';
+
+  @override
+  String get auditShiftHandover => 'শিফট হস্তান্তর হয়েছে';
 }

@@ -1683,4 +1683,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String repInsightBestDay(String day) {
     return 'You earn most on $day.';
   }
+
+  @override
+  String get setAppearance => 'Appearance';
+
+  @override
+  String get setSecurity => 'Security';
+
+  @override
+  String get setShop => 'Shop and day';
+
+  @override
+  String get setPrivacy => 'Privacy';
+
+  @override
+  String get setManage => 'Manage';
+
+  @override
+  String get auditTxnCreate => 'Entry created';
+
+  @override
+  String get auditTxnEdit => 'Entry edited';
+
+  @override
+  String get auditTxnVoid => 'Entry voided';
+
+  @override
+  String get auditDayClose => 'Day closed';
+
+  @override
+  String get auditDayReopen => 'Day reopened';
+
+  @override
+  String get auditRateChange => 'Rate changed';
+
+  @override
+  String get auditRecurringRecord => 'Recurring expense recorded';
+
+  @override
+  String get auditRecurringSkip => 'Recurring expense skipped';
+
+  @override
+  String get auditShiftHandover => 'Shift handed over';
 }

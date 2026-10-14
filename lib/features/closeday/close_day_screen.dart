@@ -267,6 +267,14 @@ class _CloseDayScreenState extends ConsumerState<CloseDayScreen> {
       children: [
         stepBar(),
         const SizedBox(height: 14),
+        Text(
+          dateText,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w800,
+            color: scheme.primary,
+          ),
+        ),
+        const SizedBox(height: 4),
         Text(l10n.cdIntro, style: theme.textTheme.bodyLarge),
         const SizedBox(height: 16),
         for (final a in p.accounts)
@@ -541,7 +549,7 @@ class _CloseDayScreenState extends ConsumerState<CloseDayScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${l10n.cdTitle} · $dateText'),
+        title: Text(l10n.cdTitle),
         leading: BackButton(
           onPressed: () {
             if (_review) {

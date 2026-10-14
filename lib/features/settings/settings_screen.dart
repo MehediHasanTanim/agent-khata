@@ -40,7 +40,7 @@ class SettingsScreen extends ConsumerWidget {
         child: Column(
           children: [
             _Section(
-              title: l10n.language,
+              title: l10n.setAppearance,
               children: [
                 _Seg<String>(
                   label: l10n.language,
@@ -66,7 +66,7 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
             _Section(
-              title: l10n.settings,
+              title: l10n.setManage,
               children: [
                 _Nav(
                   icon: LucideIcons.lock,
@@ -101,7 +101,7 @@ class SettingsScreen extends ConsumerWidget {
                   child: Column(
                     children: [
                       _Section(
-                        title: l10n.language,
+                        title: l10n.setAppearance,
                         children: [
                           _Seg<String>(
                             label: l10n.language,
@@ -161,7 +161,7 @@ class SettingsScreen extends ConsumerWidget {
                         ],
                       ),
                       _Section(
-                        title: l10n.lockNow,
+                        title: l10n.setSecurity,
                         children: [
                           _Seg<int>(
                             label: l10n.autoLock,
@@ -229,7 +229,7 @@ class SettingsScreen extends ConsumerWidget {
                         ],
                       ),
                       _Section(
-                        title: l10n.shopName,
+                        title: l10n.setShop,
                         children: [
                           Consumer(
                             builder: (context, ref, _) {
@@ -356,7 +356,7 @@ class SettingsScreen extends ConsumerWidget {
                         ],
                       ),
                       _Section(
-                        title: l10n.aboutTitle,
+                        title: l10n.setPrivacy,
                         children: [
                           _Tog(
                             label: l10n.rememberCustomers,
@@ -377,7 +377,7 @@ class SettingsScreen extends ConsumerWidget {
                         ],
                       ),
                       _Section(
-                        title: l10n.settings,
+                        title: l10n.setManage,
                         children: [
                           _Nav(
                             icon: LucideIcons.bell,

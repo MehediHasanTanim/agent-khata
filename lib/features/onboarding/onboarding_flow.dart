@@ -458,7 +458,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
               runSpacing: 10,
               children: [
                 for (final p in items)
-                  FilterChip(
+                  ChoiceChip(
                     key: ValueKey('provider-${p.id}'),
                     showCheckmark: false,
                     padding: const EdgeInsets.symmetric(

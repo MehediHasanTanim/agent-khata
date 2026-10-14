@@ -3139,6 +3139,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You earn most on {day}.'**
   String repInsightBestDay(String day);
+
+  /// No description provided for @setAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get setAppearance;
+
+  /// No description provided for @setSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get setSecurity;
+
+  /// No description provided for @setShop.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop and day'**
+  String get setShop;
+
+  /// No description provided for @setPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get setPrivacy;
+
+  /// No description provided for @setManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get setManage;
+
+  /// No description provided for @auditTxnCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry created'**
+  String get auditTxnCreate;
+
+  /// No description provided for @auditTxnEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry edited'**
+  String get auditTxnEdit;
+
+  /// No description provided for @auditTxnVoid.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry voided'**
+  String get auditTxnVoid;
+
+  /// No description provided for @auditDayClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Day closed'**
+  String get auditDayClose;
+
+  /// No description provided for @auditDayReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Day reopened'**
+  String get auditDayReopen;
+
+  /// No description provided for @auditRateChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate changed'**
+  String get auditRateChange;
+
+  /// No description provided for @auditRecurringRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring expense recorded'**
+  String get auditRecurringRecord;
+
+  /// No description provided for @auditRecurringSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring expense skipped'**
+  String get auditRecurringSkip;
+
+  /// No description provided for @auditShiftHandover.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift handed over'**
+  String get auditShiftHandover;
 }
 
 class _AppLocalizationsDelegate
