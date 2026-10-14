@@ -1,8 +1,10 @@
+import '../../core/audit/audit_logger.dart';
 import '../../core/db/app_database.dart';
 import '../../core/db/db_settings.dart';
 import '../../core/ledger/account_kind.dart';
 import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money.dart';
+import '../../core/utils/uuid_v7.dart';
 import '../accounts/account_repository.dart';
 import '../commission/commission_rule.dart';
 import '../commission/commission_rule_repository.dart';
@@ -55,12 +57,17 @@ class OnboardingPlan {
   final String shopName;
 }
 
+/// First-run setup. It runs before anyone has signed in (the PIN comes after
+/// onboarding), so it must not depend on a signed-in session: it creates its
+/// own commission-rule repository without permission checks. Setup is the
+/// owner's by definition.
 class OnboardingService {
   OnboardingService({
     required this._db,
     required this._accounts,
-    required this._rules,
-  });
+    required IdGenerator ids,
+    required AuditLogger audit,
+  }) : _rules = CommissionRuleRepository(_db, ids, audit);
 
   final AppDatabase _db;
   final AccountRepository _accounts;

@@ -1,6 +1,6 @@
 # Play Store listing (draft)
 
-Package: `com.nextgenai.agentkhata` · Category: Finance (record keeping) ·
+Package: `com.nextgenai.agentkhata` · **Contains ads** · Category: Finance (record keeping) ·
 Languages: Bangla (default), English
 
 > The listing must not use bKash, Nagad, Rocket, Upay or operator logos or

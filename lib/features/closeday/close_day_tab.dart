@@ -163,7 +163,14 @@ class _CloseDayTabState extends ConsumerState<CloseDayTab> {
         children: [
           if (unclosedYesterday != null)
             Card(
-              color: tokens.warning.withValues(alpha: 0.15),
+              color: Color.alphaBlend(
+                tokens.warning.withValues(alpha: 0.16),
+                theme.colorScheme.surface,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(color: tokens.warning, width: 1.5),
+              ),
               child: ListTile(
                 leading: Icon(Icons.warning_amber, color: tokens.warning),
                 title: Text(l10n.cdYesterdayOpen),

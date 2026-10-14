@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/date_labels.dart';
 import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money_formatter.dart';
@@ -176,6 +177,7 @@ class _TransactionDetailScreenState
         if (!didPop) Navigator.of(context).pop(_changed);
       },
       child: Scaffold(
+        bottomNavigationBar: const AdFooter(),
         appBar: AppBar(title: Text(l10n.detailTitle)),
         body: !_loaded
             ? const Center(child: CircularProgressIndicator())

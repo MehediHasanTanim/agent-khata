@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/ads/interstitial_policy.dart';
 import '../../core/i18n/date_labels.dart';
 import '../../core/ledger/account.dart';
 import '../../core/ledger/account_kind.dart';
@@ -11,6 +12,7 @@ import '../../core/providers.dart';
 import '../../core/security/roles.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/business_calendar.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../accounts/account_ledger_screen.dart';
 import '../backup/backup_screen.dart';
@@ -20,6 +22,7 @@ import '../dues/dues_screen.dart';
 import '../entry/entry_providers.dart';
 import '../entry/entry_screen.dart';
 import '../expenses/recurring_screens.dart';
+import '../history/history_widgets.dart';
 import '../lock/lock_controller.dart';
 import '../shifts/shift_handover_screen.dart';
 import '../transactions/transaction_queries.dart';
@@ -146,34 +149,81 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
     ];
 
-    Widget action(EntryKind kind, String label, IconData icon, Color color) =>
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(4),
+    Widget tile({
+      required Key key,
+      required String label,
+      required IconData icon,
+      required Color bg,
+      required Color fg,
+      required VoidCallback onPressed,
+    }) => Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Material(
+          color: bg,
+          borderRadius: BorderRadius.circular(28),
+          child: InkWell(
+            key: key,
+            borderRadius: BorderRadius.circular(28),
+            onTap: onPressed,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 76),
-              child: FilledButton.tonal(
-                key: ValueKey('action-${kind.name}'),
-                style: FilledButton.styleFrom(
-                  backgroundColor: color.withValues(alpha: 0.16),
-                  foregroundColor: theme.colorScheme.onSurface,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+              constraints: const BoxConstraints(minHeight: 80),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
                 ),
-                onPressed: () => _open(kind),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Row(
                   children: [
-                    Icon(icon, color: color, size: 28),
-                    const SizedBox(height: 4),
-                    Text(label, style: theme.textTheme.titleMedium),
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.55),
+                      ),
+                      child: Icon(icon, color: fg, size: 26),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        label,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: fg,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-        );
+        ),
+      ),
+    );
+
+    final scheme = theme.colorScheme;
+    Widget action(EntryKind kind, String label, IconData icon, Color color) {
+      // Direction decides the tint: terracotta out, sage in, sand neutral.
+      final out =
+          kind == EntryKind.cashOut ||
+          kind == EntryKind.expense ||
+          kind == EntryKind.floatPurchase;
+      final inn = kind == EntryKind.cashIn || kind == EntryKind.flexiload;
+      return tile(
+        key: ValueKey('action-${kind.name}'),
+        label: label,
+        icon: icon,
+        bg: out
+            ? scheme.primaryContainer
+            : (inn ? scheme.secondaryContainer : scheme.tertiaryContainer),
+        fg: out
+            ? scheme.onPrimaryContainer
+            : (inn ? scheme.onSecondaryContainer : scheme.onSurface),
+        onPressed: () => _open(kind),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -195,31 +245,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         padding: const EdgeInsets.only(bottom: 24),
         children: [
           if (recurringDue.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-              decoration: BoxDecoration(
-                color: tokens.warning.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: tokens.warning),
+            NoticeBanner(
+              key: const ValueKey('recurring-banner'),
+              icon: Icons.event_repeat,
+              text: l10n.recDueBanner(
+                prefs.digits.localize('${recurringDue.length}'),
               ),
-              child: ListTile(
-                key: const ValueKey('recurring-banner'),
-                leading: Icon(Icons.event_repeat, color: tokens.warning),
-                title: Text(
-                  l10n.recDueBanner(
-                    prefs.digits.localize('${recurringDue.length}'),
-                  ),
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () async {
-                  await Navigator.of(context).push<void>(
-                    MaterialPageRoute(
-                      builder: (_) => const RecurringDueScreen(),
-                    ),
-                  );
-                  ref.invalidate(recurringDueProvider);
-                },
-              ),
+              onTap: () async {
+                await Navigator.of(context).push<void>(
+                  MaterialPageRoute(builder: (_) => const RecurringDueScreen()),
+                );
+                ref.invalidate(recurringDueProvider);
+              },
             ),
           if (shift != null)
             Card(
@@ -244,96 +281,85 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 trailing: FilledButton.tonal(
                   key: const ValueKey('handover'),
-                  onPressed: () => Navigator.of(context).push<void>(
-                    MaterialPageRoute(
-                      builder: (_) => const ShiftHandoverScreen(),
-                    ),
-                  ),
+                  onPressed: () async {
+                    final handedOver = await Navigator.of(context).push<bool>(
+                      MaterialPageRoute(
+                        builder: (_) => const ShiftHandoverScreen(),
+                      ),
+                    );
+                    if (handedOver == true) {
+                      // A natural break: the shift just ended.
+                      await ref
+                          .read(adsServiceProvider)
+                          .maybeShowInterstitial(AdTrigger.shiftHandover);
+                    }
+                  },
                   child: Text(l10n.shiftHandover),
                 ),
               ),
             ),
           if (ref.watch(unclosedYesterdayProvider).value case final y?)
-            Container(
-              margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-              decoration: BoxDecoration(
-                color: tokens.warning.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: tokens.warning),
-              ),
-              child: ListTile(
-                leading: Icon(Icons.fact_check_outlined, color: tokens.warning),
-                title: Text(l10n.cdYesterdayOpen),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => Navigator.of(context).push<void>(
-                  MaterialPageRoute(
-                    builder: (_) => CloseDayScreen(businessDate: y),
-                  ),
+            NoticeBanner(
+              icon: Icons.fact_check_outlined,
+              text: l10n.cdYesterdayOpen,
+              onTap: () => Navigator.of(context).push<void>(
+                MaterialPageRoute(
+                  builder: (_) => CloseDayScreen(businessDate: y),
                 ),
               ),
             ),
           if (accounts.isNotEmpty && _backupStale(prefs.lastBackupAtMs))
-            Container(
-              margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: theme.colorScheme.primary),
-              ),
-              child: ListTile(
-                leading: const Icon(Icons.backup_outlined),
-                title: Text(l10n.bkStaleBanner),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => Navigator.of(context).push<void>(
-                  MaterialPageRoute(builder: (_) => const BackupScreen()),
-                ),
+            NoticeBanner(
+              icon: Icons.backup_outlined,
+              tone: BannerTone.info,
+              text: l10n.bkStaleBanner,
+              onTap: () => Navigator.of(context).push<void>(
+                MaterialPageRoute(builder: (_) => const BackupScreen()),
               ),
             ),
           if (lowLabels.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: tokens.warning.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: tokens.warning),
-              ),
+            NoticeBanner(
+              icon: Icons.warning_amber,
+              text: l10n.lowBanner(lowLabels.join(', ')),
+            ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.all(12),
+            child: IntrinsicHeight(
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(Icons.warning_amber, color: tokens.warning),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(l10n.lowBanner(lowLabels.join(', ')))),
+                  for (var i = 0; i < cards.length; i++) ...[
+                    if (i > 0) const SizedBox(width: 8),
+                    Builder(
+                      builder: (context) {
+                        final c = cards[i];
+                        final hidden =
+                            prefs.maskBalances && !_revealed.contains(c.id);
+                        return BalanceCard(
+                          data: c,
+                          amountText: hidden
+                              ? '৳ ••••'
+                              : money.format(c.balance),
+                          hidden: hidden,
+                          onTap: () {
+                            if (hidden) {
+                              setState(() => _revealed.add(c.id));
+                            } else if (c.account != null) {
+                              Navigator.of(context).push<void>(
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      AccountLedgerScreen(account: c.account!),
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
-            ),
-          SizedBox(
-            height: 112,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.all(12),
-              itemCount: cards.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 8),
-              itemBuilder: (context, i) {
-                final c = cards[i];
-                final hidden = prefs.maskBalances && !_revealed.contains(c.id);
-                return BalanceCard(
-                  data: c,
-                  amountText: hidden ? '৳ ••••' : money.format(c.balance),
-                  hidden: hidden,
-                  onTap: () {
-                    if (hidden) {
-                      setState(() => _revealed.add(c.id));
-                    } else if (c.account != null) {
-                      Navigator.of(context).push<void>(
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              AccountLedgerScreen(account: c.account!),
-                        ),
-                      );
-                    }
-                  },
-                );
-              },
             ),
           ),
           Padding(
@@ -380,43 +406,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Icons.receipt_long_outlined,
                       theme.colorScheme.secondary,
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(minHeight: 76),
-                          child: FilledButton.tonal(
-                            key: const ValueKey('action-dues'),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: theme.colorScheme.tertiary
-                                  .withValues(alpha: 0.16),
-                              foregroundColor: theme.colorScheme.onSurface,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            onPressed: () => Navigator.of(context).push<void>(
-                              MaterialPageRoute(
-                                builder: (_) => const DuesScreen(),
-                              ),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.menu_book_outlined,
-                                  color: theme.colorScheme.tertiary,
-                                  size: 28,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  l10n.duesTitle,
-                                  style: theme.textTheme.titleMedium,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                    tile(
+                      key: const ValueKey('action-dues'),
+                      label: l10n.duesTitle,
+                      icon: Icons.menu_book_outlined,
+                      bg: scheme.tertiaryContainer,
+                      fg: scheme.onSurface,
+                      onPressed: () => Navigator.of(context).push<void>(
+                        MaterialPageRoute(builder: (_) => const DuesScreen()),
                       ),
                     ),
                   ],
@@ -509,14 +506,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             )
           else
             for (final r in recent)
-              ListTile(
-                leading: Icon(
-                  r.type == TransactionType.cashIn
-                      ? Icons.south_west
-                      : Icons.north_east,
-                  color: r.type == TransactionType.cashIn
-                      ? tokens.cashIn
-                      : tokens.cashOut,
+              KhataTile(
+                leading: DirectionBubble(
+                  icon: iconFor(r.type),
+                  out: directionOf(r.type) == FlowDirection.moneyOut,
                 ),
                 title: Text(
                   '${transactionTypeLabel(l10n, r.type)}'
@@ -526,8 +519,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ? null
                     : Text(r.customerNumber!),
                 trailing: Text(
-                  money.format(r.amount),
-                  style: theme.textTheme.titleMedium,
+                  '${directionOf(r.type) == FlowDirection.moneyOut ? '− ' : '+ '}'
+                  '${money.format(r.amount)}',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: colorFor(context, r.type),
+                  ),
                 ),
               ),
         ],

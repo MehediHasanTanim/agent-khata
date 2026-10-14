@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/date_labels.dart';
 import '../../core/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
@@ -68,6 +69,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     );
     final last = prefs.lastBackupAtMs;
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.bkTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),

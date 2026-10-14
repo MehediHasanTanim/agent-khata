@@ -30,21 +30,40 @@ class AmountKeypad extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (chips.isNotEmpty)
-          SizedBox(
-            height: 56,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              itemCount: chips.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 8),
-              itemBuilder: (context, i) => ActionChip(
-                key: ValueKey('chip-${chips[i].paisa}'),
-                label: Text(
-                  money.format(chips[i]),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                onPressed: () => onChip(chips[i]),
-              ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
+            child: Row(
+              children: [
+                for (var i = 0; i < chips.length && i < 4; i++) ...[
+                  if (i > 0) const SizedBox(width: 8),
+                  Expanded(
+                    child: Material(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      shape: const StadiumBorder(),
+                      child: InkWell(
+                        key: ValueKey('chip-${chips[i].paisa}'),
+                        customBorder: const StadiumBorder(),
+                        onTap: () => onChip(chips[i]),
+                        child: SizedBox(
+                          height: 48,
+                          child: Center(
+                            child: Text(
+                              money.format(chips[i]),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondaryContainer,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
         for (final row in const [
@@ -106,18 +125,23 @@ class _KeypadKey extends StatelessWidget {
         padding: const EdgeInsets.all(4),
         child: SizedBox(
           height: 64,
-          child: OutlinedButton(
+          child: FilledButton(
             key: ValueKey('key-$keyName'),
             onPressed: onPressed,
-            style: OutlinedButton.styleFrom(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .surfaceContainerHighest,
+              foregroundColor: Theme.of(context).colorScheme.onSurface,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(20),
               ),
             ),
             child: label != null
                 ? Text(
                     label!,
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    style: Theme.of(context).textTheme.headlineMedium
+                        ?.copyWith(fontWeight: FontWeight.w700),
                   )
                 : Icon(icon, size: 28),
           ),

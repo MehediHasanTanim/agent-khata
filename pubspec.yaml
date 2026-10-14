@@ -31,6 +31,7 @@ dependencies:
   package_info_plus: ^10.2.2
   url_launcher: ^6.3.3
   printing: ^5.15.1
+  google_mobile_ads: ^9.1.0
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +43,18 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  # `flutter run` / the IDE play button without --flavor builds the dev flavor.
+  default-flavor: dev
+  fonts:
+    - family: Figtree
+      fonts:
+        - asset: assets/fonts/Figtree.ttf
+    - family: Caprasimo
+      fonts:
+        - asset: assets/fonts/Caprasimo-Regular.ttf
+    - family: NotoSansBengali
+      fonts:
+        - asset: assets/fonts/NotoSansBengali.ttf
 
 # Use SQLCipher builds of SQLite (S0-03). Switch `source` to `sqlite3` to fall
 # back to an unencrypted DB if the S0-04 feasibility check fails.

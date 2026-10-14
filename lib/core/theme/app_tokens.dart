@@ -26,18 +26,18 @@ class AppTokens extends ThemeExtension<AppTokens> {
   static const double minTapTarget = 48;
 
   static const light = AppTokens(
-    cashIn: Color(0xFF1B7F3B),
+    cashIn: Color(0xFF56633F),
     onCashIn: Colors.white,
-    cashOut: Color(0xFFC2410C),
+    cashOut: Color(0xFF8C491A),
     onCashOut: Colors.white,
-    warning: Color(0xFFB45309),
+    warning: Color(0xFFB2622D),
   );
 
   static const dark = AppTokens(
-    cashIn: Color(0xFF4ADE80),
-    onCashIn: Color(0xFF003314),
-    cashOut: Color(0xFFFB923C),
-    onCashOut: Color(0xFF3B1500),
+    cashIn: Color(0xFFAEBF92),
+    onCashIn: Color(0xFF272E1B),
+    cashOut: Color(0xFFF6A06B),
+    onCashOut: Color(0xFF402310),
     warning: Color(0xFFFBBF24),
   );
 

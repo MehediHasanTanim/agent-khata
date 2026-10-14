@@ -8,6 +8,7 @@ import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../entry/entry_screen.dart';
 import '../history/transaction_detail_screen.dart';
@@ -140,11 +141,19 @@ class _CloseDayScreenState extends ConsumerState<CloseDayScreen> {
             userId: currentUserId(ref),
           );
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l10n.cdClosedOk)));
+      if (resolutions.isEmpty) {
+        await showSuccessPop(context, l10n.cdClosedOk);
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.cdClosedOk)));
+      }
+      if (!mounted) return;
       await Navigator.of(context).pushReplacement<void, void>(
         MaterialPageRoute(
-          builder: (_) => DailySummaryScreen(businessDate: p.businessDate),
+          builder: (_) => DailySummaryScreen(
+            businessDate: p.businessDate,
+            interstitialOnExit: true,
+          ),
         ),
       );
     } on MissingVarianceReason {

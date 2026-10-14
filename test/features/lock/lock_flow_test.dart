@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> _pumpApp(WidgetTester tester, {String? existingPin}) async {
   SharedPreferences.setMockInitialValues({
     'pref_language': 'en',
+    'pref_digits': 'latin',
     'onboarding_done': true,
   });
   final prefs = await SharedPreferences.getInstance();
@@ -42,9 +43,11 @@ Future<void> _pumpApp(WidgetTester tester, {String? existingPin}) async {
 
 Future<void> _enter(WidgetTester tester, String pin) async {
   for (final d in pin.split('')) {
+    await tester.ensureVisible(find.text(d));
     await tester.tap(find.text(d));
     await tester.pump();
   }
+  await tester.ensureVisible(find.byIcon(Icons.check_rounded));
   await tester.tap(find.byIcon(Icons.check_rounded));
   await tester.pumpAndSettle();
 }

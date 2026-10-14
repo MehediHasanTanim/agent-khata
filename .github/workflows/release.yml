@@ -1,0 +1,39 @@
+name: Release build (live ads)
+
+# Manual only. Builds the production bundle with the live AdMob units kept in
+# repository secrets: ADMOB_APP_ID, ADMOB_BANNER_ID, ADMOB_INTERSTITIAL_ID.
+# Signing: add the upload key as secrets and extend this job before using the
+# artifact for Play; without it the bundle is signed with the debug key.
+on:
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Build app bundle with live ads
+        env:
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
+          ADMOB_BANNER_ID: ${{ secrets.ADMOB_BANNER_ID }}
+          ADMOB_INTERSTITIAL_ID: ${{ secrets.ADMOB_INTERSTITIAL_ID }}
+        run: tool/build_release.sh appbundle
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agentkhata-prod-aab
+          path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+          if-no-files-found: error

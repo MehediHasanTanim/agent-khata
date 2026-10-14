@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../core/ads/ad_widgets.dart';
+import '../../core/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends ConsumerWidget {
   const AboutScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final ads = ref.watch(adsServiceProvider);
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.aboutTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -31,6 +36,23 @@ class AboutScreen extends StatelessWidget {
           Text(l10n.aboutDisclaimer, style: theme.textTheme.bodyLarge),
           const SizedBox(height: 16),
           Text(l10n.aboutPrivacy, style: theme.textTheme.bodyLarge),
+          if (ads.isEnabled) ...[
+            const SizedBox(height: 16),
+            Text(l10n.aboutAds, style: theme.textTheme.bodyLarge),
+            FutureBuilder<bool>(
+              future: ads.privacyOptionsRequired(),
+              builder: (context, snap) => snap.data == true
+                  ? Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: TextButton(
+                        key: const ValueKey('ad-privacy-options'),
+                        onPressed: ads.showPrivacyOptions,
+                        child: Text(l10n.adPrivacyOptions),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
         ],
       ),
     );

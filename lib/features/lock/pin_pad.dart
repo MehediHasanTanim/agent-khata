@@ -12,20 +12,20 @@ class PinDots extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary;
+    final color = Theme.of(context).colorScheme.secondary;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (var i = 0; i < PinService.maxLength; i++)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 7),
             child: Container(
-              width: 16,
-              height: 16,
+              width: 18,
+              height: 18,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: i < length ? color : Colors.transparent,
-                border: Border.all(color: color, width: 2),
+                border: Border.all(color: color, width: 2.5),
               ),
             ),
           ),
@@ -109,14 +109,18 @@ class _Key extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final child = label != null
-        ? Text(label!, style: Theme.of(context).textTheme.headlineMedium)
+        ? Text(
+            label!,
+            style: Theme.of(context).textTheme.headlineMedium
+                ?.copyWith(fontWeight: FontWeight.w700),
+          )
         : Icon(icon, size: 28);
     final style = ButtonStyle(
       minimumSize: const WidgetStatePropertyAll(Size(64, 64)),
-      shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
+      shape: const WidgetStatePropertyAll(CircleBorder()),
+      padding: const WidgetStatePropertyAll(EdgeInsets.zero),
     );
+    final scheme = Theme.of(context).colorScheme;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(6),
@@ -125,14 +129,19 @@ class _Key extends StatelessWidget {
           button: true,
           excludeSemantics: true,
           child: SizedBox(
-            height: 72,
-            child: filled
-                ? FilledButton(onPressed: onPressed, style: style, child: child)
-                : OutlinedButton(
-                    onPressed: onPressed,
-                    style: style,
-                    child: child,
-                  ),
+            height: 68,
+            child: FilledButton(
+              onPressed: onPressed,
+              style: style.copyWith(
+                backgroundColor: filled
+                    ? null
+                    : WidgetStatePropertyAll(scheme.surfaceContainerHighest),
+                foregroundColor: filled
+                    ? null
+                    : WidgetStatePropertyAll(scheme.onSurface),
+              ),
+              child: child,
+            ),
           ),
         ),
       ),

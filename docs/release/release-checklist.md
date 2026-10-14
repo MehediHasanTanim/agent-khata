@@ -11,6 +11,23 @@
       App Signing.
 - [ ] CI is green (format, analyze, full `flutter test`, debug APK).
 
+## Ads (docs/plan/admob-integration-plan.md)
+
+- [ ] Production build only: `--dart-define=ADS_MODE=live`,
+      `--dart-define=ADMOB_BANNER_ID=...`, `--dart-define=ADMOB_INTERSTITIAL_ID=...`
+      and `ADMOB_APP_ID` (env var or Gradle property). Beta and internal
+      builds use the defaults (Google test units).
+- [ ] The AdMob app is linked to the Play listing (after first publish).
+- [ ] `app-ads.txt` published on the developer website.
+- [ ] Sensitive ad categories blocked in the AdMob console.
+- [ ] Never click your own live ads; use test builds for checks.
+- [ ] Banner shows only on the allowed screens; none on entry, PIN, counting
+      screens (`test/core/ads/ad_placement_test.dart` passes in CI).
+- [ ] Interstitials respect the caps (1 per 15 min, 3 per day, 3 min warm-up).
+- [ ] Settings > About shows the ads note; "Ad privacy options" appears where
+      Google's consent flow requires it.
+- [ ] Airplane mode: no layout jump, no crash.
+
 ## Measure on a real 2 to 3 GB phone (cannot be done in CI)
 
 - [ ] **S0-04 SQLCipher decision**: Settings > Diagnostics shows encryption
@@ -38,5 +55,5 @@
 
 - [ ] Listing text (docs/release/store-listing.md), screenshots, icon
 - [ ] Privacy policy URL (docs/release/privacy-policy.md, hosted)
-- [ ] Data safety form (docs/release/data-safety.md)
+- [ ] Data safety form (docs/release/data-safety.md), including ads
 - [ ] Disclaimer present in the description and in Settings > About

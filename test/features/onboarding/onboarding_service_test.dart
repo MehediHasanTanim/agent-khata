@@ -4,6 +4,7 @@ import 'package:agentkhata/core/db/db_settings.dart';
 import 'package:agentkhata/core/ledger/account_kind.dart';
 import 'package:agentkhata/core/ledger/transaction_type.dart';
 import 'package:agentkhata/core/money/money.dart';
+import 'package:agentkhata/core/security/roles.dart';
 import 'package:agentkhata/features/accounts/account_repository.dart';
 import 'package:agentkhata/features/commission/commission_rule.dart';
 import 'package:agentkhata/features/commission/commission_rule_repository.dart';
@@ -25,7 +26,8 @@ void main() {
     service = OnboardingService(
       db: db,
       accounts: accounts,
-      rules: CommissionRuleRepository(db, ids, AuditLogger(db, ids)),
+      ids: ids,
+      audit: AuditLogger(db, ids),
     );
   });
   tearDown(() => db.close());
@@ -80,6 +82,35 @@ void main() {
       'Rahim Store',
     );
   });
+
+  test(
+    'works before anyone is signed in (no session, no permissions)',
+    () async {
+      // A session-guarded repository would refuse this with PermissionDenied;
+      // onboarding must not use one. The service is built exactly as the app
+      // does: from the database, ids and audit logger only.
+      final guarded = CommissionRuleRepository(
+        db,
+        ids,
+        AuditLogger(db, ids),
+        session: () =>
+            const Session(id: 'locked', name: '', role: UserRole.staff),
+      );
+      await expectLater(
+        guarded.setRate(
+          provider: 'bkash',
+          type: TransactionType.cashOut,
+          mode: CommissionMode.fixed,
+          value: 1,
+          at: DateTime.utc(2000),
+        ),
+        throwsA(isA<PermissionDenied>()),
+      );
+
+      await service.apply(plan());
+      expect(await db.select(db.commissionRules).get(), hasLength(2));
+    },
+  );
 
   test('is applied at most once', () async {
     await service.apply(plan());

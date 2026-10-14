@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/ledger/transaction_type.dart';
 import '../../core/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
@@ -110,6 +111,7 @@ class _CommissionRatesScreenState extends ConsumerState<CommissionRatesScreen> {
     }
 
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.commissionRates)),
       body: ListView(
         padding: const EdgeInsets.all(16),

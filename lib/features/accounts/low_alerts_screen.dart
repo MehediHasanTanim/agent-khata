@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/ledger/account.dart';
 import '../../core/ledger/account_kind.dart';
@@ -52,6 +53,7 @@ class _LowAlertsScreenState extends ConsumerState<LowAlertsScreen> {
         if (a.kind != AccountKind.external) a,
     ];
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.lowTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),

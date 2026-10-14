@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -11,6 +12,9 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/ads/ad_widgets.dart';
+import '../../core/ads/ads_service.dart';
+import '../../core/ads/interstitial_policy.dart';
 import '../../core/i18n/date_labels.dart';
 import '../../core/money/money_formatter.dart' show MoneyFormatter;
 import '../../core/money/money_formatter.dart';
@@ -31,9 +35,17 @@ import 'day_close_service.dart';
 /// Bangla text and the taka sign look exactly as on screen. The PDF simply
 /// embeds that picture.
 class DailySummaryScreen extends ConsumerStatefulWidget {
-  const DailySummaryScreen({super.key, required this.businessDate});
+  const DailySummaryScreen({
+    super.key,
+    required this.businessDate,
+    this.interstitialOnExit = false,
+  });
 
   final String businessDate;
+
+  /// True right after a close: leaving this screen is a natural break where
+  /// an interstitial may be shown (subject to the frequency rules).
+  final bool interstitialOnExit;
 
   @override
   ConsumerState<DailySummaryScreen> createState() => _DailySummaryScreenState();
@@ -41,15 +53,25 @@ class DailySummaryScreen extends ConsumerStatefulWidget {
 
 class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
   final GlobalKey _sheetKey = GlobalKey();
+  late final AdsService _ads;
   DailySummaryData? _data;
   bool _sharing = false;
 
   @override
   void initState() {
     super.initState();
+    _ads = ref.read(adsServiceProvider);
     ref.read(dayCloseServiceProvider).summary(widget.businessDate).then((d) {
       if (mounted) setState(() => _data = d);
     });
+  }
+
+  @override
+  void dispose() {
+    if (widget.interstitialOnExit) {
+      unawaited(_ads.maybeShowInterstitial(AdTrigger.daySummaryExit));
+    }
+    super.dispose();
   }
 
   /// The paper-style sheet: cash ledger, wallets, summary, signatures.
@@ -239,6 +261,7 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
     );
 
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.sumTitle)),
       body: d == null
           ? const Center(child: CircularProgressIndicator())

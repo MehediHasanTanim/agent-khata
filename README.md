@@ -208,6 +208,25 @@ integrity check cover them automatically. Commission received posts
 wallet +X against the external account, so credits no longer show up as an
 unexplained wallet surplus at day close.
 
+## Ads (AdMob)
+
+Banner ads on the five tabs and read-only screens, and interstitials only at
+two natural breaks (leaving the daily summary after a close; after a shift
+handover). Never on entry, keypad, PIN, onboarding, counting or handover
+screens. Requests are non-personalized and capped at rating G; the advertising
+ID permission is removed. Plan: `docs/plan/admob-integration-plan.md`.
+
+- **Build modes:** the dev flavor and any build without live IDs use Google's
+  test units. A production build uses live units only with
+  `--dart-define=ADS_MODE=live --dart-define=ADMOB_BANNER_ID=ca-app-pub-.../...
+  --dart-define=ADMOB_INTERSTITIAL_ID=ca-app-pub-.../...` and the live app ID
+  in the `ADMOB_APP_ID` environment variable (or Gradle property). Kill switch:
+  `--dart-define=ADS_DISABLED=true`.
+- **Frequency:** at most 1 interstitial per 15 minutes and 3 per day, none in
+  the first 3 minutes of a session.
+- **Code:** `lib/core/ads/` (`AdsService` interface; the SDK is imported only in
+  `admob_ads_service.dart`).
+
 ## Develop
 
 ```bash

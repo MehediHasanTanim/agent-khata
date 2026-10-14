@@ -145,7 +145,10 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       );
       await ref.read(onboardingServiceProvider).apply(plan);
       await ref.read(onboardingDoneProvider.notifier).complete();
-    } on Object {
+    } on Object catch (e, st) {
+      // Keep the cause: it goes to the local crash log and the debug console.
+      debugPrint('Onboarding failed: $e\n$st');
+      ref.read(crashLogProvider)?.record(e, st);
       if (mounted) {
         setState(() {
           _busy = false;

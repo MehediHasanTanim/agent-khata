@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/ledger/account_kind.dart';
 import '../../core/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
@@ -45,6 +46,7 @@ class CategoriesScreen extends ConsumerWidget {
     final cats = ref.watch(expenseAccountsProvider).value ?? const [];
     final repo = ref.read(accountRepositoryProvider);
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.categoriesTitle)),
       floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Icons.add),

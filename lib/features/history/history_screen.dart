@@ -8,6 +8,7 @@ import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/security/roles.dart';
 import '../../core/utils/business_calendar.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../transactions/history_filter.dart';
 import '../transactions/history_queries.dart';
@@ -387,11 +388,12 @@ class _HistoryTile extends StatelessWidget {
       if (item.customerName != null) item.customerName!,
       if (item.customerNumber != null) item.customerNumber!,
     ].join(' · ');
-    return ListTile(
+    return KhataTile(
       onTap: onTap,
-      leading: Icon(
-        iconFor(item.type),
-        color: item.isVoid ? theme.disabledColor : colorFor(context, item.type),
+      leading: DirectionBubble(
+        icon: iconFor(item.type),
+        out: directionOf(item.type) == FlowDirection.moneyOut,
+        muted: item.isVoid,
       ),
       title: Row(
         children: [
@@ -413,8 +415,17 @@ class _HistoryTile extends StatelessWidget {
       ),
       subtitle: Text(sub, maxLines: 1, overflow: TextOverflow.ellipsis),
       trailing: Text(
-        money.format(item.amount),
-        style: theme.textTheme.titleMedium?.merge(strike),
+        '${directionOf(item.type) == FlowDirection.moneyOut
+            ? '− '
+            : directionOf(item.type) == FlowDirection.moneyIn
+            ? '+ '
+            : ''}${money.format(item.amount)}',
+        style: theme.textTheme.titleMedium
+            ?.merge(strike)
+            .copyWith(
+              fontWeight: FontWeight.w800,
+              color: item.isVoid ? null : colorFor(context, item.type),
+            ),
       ),
     );
   }

@@ -98,6 +98,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
   String? _sourceId;
   String? _categoryId;
   bool _saving = false;
+  bool _moreOpen = false;
   final _customer = TextEditingController();
   final _customerName = TextEditingController();
   final _customerFocus = FocusNode();
@@ -548,20 +549,28 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
         title: Text(_title(l10n)),
         actions: [
           if (isFlexi && widget.edit == null)
-            IconButton(
-              key: const ValueKey('open-bulk'),
-              tooltip: l10n.bulkTitle,
-              icon: const Icon(Icons.playlist_add),
-              onPressed: () async {
-                final saved = await Navigator.of(context).push<bool>(
-                  MaterialPageRoute(
-                    builder: (_) => const BulkFlexiloadScreen(),
-                  ),
-                );
-                if (saved == true && context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              },
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: FilledButton.tonalIcon(
+                key: const ValueKey('open-bulk'),
+                icon: const Icon(Icons.playlist_add),
+                label: Text(l10n.bulkTitle),
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(0, 44),
+                  backgroundColor: theme.colorScheme.secondaryContainer,
+                  foregroundColor: theme.colorScheme.onSecondaryContainer,
+                ),
+                onPressed: () async {
+                  final saved = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (_) => const BulkFlexiloadScreen(),
+                    ),
+                  );
+                  if (saved == true && context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
             ),
         ],
       ),
@@ -573,14 +582,16 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
                 children: [
                   if (needsWallet) ...[
-                    if (isFlexi)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Text(
-                          l10n.entryOperator,
-                          style: theme.textTheme.labelLarge,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6, left: 4),
+                      child: Text(
+                        isFlexi ? l10n.entryOperator : l10n.entryWalletLabel,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
+                    ),
                     if (wallets.isEmpty)
                       Text(emptyWalletText)
                     else
@@ -622,7 +633,16 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                   if (widget.kind == EntryKind.floatPurchase &&
                       sources.length > 1) ...[
                     const SizedBox(height: 8),
-                    Text(l10n.entryPaidFrom, style: theme.textTheme.labelLarge),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, bottom: 6),
+                      child: Text(
+                        l10n.entryPaidFrom,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                     Wrap(
                       spacing: 8,
                       children: [
@@ -637,7 +657,16 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                   ],
                   if (regulars.isNotEmpty && widget.edit == null) ...[
                     const SizedBox(height: 8),
-                    Text(l10n.regularsTitle, style: theme.textTheme.labelLarge),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, bottom: 6),
+                      child: Text(
+                        l10n.regularsTitle,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: 48,
                       child: ListView(
@@ -668,136 +697,253 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                     ),
                   ],
                   const SizedBox(height: 16),
-                  Center(
-                    child: Semantics(
-                      liveRegion: true,
-                      child: Text(
-                        money.format(_entry.amount),
-                        key: const ValueKey('amount-display'),
-                        style: theme.textTheme.displayMedium?.copyWith(
-                          color: direction,
-                          fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.entryAmount,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      earnsCommission && showProfit && _entry.amount.isPositive
-                          ? (isFlexi
-                                ? l10n.entryMargin(money.format(commission))
-                                : l10n.entryCommission(
-                                    money.format(commission),
-                                  ))
-                          : ' ',
-                      style: theme.textTheme.bodyLarge,
-                    ),
-                  ),
-                  if (negative)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.warning_amber, color: tokens.warning),
-                          const SizedBox(width: 6),
-                          Flexible(
-                            child: Text(
-                              l10n.warnNegative(from.label),
-                              style: TextStyle(color: tokens.warning),
+                        Semantics(
+                          liveRegion: true,
+                          child: Text(
+                            '${widget.kind == EntryKind.cashOut || widget.kind == EntryKind.expense
+                                ? '− '
+                                : widget.kind == EntryKind.cashIn || widget.kind == EntryKind.flexiload
+                                ? '+ '
+                                : ''}'
+                            '${money.format(_entry.amount)}',
+                            key: const ValueKey('amount-display'),
+                            style: theme.textTheme.displayMedium?.copyWith(
+                              color: direction,
+                              fontWeight: FontWeight.w800,
+                              fontFeatures: const [
+                                FontFeature.tabularFigures(),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        Wrap(
+                          spacing: 10,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              earnsCommission &&
+                                      showProfit &&
+                                      _entry.amount.isPositive
+                                  ? (isFlexi
+                                        ? l10n.entryMargin(
+                                            money.format(commission),
+                                          )
+                                        : l10n.entryCommission(
+                                            money.format(commission),
+                                          ))
+                                  : ' ',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: tokens.cashIn,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            if (lastAmount != null)
+                              ActionChip(
+                                onPressed: () => setState(
+                                  () => _entry = _entry.set(lastAmount),
+                                ),
+                                label: Text(
+                                  l10n.entryRepeatLast(
+                                    money.format(lastAmount),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        if (negative)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.warning_amber,
+                                  color: tokens.warning,
+                                ),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  child: Text(
+                                    l10n.warnNegative(from.label),
+                                    style: TextStyle(
+                                      color: tokens.warning,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
                     ),
-                  if (lastAmount != null)
-                    Align(
-                      child: TextButton(
-                        onPressed: () =>
-                            setState(() => _entry = _entry.set(lastAmount)),
-                        child: Text(
-                          l10n.entryRepeatLast(money.format(lastAmount)),
-                        ),
-                      ),
-                    ),
-                  ExpansionTile(
-                    title: Text(l10n.entryMoreDetails),
-                    tilePadding: EdgeInsets.zero,
-                    children: [
-                      if (showPaid)
-                        TextField(
-                          controller: _paid,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          decoration: InputDecoration(
-                            labelText: l10n.entryPaidAmount,
-                            prefixText: '৳ ',
-                          ),
-                          onChanged: (_) => setState(() {}),
-                        ),
-                      _customerField(l10n, prefs.rememberCustomers),
-                      if (prefs.rememberCustomers)
-                        TextField(
-                          controller: _customerName,
-                          decoration: InputDecoration(
-                            labelText: l10n.entryCustomerName,
-                          ),
-                        ),
-                      if (!isFlexi)
-                        TextField(
-                          controller: _trxId,
-                          decoration: InputDecoration(
-                            labelText: l10n.entryTrxId,
-                          ),
-                        ),
-                      TextField(
-                        controller: _note,
-                        decoration: InputDecoration(labelText: l10n.entryNote),
-                      ),
-                    ],
                   ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    child: Material(
+                      color: theme.colorScheme.surfaceContainerHigh,
+                      shape: const StadiumBorder(),
+                      child: InkWell(
+                        customBorder: const StadiumBorder(),
+                        onTap: () => setState(() => _moreOpen = !_moreOpen),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 14,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  l10n.entryMoreDetails,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                _moreOpen
+                                    ? Icons.expand_less
+                                    : Icons.expand_more,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (_moreOpen)
+                    Column(
+                      children:
+                          [
+                                if (showPaid)
+                                  TextField(
+                                    controller: _paid,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                        ),
+                                    decoration: InputDecoration(
+                                      labelText: l10n.entryPaidAmount,
+                                      prefixText: '৳ ',
+                                    ),
+                                    onChanged: (_) => setState(() {}),
+                                  ),
+                                _customerField(l10n, prefs.rememberCustomers),
+                                if (prefs.rememberCustomers)
+                                  TextField(
+                                    controller: _customerName,
+                                    decoration: InputDecoration(
+                                      labelText: l10n.entryCustomerName,
+                                    ),
+                                  ),
+                                if (!isFlexi)
+                                  TextField(
+                                    controller: _trxId,
+                                    decoration: InputDecoration(
+                                      labelText: l10n.entryTrxId,
+                                    ),
+                                  ),
+                                TextField(
+                                  controller: _note,
+                                  decoration: InputDecoration(
+                                    labelText: l10n.entryNote,
+                                  ),
+                                ),
+                              ]
+                              .map(
+                                (w) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: w,
+                                ),
+                              )
+                              .toList(),
+                    ),
                 ],
               ),
             ),
-            AmountKeypad(
-              digits: digits,
-              chips: quick?.chips ?? const [],
-              onKey: (k) => setState(() => _entry = _entry.press(k)),
-              onBackspace: () => setState(() => _entry = _entry.backspace()),
-              onChip: (m) => setState(() => _entry = _entry.set(m)),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-              child: SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: FilledButton(
-                  key: const ValueKey('save-button'),
-                  onPressed: canSave
-                      ? () => _save(
-                          from: from,
-                          to: to,
-                          wallet: needsWallet ? wallet : null,
-                          commission: commission,
-                          ruleId: ruleId,
-                          sourceOutflow: sourceOutflow,
-                          charge: charge,
-                          discount: discount,
-                        )
-                      : null,
-                  child: Text(
-                    l10n.save,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: theme.colorScheme.onPrimary,
+            _KeypadPanel(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AmountKeypad(
+                    digits: digits,
+                    chips: quick?.chips ?? const [],
+                    onKey: (k) => setState(() => _entry = _entry.press(k)),
+                    onBackspace: () =>
+                        setState(() => _entry = _entry.backspace()),
+                    onChip: (m) => setState(() => _entry = _entry.set(m)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 60,
+                      child: FilledButton(
+                        key: const ValueKey('save-button'),
+                        onPressed: canSave
+                            ? () => _save(
+                                from: from,
+                                to: to,
+                                wallet: needsWallet ? wallet : null,
+                                commission: commission,
+                                ruleId: ruleId,
+                                sourceOutflow: sourceOutflow,
+                                charge: charge,
+                                discount: discount,
+                              )
+                            : null,
+                        child: Text(
+                          l10n.save,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _KeypadPanel extends StatelessWidget {
+  const _KeypadPanel({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLowest,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x33000000),
+            blurRadius: 24,
+            offset: Offset(0, -4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.only(top: 8),
+      child: child,
     );
   }
 }

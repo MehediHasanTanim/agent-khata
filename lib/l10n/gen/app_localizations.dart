@@ -1943,7 +1943,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutPrivacy.
   ///
   /// In en, this message translates to:
-  /// **'Your records stay on this phone. Nothing is sent anywhere unless you share a backup or report yourself.'**
+  /// **'Your records stay on this phone. Your business records are never sent anywhere, unless you share a backup or report yourself.'**
   String get aboutPrivacy;
 
   /// No description provided for @analyticsToggle.
@@ -3103,6 +3103,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No differences'**
   String get repVarianceAllGood;
+
+  /// No description provided for @adLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Advertisement'**
+  String get adLabel;
+
+  /// No description provided for @adPrivacyOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad privacy options'**
+  String get adPrivacyOptions;
+
+  /// No description provided for @aboutAds.
+  ///
+  /// In en, this message translates to:
+  /// **'This app shows ads from Google AdMob. Ads are not personalized, and your business records are never used for ads.'**
+  String get aboutAds;
+
+  /// No description provided for @entryAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get entryAmount;
+
+  /// No description provided for @entryWalletLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get entryWalletLabel;
 }
 
 class _AppLocalizationsDelegate

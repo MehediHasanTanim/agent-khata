@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/security/roles.dart';
@@ -22,6 +23,7 @@ class StaffScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.staffTitle)),
       floatingActionButton: FloatingActionButton.extended(
         key: const ValueKey('add-staff'),

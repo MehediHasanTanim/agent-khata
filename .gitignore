@@ -51,3 +51,6 @@ app.*.map.json
 android/key.properties
 *.jks
 *.keystore
+
+# Live ad unit IDs (see tool/build_release.sh)
+ads.live.env

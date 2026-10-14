@@ -555,7 +555,7 @@
     }
   },
   "aboutDisclaimer": "Agent Khata is a record-keeping tool. It does not move money and is not an app of bKash, Nagad, Rocket, Upay or any mobile operator, and is not affiliated with them.",
-  "aboutPrivacy": "Your records stay on this phone. Nothing is sent anywhere unless you share a backup or report yourself.",
+  "aboutPrivacy": "Your records stay on this phone. Your business records are never sent anywhere, unless you share a backup or report yourself.",
   "analyticsToggle": "Share anonymous usage counts",
   "analyticsHint": "Only counts like \"entries saved\". Never amounts, numbers or names. Included only if you share a diagnostics report.",
   "diagIntegrity": "Books check",
@@ -944,5 +944,10 @@
       }
     }
   },
-  "repVarianceAllGood": "No differences"
+  "repVarianceAllGood": "No differences",
+  "adLabel": "Advertisement",
+  "adPrivacyOptions": "Ad privacy options",
+  "aboutAds": "This app shows ads from Google AdMob. Ads are not personalized, and your business records are never used for ads.",
+  "entryAmount": "Amount",
+  "entryWalletLabel": "Wallet"
 }

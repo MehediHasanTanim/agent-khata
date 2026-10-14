@@ -1020,7 +1020,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutPrivacy =>
-      'Your records stay on this phone. Nothing is sent anywhere unless you share a backup or report yourself.';
+      'Your records stay on this phone. Your business records are never sent anywhere, unless you share a backup or report yourself.';
 
   @override
   String get analyticsToggle => 'Share anonymous usage counts';
@@ -1662,4 +1662,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get repVarianceAllGood => 'No differences';
+
+  @override
+  String get adLabel => 'Advertisement';
+
+  @override
+  String get adPrivacyOptions => 'Ad privacy options';
+
+  @override
+  String get aboutAds =>
+      'This app shows ads from Google AdMob. Ads are not personalized, and your business records are never used for ads.';
+
+  @override
+  String get entryAmount => 'Amount';
+
+  @override
+  String get entryWalletLabel => 'Wallet';
 }

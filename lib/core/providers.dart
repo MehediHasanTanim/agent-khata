@@ -17,6 +17,10 @@ import '../features/staff/staff_service.dart';
 import '../features/transactions/history_queries.dart';
 import '../features/transactions/transaction_queries.dart';
 import '../features/transactions/transaction_repository.dart';
+import 'ads/admob_ads_service.dart';
+import 'ads/ads_config.dart';
+import 'ads/ads_service.dart';
+import 'ads/interstitial_policy.dart';
 import 'audit/audit_logger.dart';
 import 'bootstrap.dart';
 import 'db/app_database.dart';
@@ -105,7 +109,8 @@ final onboardingServiceProvider = Provider<OnboardingService>(
   (ref) => OnboardingService(
     db: ref.watch(databaseProvider),
     accounts: ref.watch(accountRepositoryProvider),
-    rules: ref.watch(commissionRuleRepositoryProvider),
+    ids: ref.watch(idGeneratorProvider),
+    audit: ref.watch(auditLoggerProvider),
   ),
 );
 
@@ -365,3 +370,58 @@ final recurringDueProvider = FutureProvider.autoDispose<List<RecurringExpense>>(
 final insightsQueriesProvider = Provider<InsightsQueries>(
   (ref) => InsightsQueries(ref.watch(databaseProvider)),
 );
+
+/// Build-time ad configuration (test units unless a production build was
+/// given live unit IDs).
+final adsConfigProvider = Provider<AdsConfig>(
+  (ref) => AdsConfig.fromEnvironment(
+    isDevFlavor: ref.watch(flavorProvider) == Flavor.dev,
+  ),
+);
+
+/// Interstitial counters kept in SharedPreferences.
+class PrefsInterstitialStore implements InterstitialStore {
+  PrefsInterstitialStore(this._prefs);
+
+  final SharedPreferences _prefs;
+
+  @override
+  int? get lastShownMs => _prefs.getInt('ads_last_shown_ms');
+  @override
+  set lastShownMs(int? value) {
+    if (value == null) {
+      _prefs.remove('ads_last_shown_ms');
+    } else {
+      _prefs.setInt('ads_last_shown_ms', value);
+    }
+  }
+
+  @override
+  String? get countDay => _prefs.getString('ads_count_day');
+  @override
+  set countDay(String? value) {
+    if (value == null) {
+      _prefs.remove('ads_count_day');
+    } else {
+      _prefs.setString('ads_count_day', value);
+    }
+  }
+
+  @override
+  int get countToday => _prefs.getInt('ads_count_today') ?? 0;
+  @override
+  set countToday(int value) => _prefs.setInt('ads_count_today', value);
+}
+
+final adsServiceProvider = Provider<AdsService>((ref) {
+  final config = ref.watch(adsConfigProvider);
+  if (!config.enabled) return const NoopAdsService();
+  return AdMobAdsService(
+    config: config,
+    policy: InterstitialPolicy(
+      store: PrefsInterstitialStore(ref.watch(sharedPreferencesProvider)),
+    ),
+    // Never over the lock screen or a signed-out app.
+    canShowNow: () => ref.read(sessionProvider) != null,
+  );
+});

@@ -11,6 +11,7 @@ import '../../core/providers.dart';
 import '../../core/security/roles.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/business_calendar.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
 import '../entry/entry_screen.dart';
@@ -202,27 +203,22 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                SegmentedButton<_Period>(
-                  segments: [
-                    ButtonSegment(
-                      value: _Period.week,
-                      label: Text(l10n.repWeek),
-                    ),
-                    ButtonSegment(
-                      value: _Period.month,
-                      label: Text(l10n.repMonth),
-                    ),
+                PillSegmented<_Period>(
+                  value: _period,
+                  options: [
+                    (_Period.week, l10n.repWeek),
+                    (_Period.month, l10n.repMonth),
                   ],
-                  selected: {_period},
-                  onSelectionChanged: (s) {
-                    _period = s.first;
+                  onChanged: (v) {
+                    _period = v;
                     _offset = 0;
                     _load();
                   },
                 ),
+                const SizedBox(height: 8),
                 Row(
                   children: [
-                    IconButton(
+                    IconButton.filledTonal(
                       tooltip: l10n.repPrev,
                       icon: const Icon(Icons.chevron_left),
                       onPressed: () {
@@ -237,7 +233,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         style: theme.textTheme.titleMedium,
                       ),
                     ),
-                    IconButton(
+                    IconButton.filledTonal(
                       tooltip: l10n.repNext,
                       icon: const Icon(Icons.chevron_right),
                       onPressed: _offset >= 0
@@ -255,6 +251,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     child: Center(child: Text(l10n.repNoData)),
                   )
                 else ...[
+                  HeroCard(
+                    margin: EdgeInsets.zero,
+                    label: l10n.sumNet,
+                    value: money.format(d.summary.netProfit),
+                  ),
+                  const SizedBox(height: 14),
                   Wrap(
                     spacing: 16,
                     runSpacing: 12,
@@ -289,35 +291,42 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  Text(l10n.repNetPerDay, style: theme.textTheme.titleMedium),
-                  const SizedBox(height: 8),
-                  SignedBarChart(
-                    values: [
-                      for (final p in d.summary.daily) p.net.paisa / 100,
-                    ],
-                    positive: tokens.cashIn,
-                    negative: tokens.cashOut,
-                    semanticsLabel: l10n.repNetPerDay,
-                  ),
-                  const SizedBox(height: 20),
-                  Text(l10n.repByType, style: theme.textTheme.titleMedium),
-                  for (final e in d.summary.perType.entries)
-                    ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(transactionTypeLabel(l10n, e.key)),
-                      subtitle: Text(
-                        '${prefs.digits.localize('${e.value.count}')} · '
-                        '${money.format(e.value.volume)}',
+                  const SizedBox(height: 14),
+                  _ReportCard(
+                    title: l10n.repNetPerDay,
+                    children: [
+                      SignedBarChart(
+                        values: [
+                          for (final p in d.summary.daily) p.net.paisa / 100,
+                        ],
+                        positive: tokens.cashIn,
+                        negative: tokens.cashOut,
+                        height: 150,
+                        semanticsLabel: l10n.repNetPerDay,
                       ),
-                      trailing: e.value.commission.isZero
-                          ? null
-                          : Text(money.format(e.value.commission)),
-                    ),
+                    ],
+                  ),
+                  _ReportCard(
+                    title: l10n.repByType,
+                    children: [
+                      for (final e in d.summary.perType.entries)
+                        ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(transactionTypeLabel(l10n, e.key)),
+                          subtitle: Text(
+                            '${prefs.digits.localize('${e.value.count}')} · '
+                            '${money.format(e.value.volume)}',
+                          ),
+                          trailing: e.value.commission.isZero
+                              ? null
+                              : Text(money.format(e.value.commission)),
+                        ),
+                    ],
+                  ),
                 ],
-                const Divider(height: 40),
-                Text(l10n.insTitle, style: theme.textTheme.titleMedium),
+                const SizedBox(height: 20),
+                Text(l10n.insTitle, style: _sectionStyle(theme)),
                 const SizedBox(height: 8),
                 if (!d.insights.hasEnoughData)
                   Text(l10n.insNotEnough)
@@ -413,11 +422,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       trailing: Text(money.format(t.average)),
                     ),
                 ],
-                const Divider(height: 40),
-                Text(
-                  l10n.repCommissionTitle,
-                  style: theme.textTheme.titleMedium,
-                ),
+                const SizedBox(height: 20),
+                Text(l10n.repCommissionTitle, style: _sectionStyle(theme)),
                 if (d.commission.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -454,7 +460,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       ),
                     ),
                   ),
-                OutlinedButton.icon(
+                FilledButton.icon(
                   icon: const Icon(Icons.add_card_outlined),
                   label: Text(l10n.repRecordCommission),
                   onPressed: () async {
@@ -468,8 +474,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     if (mounted) await _load();
                   },
                 ),
-                const Divider(height: 40),
-                Text(l10n.repVarianceTitle, style: theme.textTheme.titleMedium),
+                const SizedBox(height: 20),
+                Text(l10n.repVarianceTitle, style: _sectionStyle(theme)),
                 const SizedBox(height: 4),
                 Text(l10n.repVarianceHint, style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 8),
@@ -624,7 +630,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   ),
                 ],
                 if (d.operators.isNotEmpty) ...[
-                  const Divider(height: 40),
+                  const SizedBox(height: 20),
                   Text(
                     l10n.shiftOperatorVariance,
                     style: theme.textTheme.titleMedium,
@@ -700,4 +706,43 @@ String _weekdayShort(AppLocalizations l10n, int wd) => [
 DateTime _dateOf(String businessDate) {
   final p = businessDate.split('-').map(int.parse).toList();
   return DateTime.utc(p[0], p[1], p[2], 6);
+}
+
+TextStyle? _sectionStyle(ThemeData theme) => theme.textTheme.titleLarge
+    ?.copyWith(fontFamily: 'Caprasimo', fontWeight: FontWeight.w400);
+
+class _ReportCard extends StatelessWidget {
+  const _ReportCard({required this.title, required this.children});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 12),
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
 }

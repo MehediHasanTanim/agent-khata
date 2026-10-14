@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/security/roles.dart';
@@ -27,6 +28,10 @@ class _AppShellState extends ConsumerState<AppShell> {
   void initState() {
     super.initState();
     Future.microtask(_syncReminder);
+    // Ads start after the first frame and only once the app is unlocked.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(adsServiceProvider).initialize();
+    });
   }
 
   /// Keeps the daily close-day notification in step with the settings.
@@ -138,10 +143,16 @@ class _AppShellState extends ConsumerState<AppShell> {
 
     return Scaffold(
       body: IndexedStack(index: index, children: [for (final t in tabs) t.$1]),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: index,
-        onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: [for (final t in tabs) t.$2],
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const AdBanner(),
+          NavigationBar(
+            selectedIndex: index,
+            onDestinationSelected: (i) => setState(() => _index = i),
+            destinations: [for (final t in tabs) t.$2],
+          ),
+        ],
       ),
     );
   }

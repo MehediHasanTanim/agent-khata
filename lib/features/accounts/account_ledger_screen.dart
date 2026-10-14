@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/date_labels.dart';
 import '../../core/ledger/account.dart';
 import '../../core/money/money.dart';
@@ -217,6 +218,7 @@ class _AccountLedgerScreenState extends ConsumerState<AccountLedgerScreen> {
     );
 
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(
         title: Text(l10n.ledgerTitle(widget.account.label)),
         actions: [

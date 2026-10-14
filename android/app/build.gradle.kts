@@ -14,6 +14,9 @@ val keyProperties = Properties().apply {
     if (file.exists()) file.inputStream().use { load(it) }
 }
 
+// Google's demo AdMob app ID, safe to ship in non-production builds.
+val testAdmobAppId = "ca-app-pub-3940256099942544~3347511713"
+
 android {
     namespace = "com.nextgenai.agentkhata"
     compileSdk = flutter.compileSdkVersion
@@ -56,10 +59,18 @@ android {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
             manifestPlaceholders["appLabel"] = "Khata Dev"
+            // Dev always uses Google's test AdMob app.
+            manifestPlaceholders["admobAppId"] = testAdmobAppId
         }
         create("prod") {
             dimension = "env"
             manifestPlaceholders["appLabel"] = "Agent Khata"
+            // The live AdMob app ID comes from the ADMOB_APP_ID environment
+            // variable or a Gradle property; otherwise Google's test app.
+            manifestPlaceholders["admobAppId"] =
+                (System.getenv("ADMOB_APP_ID")
+                    ?: (project.findProperty("ADMOB_APP_ID") as String?)
+                    ?: testAdmobAppId)
         }
     }
 

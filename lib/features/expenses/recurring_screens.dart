@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/date_labels.dart';
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/ledger/account.dart';
@@ -51,6 +52,7 @@ class RecurringExpensesScreen extends ConsumerWidget {
         ref.watch(_allRecurringProvider).value ?? const <RecurringExpense>[];
 
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.recTitle)),
       floatingActionButton: FloatingActionButton.extended(
         key: const ValueKey('add-recurring'),
@@ -400,6 +402,7 @@ class _RecurringDueScreenState extends ConsumerState<RecurringDueScreen> {
       digits: prefs.digits,
     );
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.recTitle)),
       body: !_loaded
           ? const Center(child: CircularProgressIndicator())

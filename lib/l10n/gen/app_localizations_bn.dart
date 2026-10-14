@@ -1019,7 +1019,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get aboutPrivacy =>
-      'আপনার হিসাব এই ফোনেই থাকে। আপনি নিজে ব্যাকআপ বা রিপোর্ট শেয়ার না করলে কিছুই কোথাও যায় না।';
+      'আপনার হিসাব এই ফোনেই থাকে। আপনি নিজে ব্যাকআপ বা রিপোর্ট শেয়ার না করলে আপনার ব্যবসার হিসাব কোথাও পাঠানো হয় না।';
 
   @override
   String get analyticsToggle => 'নাম-পরিচয়হীন ব্যবহারের হিসাব শেয়ার করুন';
@@ -1660,4 +1660,20 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get repVarianceAllGood => 'কোনো গরমিল নেই';
+
+  @override
+  String get adLabel => 'বিজ্ঞাপন';
+
+  @override
+  String get adPrivacyOptions => 'বিজ্ঞাপনের গোপনীয়তা সেটিংস';
+
+  @override
+  String get aboutAds =>
+      'এই অ্যাপে Google AdMob-এর বিজ্ঞাপন দেখানো হয়। বিজ্ঞাপন ব্যক্তিগত পছন্দ অনুযায়ী নয়, এবং আপনার ব্যবসার হিসাব কখনও বিজ্ঞাপনে ব্যবহার হয় না।';
+
+  @override
+  String get entryAmount => 'পরিমাণ';
+
+  @override
+  String get entryWalletLabel => 'ওয়ালেট';
 }

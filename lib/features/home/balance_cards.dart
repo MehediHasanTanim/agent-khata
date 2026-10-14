@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/ledger/account.dart';
+import '../../core/ledger/account_kind.dart';
 import '../../core/money/money.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../l10n/gen/app_localizations.dart';
@@ -43,57 +44,64 @@ class BalanceCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final warn = context.tokens.warning;
     final negative = data.balance.isNegative && !hidden;
+    final scheme = theme.colorScheme;
+    final isCash = data.account?.kind == AccountKind.cash;
+    final isFlex = data.account == null;
+    final bg = isCash
+        ? scheme.secondary
+        : (isFlex ? scheme.secondaryContainer : scheme.primaryContainer);
+    final fg = isCash ? scheme.onSecondary : scheme.onSurface;
+    final flagged = data.isLow || negative;
     return Semantics(
       container: true,
       label: '${data.label} $amountText',
-      child: Card(
-        margin: EdgeInsets.zero,
+      child: Material(
+        color: bg,
+        elevation: 0,
+        shadowColor: Colors.black26,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: data.isLow || negative
-              ? BorderSide(color: warn, width: 2)
-              : BorderSide.none,
+          borderRadius: BorderRadius.circular(28),
+          side: flagged ? BorderSide(color: warn, width: 2.5) : BorderSide.none,
         ),
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
           onTap: onTap,
           child: ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 148, minHeight: 88),
             child: Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(data.label, style: theme.textTheme.bodyLarge),
-                      if (data.isLow) ...[
-                        const SizedBox(width: 6),
-                        Icon(Icons.warning_amber, size: 18, color: warn),
-                        Text(
-                          l10n.homeLow,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: warn,
-                          ),
-                        ),
-                      ],
-                    ],
+                  Text(
+                    data.label,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: fg.withValues(alpha: 0.85),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     amountText,
                     style: theme.textTheme.headlineMedium?.copyWith(
-                      color: negative ? warn : null,
-                      fontWeight: FontWeight.w700,
+                      color: negative ? warn : fg,
+                      fontWeight: FontWeight.w800,
+                      fontFeatures: const [FontFeature.tabularFigures()],
                     ),
                   ),
-                  if (hidden)
+                  if (data.isLow || hidden) ...[
+                    const SizedBox(height: 6),
                     Text(
-                      l10n.homeTapToReveal,
-                      style: theme.textTheme.bodyMedium,
+                      data.isLow ? '▼ ${l10n.homeLow}' : l10n.homeTapToReveal,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: data.isLow ? warn : fg,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
+                  ],
                 ],
               ),
             ),

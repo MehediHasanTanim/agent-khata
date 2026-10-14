@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/date_labels.dart';
 import '../../core/ledger/account.dart';
 import '../../core/ledger/account_kind.dart';
@@ -71,6 +72,7 @@ class _DueDetailScreenState extends ConsumerState<DueDetailScreen> {
     final due = _due;
 
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(due?.displayName ?? l10n.duesTitle)),
       body: !_loaded
           ? const Center(child: CircularProgressIndicator())

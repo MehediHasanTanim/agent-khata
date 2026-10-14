@@ -7,9 +7,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/ads/ad_widgets.dart';
 import '../../core/bootstrap.dart';
 import '../../core/db/app_database.dart';
 import '../../core/providers.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../backup/restore_flow.dart' show liveDbFileName;
 import '../transactions/integrity_checker.dart';
@@ -125,6 +127,7 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
     final l10n = AppLocalizations.of(context);
     final digits = ref.watch(preferencesProvider).digits;
     return Scaffold(
+      bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.diagnostics)),
       body: FutureBuilder<DbInfo>(
         future: _info,
@@ -166,6 +169,10 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                 subtitle: Text(digits.localize('$_txnCount')),
               ),
               ListTile(
+                title: const Text('Ads'),
+                subtitle: Text(ref.read(adsServiceProvider).status),
+              ),
+              ListTile(
                 title: Text(l10n.diagColdStart),
                 subtitle: Text(
                   firstFrameMs == null
@@ -204,7 +211,7 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                   color: _report == null
                       ? null
                       : _report!.isHealthy
-                      ? Colors.green
+                      ? context.tokens.cashIn
                       : Theme.of(context).colorScheme.error,
                 ),
                 trailing: FilledButton(
