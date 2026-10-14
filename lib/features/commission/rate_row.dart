@@ -300,58 +300,67 @@ class _TierRowState extends State<_TierRow> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final t = widget.tier;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.fromLTRB(14, 10, 6, 12),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 104,
-            child: widget.isLast
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 18),
-                    child: Text(l10n.tierAbove),
-                  )
-                : TextField(
-                    controller: _upTo,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: l10n.tierUpTo,
-                      prefixText: '৳ ',
-                    ),
-                    onChanged: (v) {
-                      t.upTo = v;
+          Row(
+            children: [
+              Expanded(
+                child: widget.isLast
+                    ? Text(
+                        l10n.tierAbove,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                      )
+                    : TextField(
+                        controller: _upTo,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: l10n.tierUpTo,
+                          prefixText: '৳ ',
+                        ),
+                        onChanged: (v) {
+                          t.upTo = v;
+                          widget.onChanged();
+                        },
+                      ),
+              ),
+              IconButton.filledTonal(
+                tooltip: '×',
+                icon: const Icon(LucideIcons.x),
+                onPressed: widget.canRemove ? widget.onRemove : null,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final m in CommissionMode.values)
+                if (m != CommissionMode.tiered)
+                  ChoiceChip(
+                    showCheckmark: false,
+                    label: Text(rateModeLabel(l10n, m)),
+                    selected: t.mode == m,
+                    onSelected: (_) {
+                      setState(() => t.mode = m);
                       widget.onChanged();
                     },
                   ),
+            ],
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 3,
-            child: DropdownButtonFormField<CommissionMode>(
-              initialValue: t.mode,
-              isExpanded: true,
-              items: [
-                for (final m in CommissionMode.values)
-                  if (m != CommissionMode.tiered)
-                    DropdownMenuItem(
-                      value: m,
-                      child: Text(
-                        rateModeLabel(l10n, m),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-              ],
-              onChanged: (m) {
-                if (m == null) return;
-                t.mode = m;
-                widget.onChanged();
-              },
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
             child: TextField(
               controller: _value,
               keyboardType: const TextInputType.numberWithOptions(
@@ -363,11 +372,6 @@ class _TierRowState extends State<_TierRow> {
                 widget.onChanged();
               },
             ),
-          ),
-          IconButton(
-            tooltip: '×',
-            icon: const Icon(LucideIcons.x),
-            onPressed: widget.canRemove ? widget.onRemove : null,
           ),
         ],
       ),

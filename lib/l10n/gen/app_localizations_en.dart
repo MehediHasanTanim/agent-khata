@@ -1678,4 +1678,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get entryWalletLabel => 'Wallet';
+
+  @override
+  String repInsightBestDay(String day) {
+    return 'You earn most on $day.';
+  }
 }

@@ -3133,6 +3133,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wallet'**
   String get entryWalletLabel;
+
+  /// No description provided for @repInsightBestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'You earn most on {day}.'**
+  String repInsightBestDay(String day);
 }
 
 class _AppLocalizationsDelegate

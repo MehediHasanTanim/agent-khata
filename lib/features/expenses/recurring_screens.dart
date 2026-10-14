@@ -271,35 +271,69 @@ class _RecurringFormScreenState extends ConsumerState<RecurringFormScreen> {
           ),
           const SizedBox(height: 12),
           if (_frequency == RecurrenceFrequency.monthly) ...[
-            DropdownButtonFormField<int>(
+            Container(
               key: const ValueKey('rec-day'),
-              initialValue: _monthDay,
-              decoration: InputDecoration(labelText: l10n.recDayOfMonth),
-              items: [
-                for (var d = 1; d <= 31; d++)
-                  DropdownMenuItem(
-                    value: d,
-                    child: Text(digits.localize('$d')),
+              padding: const EdgeInsets.fromLTRB(16, 6, 8, 6),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.recDayOfMonth,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
-              ],
-              onChanged: (v) => setState(() => _monthDay = v ?? 1),
+                  IconButton.filledTonal(
+                    icon: const Icon(LucideIcons.minus),
+                    onPressed: () => setState(
+                      () => _monthDay = _monthDay > 1 ? _monthDay - 1 : 31,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 52,
+                    child: Text(
+                      digits.localize('$_monthDay'),
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  IconButton.filled(
+                    style: IconButton.styleFrom(
+                      backgroundColor: theme.colorScheme.secondary,
+                      foregroundColor: theme.colorScheme.onSecondary,
+                    ),
+                    icon: const Icon(LucideIcons.plus),
+                    onPressed: () => setState(
+                      () => _monthDay = _monthDay < 31 ? _monthDay + 1 : 1,
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Text(l10n.recEvery31, style: theme.textTheme.bodyMedium),
             ),
           ] else
-            DropdownButtonFormField<int>(
-              initialValue: _weekday,
-              decoration: InputDecoration(labelText: l10n.recWeekday),
-              items: [
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
                 for (var d = 1; d <= 7; d++)
-                  DropdownMenuItem(
-                    value: d,
-                    child: Text(_weekdayName(l10n, d)),
+                  ChoiceChip(
+                    showCheckmark: false,
+                    label: Text(_weekdayName(l10n, d)),
+                    selected: _weekday == d,
+                    onSelected: (_) => setState(() => _weekday = d),
                   ),
               ],
-              onChanged: (v) => setState(() => _weekday = v ?? 1),
             ),
           const SizedBox(height: 12),
           if (sources.length > 1) ...[

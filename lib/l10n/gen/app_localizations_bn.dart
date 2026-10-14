@@ -1676,4 +1676,9 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get entryWalletLabel => 'ওয়ালেট';
+
+  @override
+  String repInsightBestDay(String day) {
+    return '$day আপনার সবচেয়ে বেশি আয় হয়।';
+  }
 }

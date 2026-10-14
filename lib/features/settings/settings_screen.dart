@@ -35,50 +35,58 @@ class SettingsScreen extends ConsumerWidget {
 
     // Staff get only personal display options.
     final staffChildren = <Widget>[
-      _Header(l10n.language),
-      RadioGroup<String>(
-        groupValue: prefs.languageCode,
-        onChanged: (v) => controller.update(
-          (p) => p.copyWith(languageCode: v ?? p.languageCode),
-        ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
         child: Column(
           children: [
-            RadioListTile<String>(
-              value: 'bn',
-              title: Text(l10n.languageBangla),
+            _Section(
+              title: l10n.language,
+              children: [
+                _Seg<String>(
+                  label: l10n.language,
+                  value: prefs.languageCode,
+                  options: [
+                    ('bn', l10n.languageBangla),
+                    ('en', l10n.languageEnglish),
+                  ],
+                  onChanged: (v) =>
+                      controller.update((p) => p.copyWith(languageCode: v)),
+                ),
+                _Seg<double>(
+                  label: l10n.textSize,
+                  value: prefs.textScale,
+                  options: [
+                    (1.0, l10n.textSizeNormal),
+                    (1.15, l10n.textSizeLarge),
+                    (1.3, l10n.textSizeXL),
+                  ],
+                  onChanged: (v) =>
+                      controller.update((p) => p.copyWith(textScale: v)),
+                ),
+              ],
             ),
-            RadioListTile<String>(
-              value: 'en',
-              title: Text(l10n.languageEnglish),
+            _Section(
+              title: l10n.settings,
+              children: [
+                _Nav(
+                  icon: LucideIcons.lock,
+                  label: l10n.switchUser,
+                  value: session == null ? null : l10n.signedInAs(session.name),
+                  onTap: () => ref.read(lockControllerProvider.notifier).lock(),
+                ),
+                _Nav(
+                  icon: LucideIcons.info,
+                  label: l10n.aboutTitle,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const AboutScreen(),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-      ),
-      _Header(l10n.textSize),
-      RadioGroup<double>(
-        groupValue: prefs.textScale,
-        onChanged: (v) =>
-            controller.update((p) => p.copyWith(textScale: v ?? 1.0)),
-        child: Column(
-          children: [
-            RadioListTile<double>(value: 1.0, title: Text(l10n.textSizeNormal)),
-            RadioListTile<double>(value: 1.15, title: Text(l10n.textSizeLarge)),
-            RadioListTile<double>(value: 1.3, title: Text(l10n.textSizeXL)),
-          ],
-        ),
-      ),
-      const Divider(),
-      ListTile(
-        leading: const Icon(LucideIcons.lock),
-        title: Text(l10n.switchUser),
-        subtitle: session == null ? null : Text(l10n.signedInAs(session.name)),
-        onTap: () => ref.read(lockControllerProvider.notifier).lock(),
-      ),
-      ListTile(
-        leading: const Icon(LucideIcons.info),
-        title: Text(l10n.aboutTitle),
-        onTap: () => Navigator.of(context)
-            .push(MaterialPageRoute<void>(builder: (_) => const AboutScreen())),
       ),
     ];
 
@@ -453,22 +461,6 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _Header extends StatelessWidget {
-  const _Header(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
-    child: Text(
-      text,
-      style: Theme.of(context).textTheme.titleMedium
-          ?.copyWith(color: Theme.of(context).colorScheme.primary),
-    ),
-  );
 }
 
 /// A rounded group of settings rows with a small terracotta caption.

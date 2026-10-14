@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/money/money.dart';
@@ -17,6 +18,7 @@ Future<Money?> showCashCounter(
   return showModalBottomSheet<Money>(
     context: context,
     isScrollControlled: true,
+    showDragHandle: true,
     builder: (_) => _CashCounterSheet(digits: digits),
   );
 }
@@ -72,7 +74,10 @@ class _CashCounterSheetState extends State<_CashCounterSheet> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 l10n.cdCashCounterTitle,
-                style: theme.textTheme.titleLarge,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontFamily: 'Caprasimo',
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
             Flexible(
@@ -81,35 +86,72 @@ class _CashCounterSheetState extends State<_CashCounterSheet> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   for (final d in noteDenominations)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 6),
+                      padding: const EdgeInsets.fromLTRB(18, 4, 6, 4),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerLowest,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
                       child: Row(
                         children: [
                           SizedBox(
-                            width: 96,
+                            width: 78,
                             child: Text(
                               '৳ ${widget.digits.localize('$d')}',
-                              style: theme.textTheme.titleMedium,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
                           ),
-                          const Text('×'),
-                          const SizedBox(width: 12),
                           Expanded(
-                            child: TextField(
-                              key: ValueKey('count-$d'),
-                              controller: _counts[d],
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => setState(() {}),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 110,
                             child: Text(
                               fmt.format(
                                 Money.taka(d * _int(_counts[d]!.text)),
                               ),
-                              textAlign: TextAlign.end,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
                             ),
+                          ),
+                          IconButton.filledTonal(
+                            icon: const Icon(LucideIcons.minus),
+                            onPressed: () => setState(() {
+                              final n = _int(_counts[d]!.text);
+                              _counts[d]!.text = n > 0 ? '${n - 1}' : '';
+                            }),
+                          ),
+                          SizedBox(
+                            width: 52,
+                            child: TextField(
+                              key: ValueKey('count-$d'),
+                              controller: _counts[d],
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                filled: false,
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                contentPadding: EdgeInsets.zero,
+                                hintText: '0',
+                              ),
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
+                              onChanged: (_) => setState(() {}),
+                            ),
+                          ),
+                          IconButton.filled(
+                            style: IconButton.styleFrom(
+                              backgroundColor: theme.colorScheme.secondary,
+                              foregroundColor: theme.colorScheme.onSecondary,
+                            ),
+                            icon: const Icon(LucideIcons.plus),
+                            onPressed: () => setState(() {
+                              _counts[d]!.text =
+                                  '${_int(_counts[d]!.text) + 1}';
+                            }),
                           ),
                         ],
                       ),
@@ -127,15 +169,28 @@ class _CashCounterSheetState extends State<_CashCounterSheet> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
+            Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: Row(
                 children: [
-                  Text(l10n.cdCounterTotal, style: theme.textTheme.titleMedium),
+                  Text(
+                    l10n.cdCounterTotal,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.onSecondaryContainer,
+                    ),
+                  ),
                   const Spacer(),
                   Text(
                     fmt.format(Money.taka(_total)),
-                    style: theme.textTheme.headlineMedium,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: theme.colorScheme.onSecondaryContainer,
+                    ),
                   ),
                 ],
               ),

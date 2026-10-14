@@ -28,13 +28,47 @@ class AdBanner extends ConsumerWidget {
           Future.microtask(ads.initialize);
           return const SizedBox.shrink();
         }
+        final scheme = Theme.of(context).colorScheme;
         return Semantics(
           container: true,
           label: l10n.adLabel,
           child: Container(
-            alignment: Alignment.center,
-            color: Theme.of(context).colorScheme.surface,
-            child: ads.buildBanner(context),
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerLow,
+              border: Border(
+                top: BorderSide(color: scheme.outlineVariant),
+                bottom: BorderSide(color: scheme.outlineVariant),
+              ),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                ads.buildBanner(context),
+                Positioned(
+                  top: 2,
+                  left: 6,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 1,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: scheme.outline),
+                      borderRadius: BorderRadius.circular(4),
+                      color: scheme.surfaceContainerLow,
+                    ),
+                    child: Text(
+                      l10n.adLabel,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

@@ -949,5 +949,13 @@
   "adPrivacyOptions": "Ad privacy options",
   "aboutAds": "This app shows ads from Google AdMob. Ads are not personalized, and your business records are never used for ads.",
   "entryAmount": "Amount",
-  "entryWalletLabel": "Wallet"
+  "entryWalletLabel": "Wallet",
+  "repInsightBestDay": "You earn most on {day}.",
+  "@repInsightBestDay": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  }
 }

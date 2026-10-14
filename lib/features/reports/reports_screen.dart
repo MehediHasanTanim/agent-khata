@@ -256,6 +256,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     margin: EdgeInsets.zero,
                     label: l10n.sumNet,
                     value: money.format(d.summary.netProfit),
+                    footer: d.insights.bestWeekday == null
+                        ? null
+                        : l10n.repInsightBestDay(
+                            _weekdayName(l10n, d.insights.bestWeekday!.weekday),
+                          ),
                   ),
                   const SizedBox(height: 14),
                   Wrap(
