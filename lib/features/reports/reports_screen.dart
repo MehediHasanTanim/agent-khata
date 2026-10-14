@@ -332,29 +332,21 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 if (!d.insights.hasEnoughData)
                   Text(l10n.insNotEnough)
                 else ...[
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 12,
-                    children: [
-                      stat(
-                        l10n.insAvgSize,
-                        money.format(d.insights.averageSize),
-                      ),
+                  _TileGrid(
+                    tiles: [
+                      (l10n.insAvgSize, money.format(d.insights.averageSize)),
                       if (d.insights.busiestHour case final h?)
-                        stat(
+                        (
                           l10n.insBusiestHour,
                           _hourRange(prefs.digits.localize, h.hour),
                         ),
                       if (d.insights.mostProfitableHour case final h?)
-                        stat(
+                        (
                           l10n.insBestHour,
                           _hourRange(prefs.digits.localize, h.hour),
                         ),
                       if (d.insights.bestWeekday case final w?)
-                        stat(
-                          l10n.insBestWeekday,
-                          _weekdayName(l10n, w.weekday),
-                        ),
+                        (l10n.insBestWeekday, _weekdayName(l10n, w.weekday)),
                     ],
                   ),
                   if (d.insights.bestWeekday case final w?)
@@ -365,63 +357,73 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         style: theme.textTheme.bodyMedium,
                       ),
                     ),
-                  const SizedBox(height: 16),
-                  Text(l10n.insHourChart, style: theme.textTheme.titleSmall),
-                  const SizedBox(height: 4),
-                  SignedBarChart(
-                    values: [
-                      for (final h in d.insights.hours) h.count.toDouble(),
-                    ],
-                    positive: theme.colorScheme.primary,
-                    negative: tokens.cashOut,
-                    height: 90,
-                    semanticsLabel: l10n.insHourChart,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  const SizedBox(height: 14),
+                  _ReportCard(
+                    title: l10n.insHourChart,
                     children: [
-                      for (final h in const [0, 6, 12, 18, 23])
-                        Text(
-                          prefs.digits.localize('$h'),
-                          style: theme.textTheme.bodySmall,
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(l10n.insWeekdayChart, style: theme.textTheme.titleSmall),
-                  const SizedBox(height: 4),
-                  SignedBarChart(
-                    values: [
-                      for (final w in d.insights.weekdays)
-                        w.profitPerDay.paisa / 100,
-                    ],
-                    positive: tokens.cashIn,
-                    negative: tokens.cashOut,
-                    height: 90,
-                    semanticsLabel: l10n.insWeekdayChart,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      for (var wd = 1; wd <= 7; wd++)
-                        Text(
-                          _weekdayShort(l10n, wd),
-                          style: theme.textTheme.bodySmall,
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(l10n.insByType, style: theme.textTheme.titleSmall),
-                  for (final t in d.insights.byType)
-                    ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(transactionTypeLabel(l10n, t.type)),
-                      subtitle: Text(
-                        l10n.insEntries(prefs.digits.localize('${t.count}')),
+                      SignedBarChart(
+                        values: [
+                          for (final h in d.insights.hours) h.count.toDouble(),
+                        ],
+                        positive: theme.colorScheme.primary,
+                        negative: tokens.cashOut,
+                        height: 90,
+                        semanticsLabel: l10n.insHourChart,
                       ),
-                      trailing: Text(money.format(t.average)),
-                    ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          for (final h in const [0, 6, 12, 18, 23])
+                            Text(
+                              prefs.digits.localize('$h'),
+                              style: theme.textTheme.bodySmall,
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  _ReportCard(
+                    title: l10n.insWeekdayChart,
+                    children: [
+                      SignedBarChart(
+                        values: [
+                          for (final w in d.insights.weekdays)
+                            w.profitPerDay.paisa / 100,
+                        ],
+                        positive: tokens.cashIn,
+                        negative: tokens.cashOut,
+                        height: 90,
+                        semanticsLabel: l10n.insWeekdayChart,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          for (var wd = 1; wd <= 7; wd++)
+                            Text(
+                              _weekdayShort(l10n, wd),
+                              style: theme.textTheme.bodySmall,
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  _ReportCard(
+                    title: l10n.insByType,
+                    children: [
+                      for (final t in d.insights.byType)
+                        ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(transactionTypeLabel(l10n, t.type)),
+                          subtitle: Text(
+                            l10n.insEntries(
+                              prefs.digits.localize('${t.count}'),
+                            ),
+                          ),
+                          trailing: Text(money.format(t.average)),
+                        ),
+                    ],
+                  ),
                 ],
                 const SizedBox(height: 20),
                 Text(l10n.repCommissionTitle, style: _sectionStyle(theme)),
@@ -431,35 +433,18 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     child: Text(l10n.repNoData),
                   ),
                 for (final c in d.commission)
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            providerName(c.provider),
-                            style: theme.textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: 4),
-                          Wrap(
-                            spacing: 16,
-                            runSpacing: 8,
-                            children: [
-                              stat(l10n.repExpected, money.format(c.expected)),
-                              stat(l10n.repReceived, money.format(c.received)),
-                              stat(
-                                l10n.repPending,
-                                money.format(c.pending),
-                                color: c.pending.isPositive
-                                    ? tokens.warning
-                                    : null,
-                              ),
-                            ],
-                          ),
+                  _ReportCard(
+                    title: providerName(c.provider),
+                    children: [
+                      _TileGrid(
+                        columns: 3,
+                        tiles: [
+                          (l10n.repExpected, money.format(c.expected)),
+                          (l10n.repReceived, money.format(c.received)),
+                          (l10n.repPending, money.format(c.pending)),
                         ],
                       ),
-                    ),
+                    ],
                   ),
                 FilledButton.icon(
                   icon: const Icon(LucideIcons.banknote),
@@ -506,22 +491,27 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                if (d.variance.isEmpty)
-                  Text(l10n.repVarianceNone)
-                else
-                  SignedBarChart(
-                    values: [
-                      for (final p in d.variance) p.variance.paisa / 100,
-                    ],
-                    xLabels: [
-                      for (final p in d.variance)
-                        labels.shortDay(_dateOf(p.businessDate)),
-                    ],
-                    positive: tokens.warning,
-                    negative: tokens.cashOut,
-                    height: 150,
-                    semanticsLabel: l10n.repVarianceTitle,
-                  ),
+                _ReportCard(
+                  title: l10n.repVarianceTitle,
+                  children: [
+                    if (d.variance.isEmpty)
+                      Text(l10n.repVarianceNone)
+                    else
+                      SignedBarChart(
+                        values: [
+                          for (final p in d.variance) p.variance.paisa / 100,
+                        ],
+                        xLabels: [
+                          for (final p in d.variance)
+                            labels.shortDay(_dateOf(p.businessDate)),
+                        ],
+                        positive: tokens.warning,
+                        negative: tokens.cashOut,
+                        height: 150,
+                        semanticsLabel: l10n.repVarianceTitle,
+                      ),
+                  ],
+                ),
                 if (d.variance.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
@@ -744,6 +734,63 @@ class _ReportCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Small label/value tiles laid out in a grid (2 across by default).
+class _TileGrid extends StatelessWidget {
+  const _TileGrid({required this.tiles, this.columns = 2});
+
+  final List<(String, String)> tiles;
+  final int columns;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return LayoutBuilder(
+      builder: (context, c) {
+        const gap = 8.0;
+        final w = (c.maxWidth - gap * (columns - 1)) / columns;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (final (label, value) in tiles)
+              Container(
+                width: w,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer.withValues(
+                    alpha: 0.45,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      value,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

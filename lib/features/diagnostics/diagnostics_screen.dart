@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -12,7 +12,7 @@ import '../../core/ads/ad_widgets.dart';
 import '../../core/bootstrap.dart';
 import '../../core/db/app_database.dart';
 import '../../core/providers.dart';
-import '../../core/theme/app_tokens.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../backup/restore_flow.dart' show liveDbFileName;
 import '../transactions/integrity_checker.dart';
@@ -137,98 +137,118 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
           if (info == null) {
             return const Center(child: CircularProgressIndicator());
           }
-          return ListView(
-            children: [
-              ListTile(
-                title: Text(l10n.diagEncryption),
-                subtitle: Text(
-                  info.isEncrypted
-                      ? l10n.diagEncrypted(info.cipherVersion!)
-                      : l10n.diagNotEncrypted,
-                ),
-                leading: Icon(
-                  info.isEncrypted
-                      ? LucideIcons.shieldCheck
-                      : LucideIcons.triangleAlert,
-                ),
-              ),
-              ListTile(
-                title: Text(l10n.diagJournal),
-                subtitle: Text(info.journalMode.toUpperCase()),
-              ),
-              ListTile(
-                title: Text(l10n.diagSchema),
-                subtitle: Text(digits.localize('${info.userVersion}')),
-              ),
-              if (_dbBytes != null)
-                ListTile(
-                  title: Text(l10n.diagDbSize),
-                  subtitle: Text(
-                    '${digits.localize((_dbBytes! / 1024).toStringAsFixed(0))} KB',
+          final theme = Theme.of(context);
+          final scheme = theme.colorScheme;
+          Widget kv(String k, String v) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 9),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  k,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
-              ListTile(
-                title: Text(l10n.diagEntries),
-                subtitle: Text(digits.localize('$_txnCount')),
-              ),
-              ListTile(
-                title: const Text('Ads'),
-                subtitle: Text(ref.read(adsServiceProvider).status),
-              ),
-              ListTile(
-                title: Text(l10n.diagColdStart),
-                subtitle: Text(
-                  firstFrameMs == null
-                      ? '-'
-                      : l10n.diagMs(digits.localize('$firstFrameMs')),
+                const SizedBox(width: 12),
+                Flexible(
+                  child: Text(
+                    v,
+                    textAlign: TextAlign.end,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-              ),
-              ListTile(
-                title: Text(l10n.diagWriteBench),
-                subtitle: Text(
-                  _benchMs == null
-                      ? '-'
-                      : l10n.diagBenchResult(digits.localize('$_benchMs')),
+              ],
+            ),
+          );
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 8,
                 ),
-                trailing: FilledButton(
-                  onPressed: _running ? null : _runBench,
-                  child: Text(l10n.diagRunBench),
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerLowest,
+                  borderRadius: BorderRadius.circular(28),
                 ),
-              ),
-              const Divider(),
-              ListTile(
-                title: Text(l10n.diagIntegrity),
-                subtitle: _report == null
-                    ? null
-                    : Text(
-                        _report!.isHealthy
-                            ? l10n.diagVerified
-                            : l10n.diagProblem,
+                child: Column(
+                  children: [
+                    kv(
+                      l10n.diagEncryption,
+                      info.isEncrypted
+                          ? l10n.diagEncrypted(info.cipherVersion!)
+                          : l10n.diagNotEncrypted,
+                    ),
+                    kv(l10n.diagJournal, info.journalMode.toUpperCase()),
+                    kv(l10n.diagSchema, digits.localize('${info.userVersion}')),
+                    if (_dbBytes != null)
+                      kv(
+                        l10n.diagDbSize,
+                        '${digits.localize((_dbBytes! / 1024).toStringAsFixed(0))} KB',
                       ),
-                leading: Icon(
-                  _report == null
-                      ? LucideIcons.clipboardCheck
-                      : _report!.isHealthy
+                    kv(l10n.diagEntries, digits.localize('$_txnCount')),
+                    kv('Ads', ref.read(adsServiceProvider).status),
+                    kv(
+                      l10n.diagColdStart,
+                      firstFrameMs == null
+                          ? '-'
+                          : l10n.diagMs(digits.localize('$firstFrameMs')),
+                    ),
+                    kv(
+                      l10n.diagWriteBench,
+                      _benchMs == null
+                          ? '-'
+                          : l10n.diagBenchResult(digits.localize('$_benchMs')),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(0, 56),
+                  backgroundColor: scheme.tertiaryContainer,
+                  foregroundColor: scheme.onSurface,
+                ),
+                onPressed: _running ? null : _runBench,
+                child: Text(l10n.diagRunBench),
+              ),
+              const SizedBox(height: 10),
+              FilledButton(
+                style: FilledButton.styleFrom(minimumSize: const Size(0, 60)),
+                onPressed: _checking ? null : _check,
+                child: Text(l10n.diagRunCheck),
+              ),
+              if (_report != null) ...[
+                const SizedBox(height: 10),
+                NoticeBanner(
+                  margin: EdgeInsets.zero,
+                  icon: _report!.isHealthy
                       ? LucideIcons.badgeCheck
                       : LucideIcons.circleAlert,
-                  color: _report == null
-                      ? null
-                      : _report!.isHealthy
-                      ? context.tokens.cashIn
-                      : Theme.of(context).colorScheme.error,
+                  tone: _report!.isHealthy
+                      ? BannerTone.info
+                      : BannerTone.warning,
+                  text: _report!.isHealthy
+                      ? l10n.diagVerified
+                      : l10n.diagProblem,
                 ),
-                trailing: FilledButton(
-                  onPressed: _checking ? null : _check,
-                  child: Text(l10n.diagRunCheck),
+              ],
+              const SizedBox(height: 10),
+              FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(0, 56),
+                  backgroundColor: scheme.tertiaryContainer,
+                  foregroundColor: scheme.onSurface,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: OutlinedButton.icon(
-                  icon: const Icon(LucideIcons.share),
-                  label: Text(l10n.diagShareReport),
-                  onPressed: () => _shareReport(info),
-                ),
+                icon: const Icon(LucideIcons.share),
+                label: Text(l10n.diagShareReport),
+                onPressed: () => _shareReport(info),
               ),
             ],
           );

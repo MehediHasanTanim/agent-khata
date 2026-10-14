@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -60,7 +61,23 @@ Future<String?> askPassphrase(BuildContext context, {required bool confirm}) {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (confirm) Text(l10n.bkPassphraseWarn),
+                if (confirm)
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(ctx).colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      l10n.bkPassphraseWarn,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(ctx).colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
                 TextField(
                   key: const ValueKey('pass-1'),
                   controller: a,
@@ -146,23 +163,64 @@ Future<bool> runRestoreFlow(BuildContext context, WidgetRef ref) async {
   );
   final ok = await showDialog<bool>(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: Text(l10n.bkRestoreConfirmTitle),
-      content: Text(
-        '${l10n.bkRestoreInfo(labels.dateTime(info.createdAt))}\n\n'
-        '${l10n.bkRestoreConfirmBody}',
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(ctx, false),
-          child: Text(l10n.cancel),
+    builder: (ctx) {
+      final scheme = Theme.of(ctx).colorScheme;
+      return AlertDialog(
+        title: Text(
+          l10n.bkRestoreConfirmTitle,
+          style: const TextStyle(fontFamily: 'Caprasimo'),
         ),
-        FilledButton(
-          onPressed: () => Navigator.pop(ctx, true),
-          child: Text(l10n.next),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: scheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  l10n.bkRestoreInfo(labels.dateTime(info.createdAt)),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: scheme.onSecondaryContainer,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  l10n.bkRestoreConfirmBody,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: scheme.onPrimaryContainer,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ],
-    ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.next),
+          ),
+        ],
+      );
+    },
   );
   if (ok != true || !context.mounted) return false;
 
@@ -174,15 +232,35 @@ Future<bool> runRestoreFlow(BuildContext context, WidgetRef ref) async {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        content: Row(
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(width: 16),
-            Expanded(child: Text(l10n.bkRestoreWorking)),
-          ],
-        ),
-      ),
+      builder: (ctx) {
+        final scheme = Theme.of(ctx).colorScheme;
+        return Dialog.fullscreen(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 96,
+                  height: 96,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 10,
+                    color: scheme.secondary,
+                    backgroundColor: scheme.secondaryContainer,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  l10n.bkRestoreWorking,
+                  style: Theme.of(ctx).textTheme.headlineMedium?.copyWith(
+                    fontFamily: 'Caprasimo',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     ),
   );
 
@@ -222,15 +300,55 @@ Future<bool> runRestoreFlow(BuildContext context, WidgetRef ref) async {
   await showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (ctx) => AlertDialog(
-      content: Text(l10n.bkRestoreDone),
-      actions: [
-        FilledButton(
-          onPressed: () => SystemNavigator.pop(),
-          child: Text(l10n.bkCloseApp),
+    builder: (ctx) {
+      final scheme = Theme.of(ctx).colorScheme;
+      return Dialog.fullscreen(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 116,
+                  height: 116,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: scheme.secondaryContainer,
+                    boxShadow: [
+                      BoxShadow(
+                        color: scheme.secondary.withValues(alpha: 0.25),
+                        spreadRadius: 12,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    LucideIcons.check,
+                    size: 60,
+                    color: scheme.secondary,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Text(
+                  l10n.bkRestoreDone,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(ctx).textTheme.headlineSmall?.copyWith(
+                    fontFamily: 'Caprasimo',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                FilledButton(
+                  style: FilledButton.styleFrom(minimumSize: const Size(0, 60)),
+                  onPressed: () => SystemNavigator.pop(),
+                  child: Text(l10n.bkCloseApp),
+                ),
+              ],
+            ),
+          ),
         ),
-      ],
-    ),
+      );
+    },
   );
   return true;
 }

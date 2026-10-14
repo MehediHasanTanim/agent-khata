@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/digit_formatter.dart';
@@ -7,6 +8,7 @@ import '../../core/ledger/account.dart';
 import '../../core/ledger/account_kind.dart';
 import '../../core/money/money.dart';
 import '../../core/providers.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 
 /// Per-account low-balance thresholds. Empty means no alert.
@@ -58,11 +60,21 @@ class _LowAlertsScreenState extends ConsumerState<LowAlertsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(l10n.lowSubtitle),
+          NoticeBanner(
+            margin: EdgeInsets.zero,
+            icon: LucideIcons.info,
+            tone: BannerTone.info,
+            text: l10n.lowSubtitle,
+          ),
           const SizedBox(height: 12),
           for (final a in accounts)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: TextField(
                 controller: _controllerFor(a),
                 keyboardType: TextInputType.number,

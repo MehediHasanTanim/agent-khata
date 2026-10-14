@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ledger/account.dart';
 import '../../core/ledger/transaction_draft.dart';
@@ -8,6 +7,8 @@ import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/theme/app_tokens.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../entry/amount_entry.dart';
 import '../entry/amount_keypad.dart';
@@ -83,40 +84,43 @@ class _AdjustmentScreenState extends ConsumerState<AdjustmentScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(12),
                 children: [
-                  SegmentedButton<bool>(
-                    segments: [
-                      ButtonSegment(
-                        value: true,
-                        icon: const Icon(LucideIcons.plus),
-                        label: Text(l10n.adjIncrease),
-                      ),
-                      ButtonSegment(
-                        value: false,
-                        icon: const Icon(LucideIcons.minus),
-                        label: Text(l10n.adjDecrease),
-                      ),
+                  PillSegmented<bool>(
+                    value: _increase,
+                    options: [
+                      (true, l10n.adjIncrease),
+                      (false, l10n.adjDecrease),
                     ],
-                    selected: {_increase},
-                    onSelectionChanged: (s) =>
-                        setState(() => _increase = s.first),
+                    onChanged: (v) => setState(() => _increase = v),
                   ),
                   const SizedBox(height: 12),
-                  Center(
-                    child: Text(
-                      money.format(_entry.amount),
-                      style: theme.textTheme.displayMedium,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      l10n.adjCurrent(money.format(current)),
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      l10n.adjNew(money.format(next)),
-                      style: theme.textTheme.titleMedium,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${_increase ? '+ ' : '− '}'
+                          '${money.format(_entry.amount)}',
+                          style: theme.textTheme.displayMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: _increase
+                                ? context.tokens.cashIn
+                                : context.tokens.cashOut,
+                          ),
+                        ),
+                        Text(
+                          l10n.adjCurrent(money.format(current)),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        Text(
+                          l10n.adjNew(money.format(next)),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -128,12 +132,21 @@ class _AdjustmentScreenState extends ConsumerState<AdjustmentScreen> {
                 ],
               ),
             ),
-            AmountKeypad(
-              digits: prefs.digits,
-              chips: const [],
-              onKey: (k) => setState(() => _entry = _entry.press(k)),
-              onBackspace: () => setState(() => _entry = _entry.backspace()),
-              onChip: (m) => setState(() => _entry = _entry.set(m)),
+            Container(
+              padding: const EdgeInsets.only(top: 8),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerLowest,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
+                ),
+              ),
+              child: AmountKeypad(
+                digits: prefs.digits,
+                chips: const [],
+                onKey: (k) => setState(() => _entry = _entry.press(k)),
+                onBackspace: () => setState(() => _entry = _entry.backspace()),
+                onChip: (m) => setState(() => _entry = _entry.set(m)),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),

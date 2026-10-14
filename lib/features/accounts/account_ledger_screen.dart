@@ -10,11 +10,13 @@ import 'package:share_plus/share_plus.dart';
 import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/date_labels.dart';
 import '../../core/ledger/account.dart';
+import '../../core/ledger/account_kind.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/security/roles.dart';
 import '../../core/theme/app_tokens.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
 import '../history/transaction_detail_screen.dart';
@@ -214,172 +216,281 @@ class _AccountLedgerScreenState extends ConsumerState<AccountLedgerScreen> {
       _Range.all => l10n.histAll,
     };
 
+    final scheme = theme.colorScheme;
+    final accounts = ref.watch(accountsProvider).value ?? const <Account>[];
+    final switchable = [
+      for (final a in accounts)
+        if (a.kind == AccountKind.cash ||
+            a.kind == AccountKind.wallet ||
+            a.kind == AccountKind.load)
+          a,
+    ];
+    final session = ref.watch(sessionProvider);
+    final canAdjust =
+        session != null && Permissions.can(session, Permission.adjustBalance);
+
     Widget head(String t, {TextAlign align = TextAlign.end}) => Expanded(
-      child: Text(t, textAlign: align, style: theme.textTheme.labelLarge),
+      child: Text(
+        t,
+        textAlign: align,
+        style: theme.textTheme.labelLarge?.copyWith(
+          color: scheme.onSurfaceVariant,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
     );
+
+    Widget pillButton(IconData icon, String label, VoidCallback onTap) =>
+        Expanded(
+          child: FilledButton.icon(
+            style: FilledButton.styleFrom(
+              minimumSize: const Size(0, 48),
+              backgroundColor: scheme.tertiaryContainer,
+              foregroundColor: scheme.onSurface,
+            ),
+            icon: Icon(icon),
+            label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+            onPressed: onTap,
+          ),
+        );
 
     return Scaffold(
       bottomNavigationBar: const AdFooter(),
-      appBar: AppBar(
-        title: Text(l10n.ledgerTitle(widget.account.label)),
-        actions: [
-          IconButton(
-            tooltip: l10n.repStatementPdf,
-            icon: const Icon(LucideIcons.fileText),
-            onPressed: _shareStatement,
-          ),
-          if (ref.watch(sessionProvider) case final u?
-              when Permissions.can(u, Permission.adjustBalance))
-            IconButton(
-              tooltip: l10n.ledgerAdjust,
-              icon: const Icon(LucideIcons.slidersHorizontal),
-              onPressed: () async {
-                await Navigator.of(context).push<void>(
-                  MaterialPageRoute(
-                    builder: (_) => AdjustmentScreen(account: widget.account),
-                  ),
-                );
-                if (mounted) await _reload();
-              },
-            ),
-        ],
-      ),
-      body: Column(
+      appBar: AppBar(title: Text(l10n.ledgerTitle(widget.account.label))),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Text(l10n.ledgerBalance, style: theme.textTheme.titleMedium),
-                const Spacer(),
-                Text(
-                  money.format(balance),
-                  style: theme.textTheme.headlineMedium,
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Wrap(
-              spacing: 8,
-              children: [
-                for (final r in _Range.values)
-                  ChoiceChip(
-                    label: Text(rangeLabel(r)),
-                    selected: _range == r,
-                    onSelected: (_) {
-                      _range = r;
-                      _reload();
-                    },
-                  ),
-              ],
-            ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: [
-                head(l10n.ledgerDate, align: TextAlign.start),
-                head(l10n.ledgerIn),
-                head(l10n.ledgerOut),
-                head(l10n.ledgerBalance),
-              ],
-            ),
-          ),
-          const Divider(height: 8),
-          Expanded(
-            child: _lines.isEmpty && !_loading
-                ? Center(child: Text(l10n.ledgerEmpty))
-                : ListView(
-                    children: [
-                      for (final line in _lines)
-                        InkWell(
-                          onTap: () => Navigator.of(context)
-                              .push<bool>(
-                                MaterialPageRoute(
-                                  builder: (_) => TransactionDetailScreen(
-                                    txnId: line.txnId,
-                                  ),
-                                ),
-                              )
-                              .then((changed) {
-                                if (changed == true) _reload();
-                              }),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
+          if (switchable.length > 1)
+            SizedBox(
+              height: 52,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  for (final a in switchable)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        key: ValueKey('ledger-tab-${a.id}'),
+                        showCheckmark: false,
+                        label: Text(
+                          a.kind == AccountKind.cash ? l10n.homeCash : a.label,
+                        ),
+                        selected: a.id == widget.account.id,
+                        onSelected: (_) {
+                          if (a.id == widget.account.id) return;
+                          Navigator.of(context).pushReplacement<void, void>(
+                            MaterialPageRoute(
+                              builder: (_) => AccountLedgerScreen(account: a),
                             ),
-                            child: Row(
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          HeroCard(
+            margin: const EdgeInsets.only(top: 4, bottom: 12),
+            label: l10n.ledgerBalance,
+            value: money.format(balance),
+          ),
+          PillSegmented<_Range>(
+            value: _range,
+            options: [for (final r in _Range.values) (r, rangeLabel(r))],
+            onChanged: (r) {
+              _range = r;
+              _reload();
+            },
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              if (canAdjust) ...[
+                pillButton(
+                  LucideIcons.slidersHorizontal,
+                  l10n.ledgerAdjust,
+                  () async {
+                    await Navigator.of(context).push<void>(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            AdjustmentScreen(account: widget.account),
+                      ),
+                    );
+                    if (mounted) await _reload();
+                  },
+                ),
+                const SizedBox(width: 8),
+              ],
+              pillButton(
+                LucideIcons.fileText,
+                l10n.repStatementPdf,
+                _shareStatement,
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(28),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        l10n.ledgerDate,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                    head(l10n.ledgerIn),
+                    head(l10n.ledgerOut),
+                    head(l10n.ledgerBalance),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                if (_lines.isEmpty && !_loading)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    child: Text(
+                      l10n.ledgerEmpty,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                for (final line in _lines)
+                  InkWell(
+                    onTap: () => Navigator.of(context)
+                        .push<bool>(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                TransactionDetailScreen(txnId: line.txnId),
+                          ),
+                        )
+                        .then((changed) {
+                          if (changed == true) _reload();
+                        }),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 9),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: scheme.outlineVariant),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        labels.shortDay(line.occurredAt),
-                                        style: theme.textTheme.bodyMedium,
-                                      ),
-                                      Text(
-                                        transactionTypeLabel(l10n, line.type),
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                              decoration: line.isVoid
-                                                  ? TextDecoration.lineThrough
-                                                  : null,
-                                            ),
-                                      ),
-                                    ],
+                                Text(
+                                  transactionTypeLabel(l10n, line.type),
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    decoration: line.isVoid
+                                        ? TextDecoration.lineThrough
+                                        : null,
                                   ),
                                 ),
-                                Expanded(
-                                  child: Text(
-                                    line.delta.isPositive
-                                        ? fmt.format(line.delta)
-                                        : '',
-                                    textAlign: TextAlign.end,
-                                    style: TextStyle(color: tokens.cashIn),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    line.delta.isNegative
-                                        ? fmt.format(line.delta.abs())
-                                        : '',
-                                    textAlign: TextAlign.end,
-                                    style: TextStyle(color: tokens.cashOut),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    line.isVoid ? '' : fmt.format(line.balance),
-                                    textAlign: TextAlign.end,
+                                Text(
+                                  labels.shortDay(line.occurredAt),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: scheme.onSurfaceVariant,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      if (_hasMore && _lines.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: OutlinedButton(
-                            onPressed: _loading ? null : _more,
-                            child: Text(l10n.histLoadMore),
+                          Expanded(
+                            child: Text(
+                              line.delta.isPositive
+                                  ? fmt.format(line.delta)
+                                  : '',
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                color: tokens.cashIn,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              line.delta.isNegative
+                                  ? fmt.format(line.delta.abs())
+                                  : '',
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                color: tokens.cashOut,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              line.isVoid ? '' : fmt.format(line.balance),
+                              textAlign: TextAlign.end,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: scheme.onSurface, width: 2),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          l10n.ledgerBalance,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
-                      if (_loading)
-                        const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(child: CircularProgressIndicator()),
+                      ),
+                      Text(
+                        money.format(balance),
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
                         ),
+                      ),
                     ],
                   ),
+                ),
+              ],
+            ),
           ),
+          if (_hasMore && _lines.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: FilledButton.tonal(
+                onPressed: _loading ? null : _more,
+                child: Text(l10n.histLoadMore),
+              ),
+            ),
+          if (_loading)
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(child: CircularProgressIndicator()),
+            ),
         ],
       ),
     );

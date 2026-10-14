@@ -10,6 +10,7 @@ import '../../core/ledger/account_kind.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../entry/entry_providers.dart';
 import '../transactions/transaction_repository.dart';
@@ -55,16 +56,8 @@ class RecurringExpensesScreen extends ConsumerWidget {
     return Scaffold(
       bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.recTitle)),
-      floatingActionButton: FloatingActionButton.extended(
-        key: const ValueKey('add-recurring'),
-        icon: const Icon(LucideIcons.plus),
-        label: Text(l10n.recAdd),
-        onPressed: () => Navigator.of(context).push<void>(
-          MaterialPageRoute(builder: (_) => const RecurringFormScreen()),
-        ),
-      ),
       body: ListView(
-        padding: const EdgeInsets.only(bottom: 96),
+        padding: const EdgeInsets.only(top: 8, bottom: 24),
         children: [
           if (items.isEmpty)
             Padding(
@@ -72,14 +65,14 @@ class RecurringExpensesScreen extends ConsumerWidget {
               child: Center(child: Text(l10n.recEmpty)),
             ),
           for (final r in items)
-            ListTile(
+            KhataTile(
               key: ValueKey('recurring-${r.id}'),
-              leading: Icon(
-                r.isActive ? LucideIcons.repeat : LucideIcons.pause,
+              leading: DirectionBubble(
+                icon: r.isActive ? LucideIcons.repeat : LucideIcons.pause,
+                out: true,
+                muted: !r.isActive,
               ),
-              title: Text(
-                '${r.categoryLabel ?? ''} · ${money.format(r.amount)}',
-              ),
+              title: Text(r.categoryLabel ?? ''),
               subtitle: Text(
                 [
                   _scheduleText(l10n, r.recurrence, prefs.digits),
@@ -89,13 +82,29 @@ class RecurringExpensesScreen extends ConsumerWidget {
                     l10n.recPaused,
                 ].join(' · '),
               ),
-              trailing: const Icon(LucideIcons.chevronRight),
+              trailing: Text(
+                money.format(r.amount),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w800),
+              ),
               onTap: () => Navigator.of(context).push<void>(
                 MaterialPageRoute(
                   builder: (_) => RecurringFormScreen(existing: r),
                 ),
               ),
             ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: FilledButton.icon(
+              key: const ValueKey('add-recurring'),
+              style: FilledButton.styleFrom(minimumSize: const Size(0, 60)),
+              icon: const Icon(LucideIcons.plus),
+              label: Text(l10n.recAdd),
+              onPressed: () => Navigator.of(context).push<void>(
+                MaterialPageRoute(builder: (_) => const RecurringFormScreen()),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -252,19 +261,13 @@ class _RecurringFormScreenState extends ConsumerState<RecurringFormScreen> {
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 12),
-          SegmentedButton<RecurrenceFrequency>(
-            segments: [
-              ButtonSegment(
-                value: RecurrenceFrequency.monthly,
-                label: Text(l10n.recMonthly),
-              ),
-              ButtonSegment(
-                value: RecurrenceFrequency.weekly,
-                label: Text(l10n.recWeekly),
-              ),
+          PillSegmented<RecurrenceFrequency>(
+            value: _frequency,
+            options: [
+              (RecurrenceFrequency.monthly, l10n.recMonthly),
+              (RecurrenceFrequency.weekly, l10n.recWeekly),
             ],
-            selected: {_frequency},
-            onSelectionChanged: (s) => setState(() => _frequency = s.first),
+            onChanged: (v) => setState(() => _frequency = v),
           ),
           const SizedBox(height: 12),
           if (_frequency == RecurrenceFrequency.monthly) ...[
@@ -442,7 +445,7 @@ class _RecurringDueScreenState extends ConsumerState<RecurringDueScreen> {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              OutlinedButton(
+                              FilledButton.tonal(
                                 key: ValueKey('rec-skip-${r.id}'),
                                 onPressed: () => _act(r, record: false),
                                 child: Text(l10n.recSkip),
