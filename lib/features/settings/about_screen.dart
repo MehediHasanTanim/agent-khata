@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../core/ads/ad_widgets.dart';
@@ -20,7 +21,30 @@ class AboutScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(l10n.appName, style: theme.textTheme.headlineMedium),
+          Center(
+            child: Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.colorScheme.secondaryContainer,
+              ),
+              child: Icon(
+                LucideIcons.bookOpen,
+                size: 44,
+                color: theme.colorScheme.onSecondaryContainer,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            l10n.appName,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontFamily: 'Caprasimo',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
           FutureBuilder<PackageInfo>(
             future: PackageInfo.fromPlatform(),
             builder: (context, snap) => Text(
@@ -29,6 +53,7 @@ class AboutScreen extends ConsumerWidget {
                   : l10n.aboutVersion(
                       '${snap.data!.version}+${snap.data!.buildNumber}',
                     ),
+              textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium,
             ),
           ),

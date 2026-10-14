@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/ledger/account.dart';
@@ -553,7 +554,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
               padding: const EdgeInsets.only(right: 12),
               child: FilledButton.tonalIcon(
                 key: const ValueKey('open-bulk'),
-                icon: const Icon(Icons.playlist_add),
+                icon: const Icon(LucideIcons.listPlus),
                 label: Text(l10n.bulkTitle),
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(0, 44),
@@ -623,7 +624,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                                 setState(() => _categoryId = c.id),
                           ),
                         ActionChip(
-                          avatar: const Icon(Icons.add, size: 18),
+                          avatar: const Icon(LucideIcons.plus, size: 18),
                           label: Text(l10n.entryNewCategory),
                           onPressed: _addCategory,
                         ),
@@ -677,7 +678,10 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                               padding: const EdgeInsets.only(right: 8),
                               child: ActionChip(
                                 key: ValueKey('regular-${r.number}'),
-                                avatar: const Icon(Icons.history, size: 18),
+                                avatar: const Icon(
+                                  LucideIcons.history,
+                                  size: 18,
+                                ),
                                 label: Text(
                                   '${r.displayName} · '
                                   '${money.format(r.lastAmount)}',
@@ -768,7 +772,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                             child: Row(
                               children: [
                                 Icon(
-                                  Icons.warning_amber,
+                                  LucideIcons.triangleAlert,
                                   color: tokens.warning,
                                 ),
                                 const SizedBox(width: 6),
@@ -813,8 +817,8 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
                               ),
                               Icon(
                                 _moreOpen
-                                    ? Icons.expand_less
-                                    : Icons.expand_more,
+                                    ? LucideIcons.chevronUp
+                                    : LucideIcons.chevronDown,
                               ),
                             ],
                           ),

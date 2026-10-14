@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
@@ -224,14 +225,14 @@ class _AccountLedgerScreenState extends ConsumerState<AccountLedgerScreen> {
         actions: [
           IconButton(
             tooltip: l10n.repStatementPdf,
-            icon: const Icon(Icons.picture_as_pdf_outlined),
+            icon: const Icon(LucideIcons.fileText),
             onPressed: _shareStatement,
           ),
           if (ref.watch(sessionProvider) case final u?
               when Permissions.can(u, Permission.adjustBalance))
             IconButton(
               tooltip: l10n.ledgerAdjust,
-              icon: const Icon(Icons.tune),
+              icon: const Icon(LucideIcons.slidersHorizontal),
               onPressed: () async {
                 await Navigator.of(context).push<void>(
                   MaterialPageRoute(

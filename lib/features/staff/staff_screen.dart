@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/security/roles.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'staff_service.dart';
 
@@ -15,7 +17,6 @@ class StaffScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     final all = ref.watch(staffListProvider).value ?? const [];
     final staff = [
       for (final m in all)
@@ -25,45 +26,50 @@ class StaffScreen extends ConsumerWidget {
     return Scaffold(
       bottomNavigationBar: const AdFooter(),
       appBar: AppBar(title: Text(l10n.staffTitle)),
-      floatingActionButton: FloatingActionButton.extended(
-        key: const ValueKey('add-staff'),
-        icon: const Icon(Icons.person_add_alt_1),
-        label: Text(l10n.staffAdd),
-        onPressed: () => Navigator.of(context).push<void>(
-          MaterialPageRoute(builder: (_) => const StaffFormScreen()),
-        ),
-      ),
       body: ListView(
-        padding: const EdgeInsets.only(bottom: 96),
+        padding: const EdgeInsets.only(bottom: 24),
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(l10n.staffInfo, style: theme.textTheme.bodyLarge),
+          NoticeBanner(
+            icon: LucideIcons.info,
+            tone: BannerTone.info,
+            text: l10n.staffInfo,
           ),
+          const SizedBox(height: 8),
           if (staff.isEmpty)
             Padding(
               padding: const EdgeInsets.all(24),
               child: Center(child: Text(l10n.staffEmpty)),
             ),
           for (final m in staff)
-            ListTile(
+            KhataTile(
               key: ValueKey('staff-${m.id}'),
-              leading: Icon(
-                m.isActive ? Icons.person_outline : Icons.person_off_outlined,
-              ),
+              leading: InitialAvatar(m.name, size: 50),
               title: Text(m.name),
               subtitle: Text(
                 [
-                  if (!m.isActive) l10n.staffInactive,
                   if (m.canSeeProfit) l10n.staffCanSeeProfit,
                   if (m.canCloseDay) l10n.staffCanCloseDay,
                 ].join(' · '),
               ),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: m.isActive
+                  ? const Icon(LucideIcons.chevronRight)
+                  : Chip(label: Text(l10n.staffInactive)),
               onTap: () => Navigator.of(context).push<void>(
                 MaterialPageRoute(builder: (_) => StaffFormScreen(member: m)),
               ),
             ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: FilledButton.icon(
+              key: const ValueKey('add-staff'),
+              style: FilledButton.styleFrom(minimumSize: const Size(0, 60)),
+              icon: const Icon(LucideIcons.userPlus),
+              label: Text(l10n.staffAdd),
+              onPressed: () => Navigator.of(context).push<void>(
+                MaterialPageRoute(builder: (_) => const StaffFormScreen()),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -184,15 +190,33 @@ class _StaffFormScreenState extends ConsumerState<StaffFormScreen> {
             ),
             onChanged: (_) => setState(() {}),
           ),
-          SwitchListTile(
-            value: _canSeeProfit,
-            title: Text(l10n.staffCanSeeProfit),
-            onChanged: (v) => setState(() => _canSeeProfit = v),
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              value: _canSeeProfit,
+              title: Text(l10n.staffCanSeeProfit),
+              onChanged: (v) => setState(() => _canSeeProfit = v),
+            ),
           ),
-          SwitchListTile(
-            value: _canCloseDay,
-            title: Text(l10n.staffCanCloseDay),
-            onChanged: (v) => setState(() => _canCloseDay = v),
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              value: _canCloseDay,
+              title: Text(l10n.staffCanCloseDay),
+              onChanged: (v) => setState(() => _canCloseDay = v),
+            ),
           ),
           if (!_isNew)
             SwitchListTile(

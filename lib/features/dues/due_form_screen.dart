@@ -6,6 +6,7 @@ import '../../core/ledger/account.dart';
 import '../../core/ledger/account_kind.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../entry/amount_entry.dart';
 import '../entry/amount_keypad.dart';
@@ -100,20 +101,14 @@ class _DueFormScreenState extends ConsumerState<DueFormScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(12),
                 children: [
-                  SegmentedButton<DueDirection>(
-                    segments: [
-                      ButtonSegment(
-                        value: DueDirection.theyOwe,
-                        label: Text(l10n.duesTheyOwe),
-                      ),
-                      ButtonSegment(
-                        value: DueDirection.iOwe,
-                        label: Text(l10n.duesIOwe),
-                      ),
+                  PillSegmented<DueDirection>(
+                    value: _direction,
+                    options: [
+                      (DueDirection.theyOwe, l10n.duesTheyOwe),
+                      (DueDirection.iOwe, l10n.duesIOwe),
                     ],
-                    selected: {_direction},
-                    onSelectionChanged: (s) => setState(() {
-                      _direction = s.first;
+                    onChanged: (v) => setState(() {
+                      _direction = v;
                       _accountId = null;
                     }),
                   ),

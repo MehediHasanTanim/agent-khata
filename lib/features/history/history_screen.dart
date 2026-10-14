@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/date_labels.dart';
 import '../../core/ledger/account_kind.dart';
@@ -7,6 +8,7 @@ import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/security/roles.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../core/utils/business_calendar.dart';
 import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
@@ -193,7 +195,11 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
               isToday
                   ? '${l10n.histToday} · ${labels.day(item.occurredAt)}'
                   : labels.day(item.occurredAt),
-              style: theme.textTheme.titleMedium,
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.4,
+                color: context.tokens.cashOut,
+              ),
             ),
           ),
         );
@@ -219,11 +225,11 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
               textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 hintText: l10n.histSearchHint,
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(LucideIcons.search),
                 suffixIcon: _query.isEmpty
                     ? null
                     : IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(LucideIcons.x),
                         onPressed: () {
                           _search.clear();
                           _query = '';
@@ -293,10 +299,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                         PopupMenuItem(value: a.id, child: Text(a.label)),
                   ],
                   child: Chip(
-                    avatar: const Icon(
-                      Icons.account_balance_wallet_outlined,
-                      size: 18,
-                    ),
+                    avatar: const Icon(LucideIcons.wallet, size: 18),
                     label: Text(
                       accounts
                               .where((a) => a.id == _accountId)
@@ -327,14 +330,50 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           ),
           Expanded(
             child: _items.isEmpty && !_loading
-                ? Center(child: Text(l10n.histEmpty))
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 84,
+                            height: 84,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.secondaryContainer,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(42),
+                                topRight: Radius.circular(42),
+                                bottomRight: Radius.circular(42),
+                                bottomLeft: Radius.circular(15),
+                              ),
+                            ),
+                            child: Icon(
+                              LucideIcons.bookOpen,
+                              size: 38,
+                              color: theme.colorScheme.onSecondaryContainer,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            l10n.histEmpty,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontFamily: 'Caprasimo',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
                 : ListView(
                     children: [
                       ...children,
                       if (_hasMore && _items.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.all(16),
-                          child: OutlinedButton(
+                          child: FilledButton.tonal(
                             onPressed: _loading ? null : _loadMore,
                             child: Text(l10n.histLoadMore),
                           ),
@@ -409,7 +448,7 @@ class _HistoryTile extends StatelessWidget {
           ],
           if (item.isLocked) ...[
             const SizedBox(width: 8),
-            const Icon(Icons.lock_outline, size: 16),
+            const Icon(LucideIcons.lock, size: 16),
           ],
         ],
       ),

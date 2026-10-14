@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/date_labels.dart';
@@ -56,7 +57,7 @@ class RecurringExpensesScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(l10n.recTitle)),
       floatingActionButton: FloatingActionButton.extended(
         key: const ValueKey('add-recurring'),
-        icon: const Icon(Icons.add),
+        icon: const Icon(LucideIcons.plus),
         label: Text(l10n.recAdd),
         onPressed: () => Navigator.of(context).push<void>(
           MaterialPageRoute(builder: (_) => const RecurringFormScreen()),
@@ -74,7 +75,7 @@ class RecurringExpensesScreen extends ConsumerWidget {
             ListTile(
               key: ValueKey('recurring-${r.id}'),
               leading: Icon(
-                r.isActive ? Icons.event_repeat : Icons.pause_circle_outline,
+                r.isActive ? LucideIcons.repeat : LucideIcons.pause,
               ),
               title: Text(
                 '${r.categoryLabel ?? ''} · ${money.format(r.amount)}',
@@ -88,7 +89,7 @@ class RecurringExpensesScreen extends ConsumerWidget {
                     l10n.recPaused,
                 ].join(' · '),
               ),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(LucideIcons.chevronRight),
               onTap: () => Navigator.of(context).push<void>(
                 MaterialPageRoute(
                   builder: (_) => RecurringFormScreen(existing: r),

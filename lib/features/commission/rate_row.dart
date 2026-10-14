@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/money/money.dart';
@@ -154,37 +155,43 @@ class _RateRowState extends State<RateRow> {
     final input = widget.input;
     final tiered = input.mode == CommissionMode.tiered;
     final problem = input.problem;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(28),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.title, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          Row(
+          Text(
+            widget.title,
+            style: Theme.of(context).textTheme.titleLarge
+                ?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
             children: [
-              Expanded(
-                flex: 3,
-                child: DropdownButtonFormField<CommissionMode>(
-                  initialValue: input.mode,
-                  isExpanded: true,
-                  items: [
-                    for (final m in CommissionMode.values)
-                      DropdownMenuItem(
-                        value: m,
-                        child: Text(rateModeLabel(l10n, m)),
-                      ),
-                  ],
-                  onChanged: (m) {
-                    if (m == null) return;
+              for (final m in CommissionMode.values)
+                ChoiceChip(
+                  showCheckmark: false,
+                  label: Text(rateModeLabel(l10n, m)),
+                  selected: input.mode == m,
+                  onSelected: (_) {
                     input.mode = m;
                     if (m == CommissionMode.tiered) input.ensureTiers();
                     _changed();
                   },
                 ),
-              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
               if (!tiered) ...[
-                const SizedBox(width: 12),
                 Expanded(
                   flex: 2,
                   child: TextField(
@@ -226,7 +233,7 @@ class _RateRowState extends State<RateRow> {
             Row(
               children: [
                 TextButton.icon(
-                  icon: const Icon(Icons.add),
+                  icon: const Icon(LucideIcons.plus),
                   label: Text(l10n.tierAdd),
                   onPressed: () {
                     final at = input.tiers.length - 1;
@@ -359,7 +366,7 @@ class _TierRowState extends State<_TierRow> {
           ),
           IconButton(
             tooltip: '×',
-            icon: const Icon(Icons.close),
+            icon: const Icon(LucideIcons.x),
             onPressed: widget.canRemove ? widget.onRemove : null,
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/money/money.dart';
@@ -95,7 +96,7 @@ class AmountKeypad extends StatelessWidget {
             ),
             _KeypadKey(
               keyName: 'backspace',
-              icon: Icons.backspace_outlined,
+              icon: LucideIcons.delete,
               onPressed: onBackspace,
             ),
           ],

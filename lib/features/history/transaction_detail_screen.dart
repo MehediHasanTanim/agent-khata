@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ads/ad_widgets.dart';
 import '../../core/i18n/date_labels.dart';
@@ -7,7 +8,10 @@ import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/security/roles.dart';
+import '../../core/theme/app_tokens.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
 import '../entry/entry_screen.dart';
 import '../transactions/history_queries.dart';
 import '../transactions/transaction_repository.dart';
@@ -157,17 +161,43 @@ class _TransactionDetailScreenState
         (d.createdBy == session.id ||
             Permissions.can(session, Permission.modifyOthersEntries));
 
+    final scheme = theme.colorScheme;
     Widget row(String label, String value) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(
-            width: 130,
-            child: Text(label, style: theme.textTheme.bodyMedium),
+          Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
           ),
-          Expanded(child: Text(value, style: theme.textTheme.bodyLarge)),
+          const SizedBox(width: 16),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
         ],
+      ),
+    );
+
+    Widget card(List<Widget> children) => Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
       ),
     );
 
@@ -186,100 +216,214 @@ class _TransactionDetailScreenState
             : ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  TypeLabel(d.item.type),
-                  const SizedBox(height: 8),
-                  Text(
-                    money.format(d.item.amount),
-                    style: theme.textTheme.displayMedium?.copyWith(
-                      decoration: d.item.isVoid
-                          ? TextDecoration.lineThrough
-                          : null,
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final out =
+                          directionOf(d.item.type) == FlowDirection.moneyOut;
+                      final sign = out
+                          ? '− '
+                          : directionOf(d.item.type) == FlowDirection.moneyIn
+                          ? '+ '
+                          : '';
+                      return Column(
+                        children: [
+                          DirectionBubble(
+                            icon: iconFor(d.item.type),
+                            out: out,
+                            muted: d.item.isVoid,
+                            size: 56,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            '$sign${money.format(d.item.amount)}',
+                            style: theme.textTheme.displayMedium?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: d.item.isVoid
+                                  ? scheme.onSurfaceVariant
+                                  : colorFor(context, d.item.type),
+                              decoration: d.item.isVoid
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
+                          ),
+                          Text(
+                            transactionTypeLabel(l10n, d.item.type),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          if (d.item.isVoid || d.item.isLocked)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Wrap(
+                                spacing: 8,
+                                children: [
+                                  if (d.item.isVoid)
+                                    Chip(label: Text(l10n.labelVoided)),
+                                  if (d.item.isLocked)
+                                    Chip(label: Text(l10n.labelLocked)),
+                                ],
+                              ),
+                            ),
+                        ],
+                      );
+                    },
                   ),
                   if (d.item.isVoid)
                     Padding(
-                      padding: const EdgeInsets.only(top: 4),
+                      padding: const EdgeInsets.only(top: 8),
                       child: Text(
                         l10n.detailVoidedBecause(d.item.voidReason ?? ''),
-                        style: TextStyle(color: theme.colorScheme.error),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: context.tokens.cashOut),
                       ),
                     ),
                   const SizedBox(height: 16),
-                  row(l10n.detailWhen, labels.dateTime(d.item.occurredAt)),
-                  row(l10n.detailRecorded, labels.dateTime(d.recordedAt)),
-                  row(l10n.detailBy, d.createdBy),
-                  if (!d.item.charge.isZero)
-                    row(l10n.detailCharge, money.format(d.item.charge)),
-                  if (showProfit && !d.item.commission.isZero)
-                    row(l10n.detailCommission, money.format(d.item.commission)),
-                  if (showProfit && d.ruleSummary != null)
-                    row('', l10n.detailRule(d.ruleSummary!)),
-                  if (d.item.customerName != null)
-                    row(l10n.entryCustomerName, d.item.customerName!),
-                  if (d.item.customerNumber != null)
-                    row(l10n.entryCustomerNumber, d.item.customerNumber!),
-                  if (d.item.reference != null)
-                    row(l10n.entryTrxId, d.item.reference!),
-                  if (d.item.note != null) row(l10n.entryNote, d.item.note!),
-                  const Divider(height: 32),
-                  Text(l10n.detailAccounts, style: theme.textTheme.titleMedium),
-                  for (final e in d.entries)
-                    ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(e.accountLabel),
-                      trailing: Text(
-                        '${e.delta.isNegative ? '' : '+'}${money.format(e.delta)}',
+                  card([
+                    row(l10n.detailWhen, labels.dateTime(d.item.occurredAt)),
+                    row(l10n.detailRecorded, labels.dateTime(d.recordedAt)),
+                    row(l10n.detailBy, d.createdBy),
+                    if (!d.item.charge.isZero)
+                      row(l10n.detailCharge, money.format(d.item.charge)),
+                    if (showProfit && !d.item.commission.isZero)
+                      row(
+                        l10n.detailCommission,
+                        money.format(d.item.commission),
                       ),
-                    ),
-                  if (d.item.replacesTxnId != null)
+                    if (showProfit && d.ruleSummary != null)
+                      row('', l10n.detailRule(d.ruleSummary!)),
+                    if (d.item.customerName != null)
+                      row(l10n.entryCustomerName, d.item.customerName!),
+                    if (d.item.customerNumber != null)
+                      row(l10n.entryCustomerNumber, d.item.customerNumber!),
+                    if (d.item.reference != null)
+                      row(l10n.entryTrxId, d.item.reference!),
+                    if (d.item.note != null) row(l10n.entryNote, d.item.note!),
+                  ]),
+                  card([
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
-                      child: Text(l10n.detailReplaces),
-                    ),
-                  if (d.replacedByTxnId != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(l10n.detailReplacedBy),
-                    ),
-                  const Divider(height: 32),
-                  Text(l10n.detailAudit, style: theme.textTheme.titleMedium),
-                  for (final a in d.audit)
-                    ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(a.action),
-                      subtitle: a.reason == null ? null : Text(a.reason!),
-                      trailing: Text(
-                        labels.dateTime(
-                          DateTime.fromMillisecondsSinceEpoch(
-                            a.at,
-                            isUtc: true,
-                          ),
+                      child: Text(
+                        l10n.detailAccounts,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                     ),
-                  const SizedBox(height: 16),
+                    for (final e in d.entries)
+                      row(
+                        e.accountLabel,
+                        '${e.delta.isNegative ? '' : '+'}${money.format(e.delta)}',
+                      ),
+                    if (d.item.replacesTxnId != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(l10n.detailReplaces),
+                      ),
+                    if (d.replacedByTxnId != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(l10n.detailReplacedBy),
+                      ),
+                  ]),
+                  if (d.audit.isNotEmpty)
+                    card([
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 4),
+                        child: Text(
+                          l10n.detailAudit,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      for (final a in d.audit)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Container(
+                                  width: 12,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: scheme.secondary,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      a.action,
+                                      style: theme.textTheme.bodyLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                    if (a.reason != null) Text(a.reason!),
+                                    Text(
+                                      labels.dateTime(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                          a.at,
+                                          isUtc: true,
+                                        ),
+                                      ),
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: scheme.onSurfaceVariant,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ]),
                   if (d.item.isLocked)
-                    Text(l10n.detailLockedHint)
-                  else if (!d.item.isVoid && canModify) ...[
-                    if (_editKind(d.item.type) case final kind?)
-                      OutlinedButton.icon(
-                        icon: const Icon(Icons.edit_outlined),
-                        label: Text(l10n.detailEdit),
-                        onPressed: () => _edit(d, kind),
+                    Text(
+                      l10n.detailLockedHint,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
                       ),
-                    const SizedBox(height: 8),
-                    FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: theme.colorScheme.error,
-                        foregroundColor: theme.colorScheme.onError,
-                      ),
-                      icon: const Icon(Icons.block),
-                      label: Text(l10n.detailVoid),
-                      onPressed: _void,
+                    )
+                  else if (!d.item.isVoid && canModify)
+                    Row(
+                      children: [
+                        if (_editKind(d.item.type) case final kind?) ...[
+                          Expanded(
+                            child: FilledButton.icon(
+                              icon: const Icon(LucideIcons.pencil),
+                              label: Text(l10n.detailEdit),
+                              onPressed: () => _edit(d, kind),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                        ],
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: context.tokens.cashOut,
+                              side: BorderSide(
+                                color: context.tokens.cashOut,
+                                width: 2,
+                              ),
+                            ),
+                            icon: const Icon(LucideIcons.ban),
+                            label: Text(l10n.detailVoid),
+                            onPressed: _void,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
                 ],
               ),
       ),

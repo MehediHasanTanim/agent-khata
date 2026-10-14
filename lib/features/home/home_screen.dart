@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ads/interstitial_policy.dart';
 import '../../core/i18n/date_labels.dart';
@@ -232,7 +233,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           if (session != null)
             TextButton.icon(
               key: const ValueKey('switch-user'),
-              icon: const Icon(Icons.person_outline),
+              icon: const Icon(LucideIcons.user),
               label: Text(
                 session.isOwner ? l10n.roleOwner : session.name,
                 overflow: TextOverflow.ellipsis,
@@ -247,7 +248,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           if (recurringDue.isNotEmpty)
             NoticeBanner(
               key: const ValueKey('recurring-banner'),
-              icon: Icons.event_repeat,
+              icon: LucideIcons.repeat,
               text: l10n.recDueBanner(
                 prefs.digits.localize('${recurringDue.length}'),
               ),
@@ -263,7 +264,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
               child: ListTile(
                 key: const ValueKey('shift-card'),
-                leading: const Icon(Icons.badge_outlined),
+                leading: const Icon(LucideIcons.idCard),
                 title: Text(
                   l10n.shiftCurrent(
                     shift.userId == kOwnerUserId
@@ -300,7 +301,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           if (ref.watch(unclosedYesterdayProvider).value case final y?)
             NoticeBanner(
-              icon: Icons.fact_check_outlined,
+              icon: LucideIcons.clipboardCheck,
               text: l10n.cdYesterdayOpen,
               onTap: () => Navigator.of(context).push<void>(
                 MaterialPageRoute(
@@ -310,7 +311,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           if (accounts.isNotEmpty && _backupStale(prefs.lastBackupAtMs))
             NoticeBanner(
-              icon: Icons.backup_outlined,
+              icon: LucideIcons.cloudUpload,
               tone: BannerTone.info,
               text: l10n.bkStaleBanner,
               onTap: () => Navigator.of(context).push<void>(
@@ -319,7 +320,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           if (lowLabels.isNotEmpty)
             NoticeBanner(
-              icon: Icons.warning_amber,
+              icon: LucideIcons.triangleAlert,
               text: l10n.lowBanner(lowLabels.join(', ')),
             ),
           SingleChildScrollView(
@@ -371,13 +372,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     action(
                       EntryKind.cashOut,
                       l10n.txnCashOut,
-                      Icons.north_east,
+                      LucideIcons.arrowUpRight,
                       tokens.cashOut,
                     ),
                     action(
                       EntryKind.cashIn,
                       l10n.txnCashIn,
-                      Icons.south_west,
+                      LucideIcons.arrowDownLeft,
                       tokens.cashIn,
                     ),
                   ],
@@ -387,13 +388,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     action(
                       EntryKind.flexiload,
                       l10n.txnFlexiload,
-                      Icons.phone_android,
+                      LucideIcons.smartphone,
                       tokens.cashIn,
                     ),
                     action(
                       EntryKind.floatPurchase,
                       l10n.txnFloatPurchase,
-                      Icons.account_balance_wallet_outlined,
+                      LucideIcons.wallet,
                       theme.colorScheme.primary,
                     ),
                   ],
@@ -403,13 +404,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     action(
                       EntryKind.expense,
                       l10n.txnExpense,
-                      Icons.receipt_long_outlined,
+                      LucideIcons.receipt,
                       theme.colorScheme.secondary,
                     ),
                     tile(
                       key: const ValueKey('action-dues'),
                       label: l10n.duesTitle,
-                      icon: Icons.menu_book_outlined,
+                      icon: LucideIcons.bookOpen,
                       bg: scheme.tertiaryContainer,
                       fg: scheme.onSurface,
                       onPressed: () => Navigator.of(context).push<void>(
@@ -444,10 +445,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                         avatar: Icon(
                           r.type == TransactionType.cashIn
-                              ? Icons.south_west
+                              ? LucideIcons.arrowDownLeft
                               : r.type == TransactionType.flexiload
-                              ? Icons.phone_android
-                              : Icons.north_east,
+                              ? LucideIcons.smartphone
+                              : LucideIcons.arrowUpRight,
                           size: 18,
                         ),
                         label: Text(

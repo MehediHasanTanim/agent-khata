@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -193,7 +194,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         actions: [
           IconButton(
             tooltip: l10n.repExportCsv,
-            icon: const Icon(Icons.file_download_outlined),
+            icon: const Icon(LucideIcons.download),
             onPressed: _exporting ? null : _exportCsv,
           ),
         ],
@@ -220,7 +221,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   children: [
                     IconButton.filledTonal(
                       tooltip: l10n.repPrev,
-                      icon: const Icon(Icons.chevron_left),
+                      icon: const Icon(LucideIcons.chevronLeft),
                       onPressed: () {
                         _offset--;
                         _load();
@@ -235,7 +236,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     ),
                     IconButton.filledTonal(
                       tooltip: l10n.repNext,
-                      icon: const Icon(Icons.chevron_right),
+                      icon: const Icon(LucideIcons.chevronRight),
                       onPressed: _offset >= 0
                           ? null
                           : () {
@@ -461,7 +462,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     ),
                   ),
                 FilledButton.icon(
-                  icon: const Icon(Icons.add_card_outlined),
+                  icon: const Icon(LucideIcons.banknote),
                   label: Text(l10n.repRecordCommission),
                   onPressed: () async {
                     await Navigator.of(context).push<String>(
@@ -639,7 +640,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     ListTile(
                       dense: true,
                       contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.badge_outlined),
+                      leading: const Icon(LucideIcons.idCard),
                       title: Text(
                         o.userId == kOwnerUserId
                             ? l10n.roleOwner
@@ -663,7 +664,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 ],
                 const SizedBox(height: 24),
                 FilledButton.icon(
-                  icon: const Icon(Icons.file_download_outlined),
+                  icon: const Icon(LucideIcons.download),
                   label: Text(
                     _exporting ? l10n.repExporting : l10n.repExportCsv,
                   ),

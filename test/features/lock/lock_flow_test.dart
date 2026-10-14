@@ -8,6 +8,7 @@ import 'package:agentkhata/core/security/pin_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> _pumpApp(WidgetTester tester, {String? existingPin}) async {
@@ -47,8 +48,8 @@ Future<void> _enter(WidgetTester tester, String pin) async {
     await tester.tap(find.text(d));
     await tester.pump();
   }
-  await tester.ensureVisible(find.byIcon(Icons.check_rounded));
-  await tester.tap(find.byIcon(Icons.check_rounded));
+  await tester.ensureVisible(find.byIcon(LucideIcons.check));
+  await tester.tap(find.byIcon(LucideIcons.check));
   await tester.pumpAndSettle();
 }
 

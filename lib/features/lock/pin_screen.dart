@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/providers.dart';
 import '../../core/security/pin_service.dart';
+import '../../core/theme/app_tokens.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'lock_controller.dart';
 import 'pin_pad.dart';
@@ -189,22 +192,44 @@ class _PinScreenState extends ConsumerState<PinScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.lock_outline,
-                    size: 48,
-                    color: theme.colorScheme.primary,
+                  Container(
+                    width: 76,
+                    height: 76,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: theme.colorScheme.primaryContainer,
+                    ),
+                    child: Icon(
+                      LucideIcons.lock,
+                      size: 36,
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  Text(title, style: theme.textTheme.headlineMedium),
+                  Text(
+                    title,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontFamily: 'Caprasimo',
+                      fontWeight: FontWeight.w400,
+                      fontSize: 30,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     subtitle,
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyLarge,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   if (!isSetup && (staff?.isNotEmpty ?? false)) ...[
-                    Text(l10n.whoAreYou, style: theme.textTheme.titleMedium),
+                    Text(
+                      l10n.whoAreYou,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
@@ -213,6 +238,8 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                       children: [
                         ChoiceChip(
                           key: const ValueKey('user-owner'),
+                          showCheckmark: false,
+                          avatar: const Icon(LucideIcons.user),
                           label: Text(l10n.roleOwner),
                           selected: _userId == null,
                           onSelected: (_) => setState(() {
@@ -224,6 +251,8 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                         for (final m in staff!)
                           ChoiceChip(
                             key: ValueKey('user-${m.id}'),
+                            showCheckmark: false,
+                            avatar: const Icon(LucideIcons.user),
                             label: Text(m.name),
                             selected: _userId == m.id,
                             onSelected: (_) => setState(() {
@@ -236,7 +265,19 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                     ),
                     const SizedBox(height: 16),
                   ],
-                  PinDots(length: _entered.length),
+                  TweenAnimationBuilder<double>(
+                    key: ValueKey(message),
+                    tween: Tween(begin: message == null ? 1 : 0, end: 1),
+                    duration: const Duration(milliseconds: 400),
+                    builder: (_, t, child) => Transform.translate(
+                      offset: Offset(
+                        message == null ? 0 : 12 * (1 - t) * math.sin(t * 20),
+                        0,
+                      ),
+                      child: child,
+                    ),
+                    child: PinDots(length: _entered.length),
+                  ),
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 48,
@@ -246,7 +287,8 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                             message,
                             textAlign: TextAlign.center,
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.error,
+                              color: context.tokens.cashOut,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                   ),
@@ -255,7 +297,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                       padding: const EdgeInsets.only(bottom: 8),
                       child: TextButton.icon(
                         key: const ValueKey('bio-unlock'),
-                        icon: const Icon(Icons.fingerprint),
+                        icon: const Icon(LucideIcons.fingerprint),
                         label: Text(l10n.bioUse),
                         onPressed: _tryBiometric,
                       ),

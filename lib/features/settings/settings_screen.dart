@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/bootstrap.dart';
 import '../../core/db/db_settings.dart';
@@ -68,13 +69,13 @@ class SettingsScreen extends ConsumerWidget {
       ),
       const Divider(),
       ListTile(
-        leading: const Icon(Icons.lock_outline),
+        leading: const Icon(LucideIcons.lock),
         title: Text(l10n.switchUser),
         subtitle: session == null ? null : Text(l10n.signedInAs(session.name)),
         onTap: () => ref.read(lockControllerProvider.notifier).lock(),
       ),
       ListTile(
-        leading: const Icon(Icons.info_outline),
+        leading: const Icon(LucideIcons.info),
         title: Text(l10n.aboutTitle),
         onTap: () => Navigator.of(context)
             .push(MaterialPageRoute<void>(builder: (_) => const AboutScreen())),
@@ -211,7 +212,7 @@ class SettingsScreen extends ConsumerWidget {
                             ),
                           ),
                           _Nav(
-                            icon: Icons.lock_outline,
+                            icon: LucideIcons.lock,
                             label: l10n.lockNow,
                             onTap: () => ref
                                 .read(lockControllerProvider.notifier)
@@ -227,7 +228,7 @@ class SettingsScreen extends ConsumerWidget {
                               final name =
                                   ref.watch(shopNameProvider).value ?? '';
                               return _Nav(
-                                icon: Icons.storefront_outlined,
+                                icon: LucideIcons.store,
                                 label: l10n.shopName,
                                 value: name.isEmpty ? l10n.shopNameNone : name,
                                 onTap: () async {
@@ -336,7 +337,7 @@ class SettingsScreen extends ConsumerWidget {
                               ),
                             ),
                           _Nav(
-                            icon: Icons.category_outlined,
+                            icon: LucideIcons.tag,
                             label: l10n.categoriesTitle,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
@@ -371,7 +372,7 @@ class SettingsScreen extends ConsumerWidget {
                         title: l10n.settings,
                         children: [
                           _Nav(
-                            icon: Icons.notifications_active_outlined,
+                            icon: LucideIcons.bell,
                             label: l10n.lowTitle,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
@@ -380,7 +381,7 @@ class SettingsScreen extends ConsumerWidget {
                             ),
                           ),
                           _Nav(
-                            icon: Icons.event_repeat,
+                            icon: LucideIcons.repeat,
                             label: l10n.recTitle,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
@@ -389,7 +390,7 @@ class SettingsScreen extends ConsumerWidget {
                             ),
                           ),
                           _Nav(
-                            icon: Icons.groups_outlined,
+                            icon: LucideIcons.users,
                             label: l10n.staffTitle,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
@@ -398,7 +399,7 @@ class SettingsScreen extends ConsumerWidget {
                             ),
                           ),
                           _Nav(
-                            icon: Icons.backup_outlined,
+                            icon: LucideIcons.cloudUpload,
                             label: l10n.bkTitle,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
@@ -407,7 +408,7 @@ class SettingsScreen extends ConsumerWidget {
                             ),
                           ),
                           _Nav(
-                            icon: Icons.percent,
+                            icon: LucideIcons.percent,
                             label: l10n.commissionRates,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
@@ -417,7 +418,7 @@ class SettingsScreen extends ConsumerWidget {
                           ),
                           if (ref.watch(flavorProvider) == Flavor.dev)
                             _Nav(
-                              icon: Icons.bug_report_outlined,
+                              icon: LucideIcons.bug,
                               label: 'Ledger debug harness (dev only)',
                               onTap: () => Navigator.of(context).push(
                                 MaterialPageRoute<void>(
@@ -426,7 +427,7 @@ class SettingsScreen extends ConsumerWidget {
                               ),
                             ),
                           _Nav(
-                            icon: Icons.info_outline,
+                            icon: LucideIcons.info,
                             label: l10n.aboutTitle,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
@@ -435,7 +436,7 @@ class SettingsScreen extends ConsumerWidget {
                             ),
                           ),
                           _Nav(
-                            icon: Icons.speed_outlined,
+                            icon: LucideIcons.gauge,
                             label: l10n.diagnostics,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
@@ -612,7 +613,7 @@ class _Nav extends StatelessWidget {
             ?.copyWith(fontWeight: FontWeight.w600),
       ),
       subtitle: value == null ? null : Text(value!),
-      trailing: const Icon(Icons.chevron_right),
+      trailing: const Icon(LucideIcons.chevronRight),
       onTap: onTap,
     );
   }

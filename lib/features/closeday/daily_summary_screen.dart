@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -242,21 +243,24 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
           Text(
             v,
             style:
-                (bold ? theme.textTheme.titleLarge : theme.textTheme.bodyLarge)
+                (bold
+                        ? theme.textTheme.headlineMedium
+                        : theme.textTheme.bodyLarge)
                     ?.copyWith(
                       color: color,
-                      fontWeight: bold ? FontWeight.bold : null,
+                      fontWeight: bold ? FontWeight.w800 : FontWeight.w700,
                     ),
           ),
         ],
       ),
     );
 
-    Widget cell(String t, {bool head = false}) => Expanded(
+    Widget cell(String t, {bool head = false, Color? color}) => Expanded(
       child: Text(
         t,
         textAlign: TextAlign.end,
-        style: head ? theme.textTheme.labelLarge : theme.textTheme.bodyMedium,
+        style: (head ? theme.textTheme.labelLarge : theme.textTheme.bodyMedium)
+            ?.copyWith(color: color, fontWeight: FontWeight.w700),
       ),
     );
 
@@ -280,11 +284,17 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
                             children: [
                               Text(
                                 l10n.appName,
-                                style: theme.textTheme.titleMedium,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                               Text(
                                 dateText,
-                                style: theme.textTheme.headlineMedium,
+                                style: theme.textTheme.headlineMedium?.copyWith(
+                                  fontFamily: 'Caprasimo',
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                               const SizedBox(height: 4),
                               Text(
@@ -362,8 +372,14 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
                                         ),
                                       ),
                                       cell(plain.format(a.opening)),
-                                      cell(plain.format(a.moneyIn)),
-                                      cell(plain.format(a.moneyOut)),
+                                      cell(
+                                        plain.format(a.moneyIn),
+                                        color: tokens.cashIn,
+                                      ),
+                                      cell(
+                                        plain.format(a.moneyOut),
+                                        color: tokens.cashOut,
+                                      ),
                                       cell(plain.format(a.expected)),
                                       cell(
                                         a.actual == null
@@ -384,8 +400,8 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: OutlinedButton.icon(
-                            icon: const Icon(Icons.image_outlined),
+                          child: FilledButton.icon(
+                            icon: const Icon(LucideIcons.image),
                             label: Text(l10n.sumShareImage),
                             onPressed: _sharing
                                 ? null
@@ -395,7 +411,7 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: FilledButton.icon(
-                            icon: const Icon(Icons.picture_as_pdf_outlined),
+                            icon: const Icon(LucideIcons.fileText),
                             label: Text(l10n.sumSharePdf),
                             onPressed: _sharing
                                 ? null
@@ -412,7 +428,7 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
                         Expanded(
                           child: FilledButton.tonalIcon(
                             key: const ValueKey('print-sheet'),
-                            icon: const Icon(Icons.print_outlined),
+                            icon: const Icon(LucideIcons.printer),
                             label: Text(l10n.sheetPrint),
                             onPressed: _sharing
                                 ? null
@@ -424,9 +440,9 @@ class _DailySummaryScreenState extends ConsumerState<DailySummaryScreen> {
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: OutlinedButton.icon(
+                          child: FilledButton.tonalIcon(
                             key: const ValueKey('share-sheet'),
-                            icon: const Icon(Icons.ios_share),
+                            icon: const Icon(LucideIcons.share),
                             label: Text(l10n.sheetShare),
                             onPressed: _sharing
                                 ? null

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/ledger/account.dart';
@@ -249,7 +250,7 @@ class _BulkFlexiloadScreenState extends ConsumerState<BulkFlexiloadScreen> {
         actions: [
           IconButton(
             tooltip: l10n.bulkPaste,
-            icon: const Icon(Icons.content_paste),
+            icon: const Icon(LucideIcons.clipboardPaste),
             onPressed: _paste,
           ),
         ],
@@ -307,11 +308,39 @@ class _BulkFlexiloadScreenState extends ConsumerState<BulkFlexiloadScreen> {
                               _rows.removeAt(i).dispose();
                             }),
                     ),
-                  TextButton.icon(
-                    key: const ValueKey('bulk-add-row'),
-                    icon: const Icon(Icons.add),
-                    label: Text(l10n.bulkAddRow),
-                    onPressed: () => setState(() => _rows.add(_RowState())),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.icon(
+                          key: const ValueKey('bulk-add-row'),
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size(0, 52),
+                            backgroundColor:
+                                theme.colorScheme.tertiaryContainer,
+                            foregroundColor: theme.colorScheme.onSurface,
+                          ),
+                          icon: const Icon(LucideIcons.plus),
+                          label: Text(l10n.bulkAddRow),
+                          onPressed: () =>
+                              setState(() => _rows.add(_RowState())),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: FilledButton.icon(
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size(0, 52),
+                            backgroundColor:
+                                theme.colorScheme.secondaryContainer,
+                            foregroundColor:
+                                theme.colorScheme.onSecondaryContainer,
+                          ),
+                          icon: const Icon(LucideIcons.clipboardPaste),
+                          label: Text(l10n.bulkPaste),
+                          onPressed: _paste,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -319,34 +348,56 @@ class _BulkFlexiloadScreenState extends ConsumerState<BulkFlexiloadScreen> {
             Material(
               elevation: 8,
               color: theme.colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            l10n.bulkTotal(
-                              digits.localize('${complete.length}'),
-                              money.format(price),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.secondaryContainer,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              l10n.bulkTotal(
+                                digits.localize('${complete.length}'),
+                                money.format(price),
+                              ),
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: theme.colorScheme.onSecondaryContainer,
+                              ),
                             ),
-                            style: theme.textTheme.titleMedium,
                           ),
-                        ),
-                        Text(
-                          l10n.bulkMargin(money.format(margin)),
-                          style: TextStyle(color: tokens.cashIn),
-                        ),
-                      ],
+                          Text(
+                            l10n.bulkMargin(money.format(margin)),
+                            style: TextStyle(
+                              color: theme.colorScheme.onSecondaryContainer,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     if (lowBalance)
                       Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Row(
                           children: [
-                            Icon(Icons.warning_amber, color: tokens.warning),
+                            Icon(
+                              LucideIcons.triangleAlert,
+                              color: tokens.warning,
+                            ),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
@@ -360,7 +411,7 @@ class _BulkFlexiloadScreenState extends ConsumerState<BulkFlexiloadScreen> {
                     const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
-                      height: 56,
+                      height: 64,
                       child: FilledButton(
                         key: const ValueKey('bulk-save'),
                         onPressed: canSave
@@ -412,8 +463,13 @@ class _RowTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.fromLTRB(12, 10, 4, 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -447,17 +503,31 @@ class _RowTile extends StatelessWidget {
               ),
               IconButton(
                 tooltip: '×',
-                icon: const Icon(Icons.close),
+                icon: const Icon(LucideIcons.x),
                 onPressed: onDelete,
               ),
             ],
           ),
           if (warning != null)
             Padding(
-              padding: const EdgeInsets.only(left: 4, top: 2),
-              child: Text(
-                warning!,
-                style: TextStyle(color: warningColor, fontSize: 13),
+              padding: const EdgeInsets.only(left: 4, top: 6),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: warningColor.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  warning!,
+                  style: TextStyle(
+                    color: warningColor,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
             ),
         ],

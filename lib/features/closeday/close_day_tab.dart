@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/date_labels.dart';
 import '../../core/money/money.dart';
@@ -172,7 +173,7 @@ class _CloseDayTabState extends ConsumerState<CloseDayTab> {
                 side: BorderSide(color: tokens.warning, width: 1.5),
               ),
               child: ListTile(
-                leading: Icon(Icons.warning_amber, color: tokens.warning),
+                leading: Icon(LucideIcons.triangleAlert, color: tokens.warning),
                 title: Text(l10n.cdYesterdayOpen),
                 subtitle: Text(dateText(unclosedYesterday)),
                 trailing: FilledButton(
@@ -184,7 +185,7 @@ class _CloseDayTabState extends ConsumerState<CloseDayTab> {
           if (canClose)
             Card(
               child: ListTile(
-                leading: const Icon(Icons.fact_check_outlined),
+                leading: const Icon(LucideIcons.clipboardCheck),
                 title: Text(l10n.homeToday),
                 subtitle: Text(dateText(today)),
                 trailing: todayClosed
@@ -212,9 +213,7 @@ class _CloseDayTabState extends ConsumerState<CloseDayTab> {
             ListTile(
               key: ValueKey('shift-${sh.id}'),
               contentPadding: EdgeInsets.zero,
-              leading: Icon(
-                sh.isOpen ? Icons.play_circle_outline : Icons.check,
-              ),
+              leading: Icon(sh.isOpen ? LucideIcons.play : LucideIcons.check),
               title: Text(
                 sh.userId == kOwnerUserId
                     ? l10n.roleOwner
@@ -251,7 +250,9 @@ class _CloseDayTabState extends ConsumerState<CloseDayTab> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(
-                  day.status == 'closed' ? Icons.lock_outline : Icons.lock_open,
+                  day.status == 'closed'
+                      ? LucideIcons.lock
+                      : LucideIcons.lockOpen,
                 ),
                 title: Text(dateText(day.businessDate)),
                 subtitle: Text(

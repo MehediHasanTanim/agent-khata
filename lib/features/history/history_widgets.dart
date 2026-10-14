@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ledger/transaction_type.dart';
 import '../../core/theme/app_tokens.dart';
@@ -21,9 +22,9 @@ FlowDirection directionOf(TransactionType t) => switch (t) {
 };
 
 IconData iconFor(TransactionType t) => switch (directionOf(t)) {
-  FlowDirection.moneyIn => Icons.south_west,
-  FlowDirection.moneyOut => Icons.north_east,
-  FlowDirection.neutral => Icons.swap_horiz,
+  FlowDirection.moneyIn => LucideIcons.arrowDownLeft,
+  FlowDirection.moneyOut => LucideIcons.arrowUpRight,
+  FlowDirection.neutral => LucideIcons.arrowLeftRight,
 };
 
 Color colorFor(BuildContext context, TransactionType t) =>

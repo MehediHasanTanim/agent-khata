@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ledger/account.dart';
 import '../../core/ledger/transaction_draft.dart';
@@ -86,12 +87,12 @@ class _AdjustmentScreenState extends ConsumerState<AdjustmentScreen> {
                     segments: [
                       ButtonSegment(
                         value: true,
-                        icon: const Icon(Icons.add),
+                        icon: const Icon(LucideIcons.plus),
                         label: Text(l10n.adjIncrease),
                       ),
                       ButtonSegment(
                         value: false,
-                        icon: const Icon(Icons.remove),
+                        icon: const Icon(LucideIcons.minus),
                         label: Text(l10n.adjDecrease),
                       ),
                     ],

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/ledger/transaction_type.dart';
 import '../../core/money/money.dart';
 import '../../core/providers.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../backup/restore_flow.dart';
 import '../commission/commission_rates_screen.dart' show transactionTypeLabel;
@@ -32,6 +34,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   final TextEditingController _shop = TextEditingController();
   final Map<(String, TransactionType), RateInput> _rates = {};
   bool _busy = false;
+  bool _lastQuick = false;
   String? _error;
 
   @override
@@ -91,6 +94,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   Future<void> _finish({required bool quick}) async {
     final l10n = AppLocalizations.of(context);
     final lang = ref.read(preferencesProvider).languageCode;
+    _lastQuick = quick;
     setState(() {
       _busy = true;
       _error = null;
@@ -170,43 +174,149 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
     final lang = prefs.languageCode;
     final theme = Theme.of(context);
 
+    const stepOrder = [
+      _Step.providers,
+      _Step.balances,
+      _Step.rates,
+      _Step.shop,
+    ];
+    final scheme = theme.colorScheme;
+
+    Widget statusView() {
+      final failed = _error != null && !_busy;
+      return Scaffold(
+        body: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!failed)
+                    SizedBox(
+                      width: 96,
+                      height: 96,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 10,
+                        color: scheme.secondary,
+                        backgroundColor: scheme.secondaryContainer,
+                      ),
+                    )
+                  else
+                    Container(
+                      width: 96,
+                      height: 96,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: scheme.primaryContainer,
+                      ),
+                      child: Text(
+                        '!',
+                        style: theme.textTheme.displayMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: scheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 24),
+                  Text(
+                    failed ? _error! : l10n.onbSaving,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontFamily: failed ? null : 'Caprasimo',
+                      fontWeight: failed ? FontWeight.w700 : FontWeight.w400,
+                    ),
+                  ),
+                  if (failed) ...[
+                    const SizedBox(height: 24),
+                    FilledButton(
+                      key: const ValueKey('onb-retry'),
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(0, 60),
+                      ),
+                      onPressed: () => _finish(quick: _lastQuick),
+                      child: Text(l10n.onbFinish),
+                    ),
+                    TextButton(
+                      onPressed: () => setState(() => _error = null),
+                      child: Text(l10n.back),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (_busy || _error != null) return statusView();
+
     Widget scaffold({
       required String title,
       String? subtitle,
       required List<Widget> children,
       required Widget bottom,
-    }) => Scaffold(
-      appBar: AppBar(title: Text(l10n.appName)),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  Text(title, style: theme.textTheme.headlineMedium),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 8),
-                    Text(subtitle, style: theme.textTheme.bodyLarge),
-                  ],
-                  const SizedBox(height: 16),
-                  ...children,
-                  if (_error != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Text(
-                        _error!,
-                        style: TextStyle(color: theme.colorScheme.error),
+    }) {
+      final idx = stepOrder.indexOf(_step);
+      return Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                  children: [
+                    if (idx >= 0)
+                      Row(
+                        children: [
+                          for (var i = 0; i < stepOrder.length; i++)
+                            Expanded(
+                              child: Container(
+                                height: 8,
+                                margin: EdgeInsets.only(
+                                  right: i == stepOrder.length - 1 ? 0 : 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: i <= idx
+                                      ? scheme.primary
+                                      : scheme.tertiaryContainer,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    const SizedBox(height: 20),
+                    Text(
+                      title,
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontFamily: 'Caprasimo',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 30,
                       ),
                     ),
-                ],
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        subtitle,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    ...children,
+                  ],
+                ),
               ),
-            ),
-            Padding(padding: const EdgeInsets.all(16), child: bottom),
-          ],
+              Padding(padding: const EdgeInsets.all(16), child: bottom),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     Widget navRow({
       required VoidCallback? onNext,
@@ -215,15 +325,21 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
     }) => Row(
       children: [
         Expanded(
-          child: OutlinedButton(
+          child: FilledButton(
+            style: FilledButton.styleFrom(
+              minimumSize: const Size(0, 60),
+              backgroundColor: scheme.tertiaryContainer,
+              foregroundColor: scheme.onSurface,
+            ),
             onPressed: _busy ? null : () => _go(back),
-            child: Text(l10n.back),
+            child: Text('‹ ${l10n.back}'),
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           flex: 2,
           child: FilledButton(
+            style: FilledButton.styleFrom(minimumSize: const Size(0, 60)),
             onPressed: _busy ? null : onNext,
             child: Text(nextLabel ?? l10n.next),
           ),
@@ -233,49 +349,96 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
 
     switch (_step) {
       case _Step.welcome:
-        return scaffold(
-          title: l10n.onbWelcomeTitle,
-          subtitle: l10n.onbWelcomeBody,
-          children: [
-            SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(value: 'bn', label: Text('বাংলা')),
-                ButtonSegment(value: 'en', label: Text('English')),
-              ],
-              selected: {lang},
-              onSelectionChanged: (s) => _setLanguage(s.first),
+        return Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: SizedBox(
+                      width: 220,
+                      child: PillSegmented<String>(
+                        value: lang,
+                        options: const [('bn', 'বাংলা'), ('en', 'English')],
+                        onChanged: _setLanguage,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 14, bottom: 30),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: scheme.secondaryContainer,
+                          boxShadow: [
+                            BoxShadow(
+                              color: scheme.secondary.withValues(alpha: 0.2),
+                              spreadRadius: 18,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          LucideIcons.bookOpen,
+                          size: 72,
+                          color: scheme.onSecondaryContainer,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    l10n.onbWelcomeTitle,
+                    style: theme.textTheme.displayMedium?.copyWith(
+                      fontFamily: 'Caprasimo',
+                      fontWeight: FontWeight.w400,
+                      fontSize: 40,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    l10n.onbWelcomeBody,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    key: const ValueKey('onb-quick'),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(0, 64),
+                    ),
+                    onPressed: _busy ? null : () => _finish(quick: true),
+                    child: Text(l10n.onbQuickStart),
+                  ),
+                  const SizedBox(height: 10),
+                  FilledButton(
+                    key: const ValueKey('onb-step'),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(0, 60),
+                      backgroundColor: scheme.tertiaryContainer,
+                      foregroundColor: scheme.onSurface,
+                    ),
+                    onPressed: _busy ? null : () => _go(_Step.providers),
+                    child: Text(l10n.onbStepByStep),
+                  ),
+                  TextButton(
+                    key: const ValueKey('onb-restore'),
+                    onPressed: _busy
+                        ? null
+                        : () => runRestoreFlow(context, ref),
+                    child: Text(l10n.onbRestore),
+                  ),
+                ],
+              ),
             ),
-          ],
-          bottom: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  key: const ValueKey('onb-quick'),
-                  onPressed: _busy ? null : () => _finish(quick: true),
-                  child: Text(_busy ? l10n.onbSaving : l10n.onbQuickStart),
-                ),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  key: const ValueKey('onb-restore'),
-                  onPressed: _busy ? null : () => runRestoreFlow(context, ref),
-                  child: Text(l10n.onbRestore),
-                ),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  key: const ValueKey('onb-step'),
-                  onPressed: _busy ? null : () => _go(_Step.providers),
-                  child: Text(l10n.onbStepByStep),
-                ),
-              ),
-            ],
           ),
         );
 
@@ -283,17 +446,34 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         Widget group(String title, List<ProviderInfo> items) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: theme.textTheme.titleMedium),
-            for (final p in items)
-              CheckboxListTile(
-                value: _selected.contains(p.id),
-                title: Text(p.name(lang)),
-                onChanged: (v) => setState(
-                  () =>
-                      v == true ? _selected.add(p.id) : _selected.remove(p.id),
-                ),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
               ),
-            const SizedBox(height: 12),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                for (final p in items)
+                  FilterChip(
+                    key: ValueKey('provider-${p.id}'),
+                    showCheckmark: false,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 14,
+                    ),
+                    selected: _selected.contains(p.id),
+                    label: Text(p.name(lang)),
+                    onSelected: (v) => setState(
+                      () => v ? _selected.add(p.id) : _selected.remove(p.id),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 20),
           ],
         );
         return scaffold(

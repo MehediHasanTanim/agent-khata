@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/ledger/account_kind.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
-import '../../core/theme/app_tokens.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../closeday/close_day_widgets.dart';
 import '../closeday/day_close_service.dart';
@@ -121,7 +121,6 @@ class _ShiftHandoverScreenState extends ConsumerState<ShiftHandoverScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final tokens = context.tokens;
     final prefs = ref.watch(preferencesProvider);
     final money = MoneyFormatter(digits: prefs.digits);
     final accounts = _accounts;
@@ -151,22 +150,34 @@ class _ShiftHandoverScreenState extends ConsumerState<ShiftHandoverScreen> {
           !needsReason(variances[a.accountId]!) || _reason[a.accountId] != null,
     );
 
+    final scheme = theme.colorScheme;
+    Widget shell(Widget child) => Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: child,
+    );
+
     Widget countStep() => ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text(l10n.shiftHandoverIntro, style: theme.textTheme.bodyLarge),
         const SizedBox(height: 16),
         for (final a in accounts)
-          Card(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
+          shell(
+            Padding(
+              padding: EdgeInsets.zero,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     a.kind == AccountKind.cash ? l10n.homeCash : a.label,
-                    style: theme.textTheme.titleMedium,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   Text('${l10n.cdExpected}: ${money.format(a.expected)}'),
                   const SizedBox(height: 8),
@@ -194,7 +205,7 @@ class _ShiftHandoverScreenState extends ConsumerState<ShiftHandoverScreen> {
                         const SizedBox(width: 8),
                         IconButton.filledTonal(
                           tooltip: l10n.cdCashCounter,
-                          icon: const Icon(Icons.calculate_outlined),
+                          icon: const Icon(LucideIcons.calculator),
                           onPressed: () async {
                             final total = await showCashCounter(
                               context,
@@ -230,10 +241,9 @@ class _ShiftHandoverScreenState extends ConsumerState<ShiftHandoverScreen> {
               final mine = suggestions
                   .where((s) => s.accountId == a.accountId)
                   .toList();
-              return Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
+              return shell(
+                Padding(
+                  padding: EdgeInsets.zero,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -244,20 +254,35 @@ class _ShiftHandoverScreenState extends ConsumerState<ShiftHandoverScreen> {
                               a.kind == AccountKind.cash
                                   ? l10n.homeCash
                                   : a.label,
-                              style: theme.textTheme.titleMedium,
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
                           ),
-                          Icon(
-                            ok ? Icons.check_circle : Icons.error_outline,
-                            color: ok ? tokens.cashIn : tokens.warning,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            ok
-                                ? l10n.cdMatches
-                                : v.isNegative
-                                ? l10n.cdShort(money.format(v.abs()))
-                                : l10n.cdExcess(money.format(v)),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: ok
+                                  ? scheme.secondaryContainer
+                                  : scheme.primaryContainer,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              ok
+                                  ? l10n.cdMatches
+                                  : v.isNegative
+                                  ? l10n.cdShort(money.format(v.abs()))
+                                  : l10n.cdExcess(money.format(v)),
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: ok
+                                    ? scheme.onSecondaryContainer
+                                    : scheme.onPrimaryContainer,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -266,7 +291,7 @@ class _ShiftHandoverScreenState extends ConsumerState<ShiftHandoverScreen> {
                           ListTile(
                             dense: true,
                             contentPadding: EdgeInsets.zero,
-                            leading: const Icon(Icons.lightbulb_outline),
+                            leading: const Icon(LucideIcons.lightbulb),
                             title: Text(
                               suggestionText(
                                 l10n,
@@ -277,21 +302,22 @@ class _ShiftHandoverScreenState extends ConsumerState<ShiftHandoverScreen> {
                             ),
                           ),
                       if (!ok && !within) ...[
-                        DropdownButtonFormField<AdjustmentReason>(
-                          key: ValueKey('reason-${a.accountId}'),
-                          initialValue: _reason[a.accountId],
-                          decoration: InputDecoration(labelText: l10n.cdReason),
-                          items: [
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
                             for (final r in AdjustmentReason.values)
                               if (r != AdjustmentReason.tolerance)
-                                DropdownMenuItem(
-                                  value: r,
-                                  child: Text(reasonLabel(l10n, r)),
+                                ChoiceChip(
+                                  showCheckmark: false,
+                                  label: Text(reasonLabel(l10n, r)),
+                                  selected: _reason[a.accountId] == r,
+                                  onSelected: (_) =>
+                                      setState(() => _reason[a.accountId] = r),
                                 ),
                           ],
-                          onChanged: (r) =>
-                              setState(() => _reason[a.accountId] = r),
                         ),
+                        const SizedBox(height: 8),
                         TextField(
                           controller: _note[a.accountId],
                           decoration: InputDecoration(

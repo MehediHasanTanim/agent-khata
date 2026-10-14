@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -146,7 +147,9 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                       : l10n.diagNotEncrypted,
                 ),
                 leading: Icon(
-                  info.isEncrypted ? Icons.verified_user : Icons.warning_amber,
+                  info.isEncrypted
+                      ? LucideIcons.shieldCheck
+                      : LucideIcons.triangleAlert,
                 ),
               ),
               ListTile(
@@ -204,10 +207,10 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                       ),
                 leading: Icon(
                   _report == null
-                      ? Icons.rule
+                      ? LucideIcons.clipboardCheck
                       : _report!.isHealthy
-                      ? Icons.verified
-                      : Icons.error_outline,
+                      ? LucideIcons.badgeCheck
+                      : LucideIcons.circleAlert,
                   color: _report == null
                       ? null
                       : _report!.isHealthy
@@ -222,7 +225,7 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: OutlinedButton.icon(
-                  icon: const Icon(Icons.ios_share),
+                  icon: const Icon(LucideIcons.share),
                   label: Text(l10n.diagShareReport),
                   onPressed: () => _shareReport(info),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ads/ad_widgets.dart';
 import '../../core/money/money_formatter.dart';
@@ -101,23 +102,23 @@ class _AppShellState extends ConsumerState<AppShell> {
       (
         const HomeScreen(),
         NavigationDestination(
-          icon: const Icon(Icons.home_outlined),
-          selectedIcon: const Icon(Icons.home),
+          icon: const Icon(LucideIcons.house),
+          selectedIcon: const Icon(LucideIcons.house),
           label: l10n.navHome,
         ),
       ),
       (
         const HistoryScreen(),
         NavigationDestination(
-          icon: const Icon(Icons.history),
+          icon: const Icon(LucideIcons.history),
           label: l10n.navHistory,
         ),
       ),
       (
         const CloseDayTab(),
         NavigationDestination(
-          icon: const Icon(Icons.fact_check_outlined),
-          selectedIcon: const Icon(Icons.fact_check),
+          icon: const Icon(LucideIcons.clipboardCheck),
+          selectedIcon: const Icon(LucideIcons.clipboardCheck),
           label: l10n.navCloseDay,
         ),
       ),
@@ -125,16 +126,16 @@ class _AppShellState extends ConsumerState<AppShell> {
         (
           const ReportsScreen(),
           NavigationDestination(
-            icon: const Icon(Icons.bar_chart_outlined),
-            selectedIcon: const Icon(Icons.bar_chart),
+            icon: const Icon(LucideIcons.chartColumn),
+            selectedIcon: const Icon(LucideIcons.chartColumn),
             label: l10n.navReports,
           ),
         ),
       (
         const SettingsScreen(),
         NavigationDestination(
-          icon: const Icon(Icons.settings_outlined),
-          selectedIcon: const Icon(Icons.settings),
+          icon: const Icon(LucideIcons.settings),
+          selectedIcon: const Icon(LucideIcons.settings),
           label: l10n.navSettings,
         ),
       ),

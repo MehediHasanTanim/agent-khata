@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../theme/app_tokens.dart';
 
@@ -63,7 +64,7 @@ class NoticeBanner extends StatelessWidget {
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
-                  if (onTap != null) const Icon(Icons.chevron_right),
+                  if (onTap != null) const Icon(LucideIcons.chevronRight),
                 ],
               ),
             ),
@@ -225,7 +226,7 @@ class _SuccessPop extends StatelessWidget {
                   ],
                 ),
                 child: Icon(
-                  Icons.check_rounded,
+                  LucideIcons.check,
                   size: 56,
                   color: scheme.secondary,
                 ),

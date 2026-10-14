@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/i18n/digit_formatter.dart';
 import '../../core/security/pin_service.dart';
@@ -73,13 +74,13 @@ class PinPad extends StatelessWidget {
         Row(
           children: [
             _Key(
-              icon: Icons.backspace_outlined,
+              icon: LucideIcons.delete,
               semanticLabel: l10n.pinDelete,
               onPressed: enabled ? onDelete : null,
             ),
             digitKey('0'),
             _Key(
-              icon: Icons.check_rounded,
+              icon: LucideIcons.check,
               semanticLabel: 'OK',
               onPressed: enabled && canSubmit ? onSubmit : null,
               filled: true,

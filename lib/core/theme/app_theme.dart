@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../settings/app_preferences.dart';
 import 'app_tokens.dart';
@@ -249,5 +250,17 @@ ThemeData _build(ColorScheme scheme, AppTokens tokens) {
       thumbColor: const WidgetStatePropertyAll(Colors.white),
     ),
     dividerTheme: DividerThemeData(color: scheme.outlineVariant, space: 1),
+    // Round sand back button, as in the design.
+    actionIconTheme: ActionIconThemeData(
+      backButtonIconBuilder: (context) => Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: scheme.surfaceContainerHighest,
+        ),
+        child: Icon(LucideIcons.chevronLeft, color: scheme.onSurface),
+      ),
+    ),
   );
 }

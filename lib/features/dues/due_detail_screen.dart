@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ads/ad_widgets.dart';
@@ -8,6 +9,8 @@ import '../../core/ledger/account.dart';
 import '../../core/ledger/account_kind.dart';
 import '../../core/money/money_formatter.dart';
 import '../../core/providers.dart';
+import '../../core/theme/app_tokens.dart';
+import '../../core/widgets/khata_widgets.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../entry/amount_entry.dart';
 import '../entry/amount_keypad.dart';
@@ -81,74 +84,162 @@ class _DueDetailScreenState extends ConsumerState<DueDetailScreen> {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Text(
-                  due.direction == DueDirection.theyOwe
-                      ? l10n.duesTheyOwe
-                      : l10n.duesIOwe,
-                  style: theme.textTheme.titleMedium,
+                Center(
+                  child: Column(
+                    children: [
+                      InitialAvatar(due.displayName, size: 72),
+                      const SizedBox(height: 8),
+                      Text(
+                        due.displayName,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      if (due.customerPhone != null)
+                        Text(
+                          due.customerPhone!,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      Text(
+                        due.direction == DueDirection.theyOwe
+                            ? l10n.duesTheyOwe
+                            : l10n.duesIOwe,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  l10n.duesRemaining(money.format(due.remaining)),
-                  style: theme.textTheme.displaySmall,
-                ),
-                Text(
-                  l10n.duesOriginal(money.format(due.original)),
-                  style: theme.textTheme.bodyMedium,
-                ),
-                if (due.note != null) ...[
-                  const SizedBox(height: 8),
-                  Text(due.note!, style: theme.textTheme.bodyLarge),
-                ],
                 if (due.customerPhone != null) ...[
-                  const SizedBox(height: 12),
-                  Text(due.customerPhone!, style: theme.textTheme.bodyLarge),
+                  const SizedBox(height: 14),
                   Row(
                     children: [
-                      TextButton.icon(
-                        icon: const Icon(Icons.call_outlined),
-                        label: Text(l10n.duesCall),
-                        onPressed: () => _launch('tel', due.customerPhone!),
+                      Expanded(
+                        child: FilledButton.icon(
+                          style: FilledButton.styleFrom(
+                            backgroundColor:
+                                theme.colorScheme.secondaryContainer,
+                            foregroundColor:
+                                theme.colorScheme.onSecondaryContainer,
+                          ),
+                          icon: const Icon(LucideIcons.phone),
+                          label: Text(l10n.duesCall),
+                          onPressed: () => _launch('tel', due.customerPhone!),
+                        ),
                       ),
-                      TextButton.icon(
-                        icon: const Icon(Icons.sms_outlined),
-                        label: Text(l10n.duesSms),
-                        onPressed: () => _launch('sms', due.customerPhone!),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: FilledButton.icon(
+                          style: FilledButton.styleFrom(
+                            backgroundColor:
+                                theme.colorScheme.secondaryContainer,
+                            foregroundColor:
+                                theme.colorScheme.onSecondaryContainer,
+                          ),
+                          icon: const Icon(LucideIcons.messageSquare),
+                          label: Text(l10n.duesSms),
+                          onPressed: () => _launch('sms', due.customerPhone!),
+                        ),
                       ),
                     ],
                   ),
                 ],
-                const SizedBox(height: 16),
-                if (due.isOpen)
-                  FilledButton.icon(
-                    key: const ValueKey('settle'),
-                    icon: const Icon(Icons.payments_outlined),
-                    label: Text(
-                      due.direction == DueDirection.theyOwe
-                          ? l10n.duesSettle
-                          : l10n.duesSettleReturn,
-                    ),
-                    onPressed: () => _settle(due),
+                const SizedBox(height: 14),
+                Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(28),
                   ),
-                const Divider(height: 32),
-                Text(l10n.duesPayments, style: theme.textTheme.titleMedium),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(l10n.duesOriginal(money.format(due.original))),
+                          Text(l10n.duesRemaining('')),
+                        ],
+                      ),
+                      Text(
+                        money.format(due.remaining),
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: context.tokens.cashOut,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(99),
+                        child: LinearProgressIndicator(
+                          minHeight: 14,
+                          value: due.original.isZero
+                              ? 1
+                              : 1 -
+                                    (due.remaining.paisa / due.original.paisa)
+                                        .clamp(0, 1),
+                          color: theme.colorScheme.secondary,
+                          backgroundColor: theme.colorScheme.tertiaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (due.note != null) ...[
+                  const SizedBox(height: 10),
+                  Text(due.note!, style: theme.textTheme.bodyLarge),
+                ],
+                const SizedBox(height: 16),
+                Text(
+                  l10n.duesPayments,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
                 if (_payments.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(l10n.duesNoPayments),
                   ),
                 for (final p in _payments)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      money.format(p.amount),
-                      style: TextStyle(
-                        decoration: p.isVoid
-                            ? TextDecoration.lineThrough
-                            : null,
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          labels.dateTime(p.at),
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        Text(
+                          money.format(p.amount),
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            decoration: p.isVoid
+                                ? TextDecoration.lineThrough
+                                : null,
+                          ),
+                        ),
+                      ],
                     ),
-                    subtitle: Text(labels.dateTime(p.at)),
+                  ),
+                const SizedBox(height: 16),
+                if (due.isOpen)
+                  FilledButton.icon(
+                    key: const ValueKey('settle'),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(0, 60),
+                    ),
+                    icon: const Icon(LucideIcons.banknote),
+                    label: Text(
+                      due.direction == DueDirection.theyOwe
+                          ? l10n.duesSettle
+                          : l10n.duesSettleReturn,
+                    ),
+                    onPressed: () => _settle(due),
                   ),
               ],
             ),

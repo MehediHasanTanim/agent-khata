@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/ads/ad_widgets.dart';
 import '../../core/money/money_formatter.dart';
@@ -72,7 +73,7 @@ class _DuesScreenState extends ConsumerState<DuesScreen> {
             child: TextField(
               decoration: InputDecoration(
                 hintText: l10n.duesSearch,
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(LucideIcons.search),
               ),
               onChanged: (v) => setState(() => _query = v),
             ),
@@ -103,7 +104,7 @@ class _DuesScreenState extends ConsumerState<DuesScreen> {
                       ),
                     ),
                     child: Icon(
-                      Icons.menu_book_outlined,
+                      LucideIcons.bookOpen,
                       size: 38,
                       color: theme.colorScheme.onSecondaryContainer,
                     ),
@@ -149,7 +150,7 @@ class _DuesScreenState extends ConsumerState<DuesScreen> {
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
             child: FilledButton.icon(
               key: const ValueKey('add-due'),
-              icon: const Icon(Icons.add),
+              icon: const Icon(LucideIcons.plus),
               label: Text(l10n.duesAdd),
               style: FilledButton.styleFrom(minimumSize: const Size(0, 60)),
               onPressed: () => Navigator.of(context).push<void>(
